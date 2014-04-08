@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from bs4 import BeautifulSoup
+from gensim import corpora
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import regex
@@ -39,6 +40,18 @@ def main():
   print len(topics)
   print len(soups)
 
+  dictionary = corpora.Dictionary(texts)
+  # Remove words that only appeared once over all examples
+  once_ids = [i for i, j in dictionary.dfs.iteritems() if j == 1]
+  dictionary.filter_tokens(once_ids)
+  dictionary.compactify()
+  #print(dictionary.token2id)
+  # Convert the bodies to sparse vectors
+  vectors = []
+  for text in texts:
+    vectors.append(dictionary.doc2bow(text))
+
+
 # Method to carry out pre-processing and cleaning of bodies
 def clean_body(body):
   # Remove title and date - we only want the text. Join also removes excess whitespace
@@ -56,10 +69,7 @@ def clean_body(body):
   body = ' '.join([i for i in body.split() if i not in stop])
   # Apply a stemmer
   stemmer = SnowballStemmer('english')
-  body = ' '.join([stemmer.stem(i) for i in body.split()])
-  # Remove words which appear only once
-  word_count = make_word_dict(body)
-  body = ' '.join([i for i in body.split() if word_count[i] > 1])
+  body = [stemmer.stem(i) for i in body.split()]
   return body
 
 def make_word_dict(body):
