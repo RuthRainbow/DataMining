@@ -31,6 +31,8 @@ def main():
       topic = theseTopics[i].text
       if topic in interested_topics:
         body = theseBodies[i].text
+        texts.append(clean_body(body))
+        #print clean_body(body)
         topics.append(topic)
 
   print len(texts)
@@ -38,7 +40,7 @@ def main():
   print len(soups)
 
 # Method to carry out pre-processing and cleaning of bodies
-def cleanBody(body):
+def clean_body(body):
   # Remove title and date - we only want the text. Join also removes excess whitespace
   body = ' '.join([body.split('-')[i] for i in range(1, len(body.split('-')))])
   # Remove the final word "reuter"
@@ -55,7 +57,19 @@ def cleanBody(body):
   # Apply a stemmer
   stemmer = SnowballStemmer('english')
   body = ' '.join([stemmer.stem(i) for i in body.split()])
+  # Remove words which appear only once
+  word_count = make_word_dict(body)
+  body = ' '.join([i for i in body.split() if word_count[i] > 1])
   return body
+
+def make_word_dict(body):
+  ans = {}
+  for word in body.split(' '):
+    if word in ans:
+      ans[word] += 1
+    else:
+      ans[word] = 1
+  return ans
 
 if __name__ == '__main__':
   main()
