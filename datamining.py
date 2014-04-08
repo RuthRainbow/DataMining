@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 from bs4 import BeautifulSoup
-from gensim import corpora
+from gensim import corpora, models
+from gensim.models import ldamodel
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 import regex
@@ -32,6 +33,7 @@ def main():
       topic = theseTopics[i].text
       if topic in interested_topics:
         body = theseBodies[i].text
+        #print body
         texts.append(clean_body(body))
         #print clean_body(body)
         topics.append(topic)
@@ -50,6 +52,9 @@ def main():
   vectors = []
   for text in texts:
     vectors.append(dictionary.doc2bow(text))
+  model = ldamodel.LdaModel(vectors, id2word=dictionary, num_topics=10)
+  # For example print the probability distribution for the first text
+  print model[vectors[0]]
 
 
 # Method to carry out pre-processing and cleaning of bodies
@@ -72,14 +77,6 @@ def clean_body(body):
   body = [stemmer.stem(i) for i in body.split()]
   return body
 
-def make_word_dict(body):
-  ans = {}
-  for word in body.split(' '):
-    if word in ans:
-      ans[word] += 1
-    else:
-      ans[word] = 1
-  return ans
 
 if __name__ == '__main__':
   main()
