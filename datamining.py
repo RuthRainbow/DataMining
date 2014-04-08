@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
+from nltk.stem.snowball import SnowballStemmer
 import regex
 
 def main():
@@ -49,6 +50,9 @@ def cleanBody(body):
   # Remove English stopwords, and remove extra whitespace with join.
   stop = stopwords.words('english')
   body = ' '.join([i for i in body.split() if i not in stop])
+  # Apply a stemmer
+  stemmer = SnowballStemmer('english')
+  body = ' '.join([stemmer.stem(i) for i in body.split()])
   return body
 
 if __name__ == '__main__':
