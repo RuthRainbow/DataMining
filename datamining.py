@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 from bs4 import BeautifulSoup
+from nltk.corpus import stopwords
+import regex
 
 def main():
   soups = []
@@ -27,12 +29,27 @@ def main():
     for i in range(1, min(len(theseBodies), len(theseTopics))):
       topic = theseTopics[i].text
       if topic in interested_topics:
-        texts.append(theseBodies[i].text)
+        body = theseBodies[i].text
+        texts.append(cleanBody(body))
+        print cleanBody(body)
         topics.append(topic)
 
   print len(texts)
   print len(topics)
   print len(soups)
+
+# Method to carry out pre-processing and cleaning of bodies
+def cleanBody(body):
+  # Convert to lower case
+  body = body.lower()
+  # Remove punctuation
+  body = regex.sub(ur'\p{P}+', '', body)
+  # Remove numbers
+  body = ''.join([i for i in body if not i.isdigit()])
+  # Remove English stopwords, and remove extra whitespace with join.
+  stop = stopwords.words('english')
+  body = ' '.join([i for i in body.split() if i not in stop])
+  return body
 
 if __name__ == '__main__':
   main()
