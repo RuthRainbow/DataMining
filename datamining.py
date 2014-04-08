@@ -31,8 +31,6 @@ def main():
       topic = theseTopics[i].text
       if topic in interested_topics:
         body = theseBodies[i].text
-        texts.append(cleanBody(body))
-        print cleanBody(body)
         topics.append(topic)
 
   print len(texts)
@@ -41,13 +39,17 @@ def main():
 
 # Method to carry out pre-processing and cleaning of bodies
 def cleanBody(body):
+  # Remove title and date - we only want the text. Join also removes excess whitespace
+  body = ' '.join([body.split('-')[i] for i in range(1, len(body.split('-')))])
+  # Remove the final word "reuter"
+  body = ' '.join([body.split(' ')[i] for i in range(0, len(body.split(' '))-1)])
   # Convert to lower case
   body = body.lower()
   # Remove punctuation
   body = regex.sub(ur'\p{P}+', '', body)
   # Remove numbers
   body = ''.join([i for i in body if not i.isdigit()])
-  # Remove English stopwords, and remove extra whitespace with join.
+  # Remove English stopwords.
   stop = stopwords.words('english')
   body = ' '.join([i for i in body.split() if i not in stop])
   # Apply a stemmer
