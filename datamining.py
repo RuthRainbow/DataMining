@@ -34,7 +34,7 @@ def main():
     print len(theseTopics)
     
     #for i in range(1, min(len(theseBodies), len(theseTopics))):
-    for i in range(1, 20):
+    for i in range(1, 100):
       topic = theseTopics[i].text
       if topic in interested_topics:
         body = theseBodies[i].text
@@ -47,18 +47,23 @@ def main():
   print len(topics)
   print len(soups)
 
+  # Use dictionary to create 'Bag of words'
   dictionary = corpora.Dictionary([[j[0] for j in i] for i in texts])
-  # Remove words that only appeared once over all examples
+
+  # Apply thresholding to reduce dimensionality - remove all
+  # words which appear only once over all documents
   once_ids = [i for i, j in dictionary.dfs.iteritems() if j == 1]
-  #print once_ids
-  #dictionary.filter_tokens(once_ids)
-  #dictionary.compactify()
-  #print(dictionary.token2id)
+  dictionary.filter_tokens(once_ids)
+  # Remove words that appeared in less than 3 documents
+  dictionary.filter_extremes(no_below=3)
+  dictionary.compactify()
   # Convert the bodies to sparse vectors
   vectors = []
   for text in texts:
     uni = [i[0] for i in text]
     vectors.append(dictionary.doc2bow(uni))
+
+  # Apply an LDA Model to the bag of words
   model = ldamodel.LdaModel(vectors, id2word=dictionary, num_topics=10)
   # For example print the probability distribution for the first text
   print model[vectors[0]]
@@ -88,8 +93,13 @@ def clean_body(body):
   # Remove English stopwords.
   stop = stopwords.words('english')
   body = [i for i in body if i[0] not in stop]
-  # Run named entity recogniser
-  body = ne_chunk(body, binary=True)
+  print body
+  return body
+
+
+# Run named entity recogniser
+def named_entities(tagged_body):
+  body = ne_chunk(body)
   print body
   return body
 
