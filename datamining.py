@@ -10,17 +10,16 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 import regex
 from textblob import TextBlob, Word
+from textblob.classifiers import NaiveBayesClassifier
 
 def main():
   soups = []
   raw_texts = []
   texts = []
-  texts_train = []
-  texts_test = []
-  topics_test = []
-  topics_train = []
   topics = []
   lewis = []
+  training_set = []
+  test_set = []
 
   interested_topics = {'corn', 'earn', 'acquisitions', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
@@ -51,11 +50,9 @@ def main():
         #print body
         texts.append(clean_body(body))
         if lewis[i] == 'TRAIN':
-          texts_train.append(clean_body(body))
-          topics_train.append(topic)
+          training_set.append([clean_body(body), topic])
         else:
-          texts_test.append(clean_body(body))
-          topics_test.append(topic)
+          test_set.append([clean_body(body), topic])
         raw_texts.append(body)
         #print clean_body(body)
         topics.append(topic)
@@ -66,7 +63,17 @@ def main():
 
   # Feature selection methods:
   #bag_of_words(texts)
-  print calc_tf_idf(texts, 10)
+  #print calc_tf_idf(texts, 10)
+
+  # Classification
+  NB = NaiveBayesClassifier(training_set)
+  #print test_set[0]
+  #print NB.classify((test_set[0])[0])
+  #print test_set[(test_set[0])[1]]
+  print NB.classify(['things', 'profit'])
+
+  print NB.classify(training_set[0][0])
+  print training_set[0][1]
 
 
 def calc_tf_idf(texts, x):
