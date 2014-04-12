@@ -7,12 +7,12 @@ from nltk.chunk import ne_chunk
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.tag import pos_tag
 import regex
 from textblob import TextBlob, Word
 
 def main():
   soups = []
+  raw_texts = []
   texts = []
   topics = []
 
@@ -34,21 +34,25 @@ def main():
     print len(theseTopics)
     
     #for i in range(1, min(len(theseBodies), len(theseTopics))):
-    for i in range(1, 100):
+    for i in range(1, 30):
       topic = theseTopics[i].text
       if topic in interested_topics:
         body = theseBodies[i].text
         #print body
         texts.append(clean_body(body))
+        raw_texts.append(body)
         #print clean_body(body)
         topics.append(topic)
 
   print len(texts)
   print len(topics)
   print len(soups)
+  bag_of_words(texts)
 
+
+def bag_of_words(texts):
   # Use dictionary to create 'Bag of words'
-  dictionary = corpora.Dictionary([[j[0] for j in i] for i in texts])
+  dictionary = corpora.Dictionary([i.split() for i in texts])
 
   # Apply thresholding to reduce dimensionality - remove all
   # words which appear only once over all documents
@@ -57,10 +61,11 @@ def main():
   # Remove words that appeared in less than 3 documents
   dictionary.filter_extremes(no_below=3)
   dictionary.compactify()
+
   # Convert the bodies to sparse vectors
   vectors = []
   for text in texts:
-    uni = [i[0] for i in text]
+    uni = text.split()
     vectors.append(dictionary.doc2bow(uni))
 
   # Apply an LDA Model to the bag of words
@@ -79,27 +84,26 @@ def clean_body(body):
   body = body.split()[0:-1]
   # Convert to lower case
   body = [str(i).lower() for i in body]
-  # Apply spell corrector
-  body = TextBlob(' '.join(body)).correct().split()
   # Remove punctuation
   body = regex.sub(ur'\p{P}+', '', ' '.join(body)).split()
   # Remove numbers
   body = [i for i in body if not i.isdigit()]
-  # Apply part of speech tagger.
-  body = pos_tag(body)
+  # Apply spell corrector and transform into TextBlob to apply
+  # part of speech tagger
+  body = TextBlob(' '.join(body)).correct()
   # Lemmatisation
   lem = WordNetLemmatizer()
-  body = [[lem.lemmatize(i[0]), i[1]] for i in body]
+  body = [lem.lemmatize(i) for i in body.split()]
   # Remove English stopwords.
   stop = stopwords.words('english')
-  body = [i for i in body if i[0] not in stop]
-  print body
+  body = TextBlob(' '.join([i for i in body if i not in stop]))
+  print body.tags
   return body
 
 
 # Run named entity recogniser
 def named_entities(tagged_body):
-  body = ne_chunk(body)
+  body = ne_chunk(tagged_body.tags)
   print body
   return body
 
