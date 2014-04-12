@@ -15,7 +15,12 @@ def main():
   soups = []
   raw_texts = []
   texts = []
+  texts_train = []
+  texts_test = []
+  topics_test = []
+  topics_train = []
   topics = []
+  lewis = []
 
   interested_topics = {'corn', 'earn', 'acquisitions', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
@@ -31,6 +36,10 @@ def main():
     thisSoup = soups[i]
     theseBodies = thisSoup.findAll('text')
     theseTopics = thisSoup.findAll('topics')
+    reuters = thisSoup.findAll('reuters')
+    for reut in reuters:
+      lewis.append(reut.get('lewissplit'))
+    print len(lewis)
     print len(theseBodies)
     print len(theseTopics)
     
@@ -41,6 +50,12 @@ def main():
         body = theseBodies[i].text
         #print body
         texts.append(clean_body(body))
+        if lewis[i] == 'TRAIN':
+          texts_train.append(clean_body(body))
+          topics_train.append(topic)
+        else:
+          texts_test.append(clean_body(body))
+          topics_test.append(topic)
         raw_texts.append(body)
         #print clean_body(body)
         topics.append(topic)
