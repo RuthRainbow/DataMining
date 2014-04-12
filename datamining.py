@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 from gensim import corpora, models
 from gensim.models import ldamodel
+import math
 from nltk.chunk import ne_chunk
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
@@ -47,12 +48,37 @@ def main():
   print len(texts)
   print len(topics)
   print len(soups)
-  bag_of_words(texts)
+  #bag_of_words(texts)
+  print calc_tf_idf(texts)
+
+
+def calc_tf_idf(texts):
+  all_scores = {}
+  for i, text in enumerate(texts):
+    scores = {word: tfidf(word, text, texts) for word in text.words}
+    all_scores[text] = scores
+  return all_scores
+
+
+def tf(word, text):
+  return float(text.words.count(word)) / float(len(text.words))
+
+
+def num_texts(word, texts):
+  return sum(1 for text in texts if word in text)
+
+
+def idf(word, texts):
+  return math.log(float(len(texts)) / float(1 + num_texts(word, texts)))
+
+
+def tfidf(word, text, texts):
+  return tf(word, text) * idf(word, texts)
 
 
 def bag_of_words(texts):
   # Use dictionary to create 'Bag of words'
-  dictionary = corpora.Dictionary([i.split() for i in texts])
+  dictionary = corpora.Dictionary([i.words for i in texts])
 
   # Apply thresholding to reduce dimensionality - remove all
   # words which appear only once over all documents
@@ -65,8 +91,7 @@ def bag_of_words(texts):
   # Convert the bodies to sparse vectors
   vectors = []
   for text in texts:
-    uni = text.split()
-    vectors.append(dictionary.doc2bow(uni))
+    vectors.append(dictionary.doc2bow(text.words))
 
   # Apply an LDA Model to the bag of words
   model = ldamodel.LdaModel(vectors, id2word=dictionary, num_topics=10)
@@ -97,7 +122,7 @@ def clean_body(body):
   # Remove English stopwords.
   stop = stopwords.words('english')
   body = TextBlob(' '.join([i for i in body if i not in stop]))
-  print body.tags
+  print body.words
   return body
 
 
