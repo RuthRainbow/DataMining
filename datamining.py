@@ -48,15 +48,20 @@ def main():
   print len(texts)
   print len(topics)
   print len(soups)
+
+  # Feature selection methods:
   #bag_of_words(texts)
-  print calc_tf_idf(texts)
+  print calc_tf_idf(texts, 10)
 
 
-def calc_tf_idf(texts):
+def calc_tf_idf(texts, x):
   all_scores = {}
   for i, text in enumerate(texts):
     scores = {word: tfidf(word, text, texts) for word in text.words}
-    all_scores[text] = scores
+    # Sort words by tf-idf 
+    sorted_words = sorted(scores.items(), key = lambda x: x[1], reverse = True)
+    # Take top x words and store in all_scores
+    all_scores[text] = sorted_words[:x]
   return all_scores
 
 
