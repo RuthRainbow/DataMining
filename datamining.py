@@ -39,44 +39,54 @@ def main():
   test_data = []
   test_topics = []
 
-  interested_topics = {'corn', 'earn', 'acquisitions', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
+  interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
   for i in range(0, 22):
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    if i == 0 or i == 21:
-    #if True:
-      newSoup = BeautifulSoup(open("/home/ruth/uni/dm/ass/data/reut2-0"+num+".sgm"))
-      soups.append(newSoup)
+    #if i == 0 or i == 21:
+    if True:
+      new_soup = BeautifulSoup(open("/home/rawr/uni/data_mining/ass/data/reut2-0"+num+".sgm"))
+      soups.append(new_soup)
 
   print 'loaded %d soups' % len(soups)
     
   for i in range(0, len(soups)):
-    thisSoup = soups[i]
-    theseBodies = thisSoup.findAll('text')
-    theseTopics = thisSoup.findAll('topics')
-    reuters = thisSoup.findAll('reuters')
+    this_soup = soups[i]
+    these_bodies = this_soup.find_all('text')
+    reuters = this_soup.find_all('reuters')
     lewis = []
+    these_topics = []
     for reut in reuters:
       lewis.append(reut.get('lewissplit'))
+      these_topics.append(reut.topics.findChildren())
     
-    for j in range(1, len(theseBodies)):
-      topic = theseTopics[j].text
-      if topic in interested_topics:
-        body = theseBodies[j].text
-        texts.append(clean_body(body, scilearn))
-        if lewis[j] == 'TRAIN':
-          training_set.append([clean_body(body, scilearn), topic])
-          training_data.append(clean_body(body, scilearn))
-          training_topics.append(topic)
-        elif lewis[j] == 'TEST':
-          test_set.append([clean_body(body, scilearn), topic])
-          test_data.append(clean_body(body, scilearn))
-          test_topics.append(topic)
-        raw_texts.append(body)
-        #print clean_body(body, scilearn)
-        topics.append(topic)
+    for j in range(1, len(these_topics)):
+      for topic in these_topics[j]:
+        topic = str(topic)[3:-4]
+        if topic in interested_topics:
+          body = these_bodies[j].text
+          if lewis[j] == 'TRAIN':
+            training_set.append([clean_body(body, scilearn), topic])
+            training_data.append(clean_body(body, scilearn))
+            training_topics.append(topic)
+          elif lewis[j] == 'TEST':
+            test_set.append([clean_body(body, scilearn), topic])
+            test_data.append(clean_body(body, scilearn))
+            test_topics.append(topic)
+          if lewis[j] == 'TRAIN' or lewis[j] == 'TEST':
+            texts.append(clean_body(body, scilearn))
+            raw_texts.append(body)
+            #print clean_body(body, scilearn)
+            topics.append(topic)
+
+  topic_dict = {}
+  for topic in interested_topics:
+    topic_dict[topic] =  topics.count(topic)
+    print topic + ': ' + str(topics.count(topic))
+  print 'total number of docs: %d' % len(topics)
+  print '***********************'
 
   # FOR TESTING
   if len(test_data) == 0:
