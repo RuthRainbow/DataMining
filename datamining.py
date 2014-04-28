@@ -10,10 +10,16 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 import numpy
 import regex
+from sklearn.cluster import AffinityPropagation, DBSCAN, KMeans, SpectralClustering
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.svm import LinearSVC
+from sklearn.metrics import pairwise_distances
+from sklearn.mixture import GMM
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import NearestCentroid
+from sklearn.svm import LinearSVC
 from sklearn import metrics
 from textblob import TextBlob, Word
 from textblob.classifiers import NaiveBayesClassifier
@@ -39,8 +45,8 @@ def main():
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    #if i == 0 or i == 21:
-    if True:
+    if i == 0 or i == 21:
+    #if True:
       newSoup = BeautifulSoup(open("/home/ruth/uni/dm/ass/data/reut2-0"+num+".sgm"))
       soups.append(newSoup)
 
@@ -90,6 +96,7 @@ def main():
     print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
     featured_test = vect.transform(test_data)
     print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
+    featured_texts = vect.fit_transform(texts)
     print 'Fininshed TfIdf vectoriser'
 
     chi = SelectKBest(chi2, 10)
@@ -100,20 +107,61 @@ def main():
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
 
-
     classify(MultinomialNB(alpha=0.1),
              featured_train,
              training_topics,
              featured_test,
-             test_topics)
+             test_topics,
+             interested_topics)
+             #True)
 
-    classify(LinearSVC(), featured_train, training_topics, featured_test, test_topics)
+    classify(LinearSVC(),
+             featured_train,
+             training_topics,
+             featured_test,
+             test_topics,
+             interested_topics)
+             #True)
+
+    classify(RandomForestClassifier(),
+             featured_train.toarray(),
+             training_topics,
+             featured_test.toarray(),
+             test_topics,
+             interested_topics)
+    # (supervised)
+    classify(KNeighborsClassifier(),
+             featured_train,
+             training_topics,
+             featured_test,
+             test_topics,
+             interested_topics)
+
+    classify(NearestCentroid(),
+             featured_train,
+             training_topics,
+             featured_test,
+             test_topics,
+             interested_topics)
+
+    # **** Clustering ****
+    print '****************** Clustering ******************'
+    num_clusters = len(interested_topics)
+    cluster(KMeans(n_clusters=num_clusters), featured_texts, topics)
+    cluster(SpectralClustering(n_clusters=num_clusters), featured_texts, topics)
+    cluster(AffinityPropagation(), featured_texts, topics)
+    #cluster(DBSCAN(), featured_texts, topics)
+    # GMM
+    gmm = GMM(n_components=num_clusters)
+    gmm.means_ = numpy.array([featured_texts[topics == i].mean(axis=0) for i in xrange(num_clusters)])
+    #cluster(gmm, featured_texts, topics)
 
   if not scilearn:
     # Feature selection methods:
     #bag_of_words(texts)
     #print calc_tf_idf(texts, 10)
 
+    print 'Alternative Naive Bayes:'
     # Classification
     NB = NaiveBayesClassifier(training_set)
     print test_set[0]
@@ -128,7 +176,13 @@ def main():
     print NB.show_informative_features(50)
 
 
-def classify(classifier, training_data, training_topics, test_data, test_topics):
+def classify(classifier,
+             training_data,
+             training_topics,
+             test_data,
+             test_topics,
+             topics,
+             report=True):
   print 'training: ' + str(classifier)
   classifier.fit(training_data, training_topics)
   print 'testing'
@@ -136,7 +190,18 @@ def classify(classifier, training_data, training_topics, test_data, test_topics)
   score = metrics.f1_score(test_topics, pred)
   print 'f1 score: %f' % score
   print 'report:'
-  #print metrics.classification_report(test_data, pred)
+  if report:
+    print metrics.classification_report(test_topics, pred)
+
+
+def cluster(classifier, data, topics):
+    print str(classifier)
+    classifier.fit(data)
+    labels = classifier.labels_
+    print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
+    print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
+    print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
+    print ' ***************** '
 
 
 def calc_tf_idf(texts, x):
