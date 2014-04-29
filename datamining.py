@@ -15,8 +15,9 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 
 from sklearn.cluster import AffinityPropagation, DBSCAN, KMeans, SpectralClustering
+from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import HashingVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
@@ -105,6 +106,9 @@ def main():
     test_topics.append(topic)
 
   if scilearn:
+    vect = HashingVectorizer()
+    featured_texts = vect.fit_transform(texts)
+
     vect = TfidfVectorizer(strip_accents = 'unicode',
                            sublinear_tf = True,
                            max_df = 0.5,
@@ -119,6 +123,7 @@ def main():
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
     featured_test = chi.transform(featured_test)
+    chi = SelectKBest(chi2, 5)
     featured_texts = chi.fit_transform(featured_texts, topics)
     print 'Finished chi^2'
 
@@ -174,15 +179,45 @@ def main():
     # **** Clustering ****
     print '****************** Clustering ******************'
     num_clusters = len(interested_topics)
+    # Use SVD rather than PCA as it is able to work on sparse matrices
+    svd = TruncatedSVD(n_components=2)
+    dense_texts = svd.fit_transform(featured_texts)
+    norm = preprocessing.Normalizer(copy=False)
+    dense_texts = norm.fit_transform(dense_texts)
+    
     cluster(KMeans(n_clusters=num_clusters), featured_texts, topics)
-    cluster(SpectralClustering(n_clusters=num_clusters), featured_texts, topics)
-    cluster(AffinityPropagation(), featured_texts, topics)
+    #cluster(AffinityPropagation(), dense_texts, topics)
     # These methods don't support sparse matrices, so aren't suitable for text mining.
-    #cluster(DBSCAN(), featured_texts, topics)
+    cluster(DBSCAN(), dense_texts, topics)
     # GMM
-    #gmm = GMM(n_components=num_clusters)
-    #gmm.means_ = numpy.array([featured_texts[topics == i].mean(axis=0) for i in xrange(num_clusters)])
-    #cluster(GMM(), featured_texts, topics)
+    dense_train = svd.fit_transform(featured_train)
+    dense_train = norm.fit_transform(dense_train)
+    dense_test = svd.fit_transform(featured_test)
+    dense_test = norm.fit_transform(dense_test)
+    gmm = GMM(n_components=num_clusters)
+    mappings = {}
+    list_topics = list(interested_topics)
+    for i in range(0, len(list_topics)):
+      mappings[list_topics[i]] = i
+    train_topics_mapped = []
+    for topic in training_topics:
+      train_topics_mapped.append(mappings[topic])
+    test_topics_mapped = []
+    for topic in test_topics:
+      test_topics_mapped.append(mappings[topic])
+    gmm.means_ = numpy.array([dense_train[
+                              train_topics_mapped == i].mean(axis=0)
+			   for i in xrange(len(list_topics))])
+    gmm.fit(dense_train)
+    train_pred = gmm.predict(dense_train)
+    test_pred = gmm.predict(dense_test)
+
+    train_acc = numpy.mean(
+        train_pred.ravel() == numpy.array(train_topics_mapped).ravel()) * 100
+    test_acc = numpy.mean(
+        test_pred.ravel() == numpy.array(test_topics_mapped).ravel()) * 100
+    print 'train acc = %0.3f' % train_acc
+    print 'test acc = %0.3f' % test_acc
 
   if not scilearn:
     # Feature selection methods:
