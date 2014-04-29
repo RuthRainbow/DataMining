@@ -286,6 +286,8 @@ def bag_of_words(texts):
 
 # Preprocessing and cleaning of text bodies
 def preprocess(body, scilearn):
+  # Change to utf-8 encoding
+  body = body.encode('utf-8')
   # Remove title and date - we only want the text. Join also removes excess whitespace
   body = ' '.join([body.split('-')[i] for i in range(1, len(body.split('-')))])
   # Tokenise & Remove the final word "reuter"
