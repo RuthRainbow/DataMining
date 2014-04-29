@@ -10,7 +10,7 @@ from gensim import corpora, models
 from gensim.models import ldamodel
 
 from nltk.chunk import ne_chunk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 
@@ -30,6 +30,7 @@ from sklearn import preprocessing
 
 from textblob import TextBlob, Word
 from textblob.classifiers import NaiveBayesClassifier
+from textblob.taggers import NLTKTagger
 
 def main():
   # Whether we are using scilearn for features or our own custom.
@@ -48,12 +49,12 @@ def main():
 
   interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
-  for i in range(0, 22):
+  for i in range(0, 1):
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    #if i == 0 or i == 21:
-    if True:
+    if i == 0 or i == 21:
+    #if True:
       new_soup = BeautifulSoup(open("/home/rawr/uni/data_mining/ass/data/reut2-0"+num+".sgm"))
       soups.append(new_soup)
 
@@ -69,7 +70,7 @@ def main():
       lewis.append(reut.get('lewissplit'))
       these_topics.append(reut.topics.findChildren())
     
-    for j in range(1, len(these_topics)):
+    for j in range(1, len(these_bodies)):
       body = these_bodies[j].text
       cleaned = preprocess(body, scilearn)
       for topic in these_topics[j]:
@@ -89,6 +90,9 @@ def main():
             #print cleaned
             topics.append(topic)
 
+  test = 'U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN LONDON, March 3 - The Bank of England said it had revised its forecast of the shortage in the money market down to 450 mln stg before taking account of its morning operations. At noon the bank had estimated the shortfall at 500 mln stg. REUTER'
+  preprocess(test, scilearn)
+  
   topic_dict = {}
   for topic in interested_topics:
     topic_dict[topic] =  topics.count(topic)
@@ -321,6 +325,7 @@ def bag_of_words(texts):
 
 # Preprocessing and cleaning of text bodies
 def preprocess(body, scilearn):
+  print body
   # Change to utf-8 encoding
   body = body.encode('utf-8')
   # Remove title and date - we only want the text. Join also removes excess whitespace
@@ -334,30 +339,49 @@ def preprocess(body, scilearn):
   # Remove numbers
   body = [i for i in body if not i.isdigit()]
   if not scilearn:
+    cleaned = clean_body(body)
+    #tagged = named_entities(cleaned)
+    print cleaned
     return clean_body(body)
   else:
+    print ' '.join(body)
     return ' '.join(body)
 
 
 # Spell correction, lemmatisation and stopwords
 def clean_body(body):
-  # Apply spell corrector and transform into TextBlob to apply
-  # part of speech tagger
-  body = TextBlob(' '.join(body)).correct()
-  # Lemmatisation
-  lem = WordNetLemmatizer()
-  body = [lem.lemmatize(i) for i in body.split()]
   # Remove English stopwords.
   stop = stopwords.words('english')
   body = TextBlob(' '.join([i for i in body if i not in stop]))
-  print body.words
+  # Apply spell corrector and transform into TextBlob to apply
+  # part of speech tagger
+  body = TextBlob(' '.join(body.words), pos_tagger=NLTKTagger()).correct()
+  # Convert to tags recognisable by the lemmatiser
+  body = [(text[0], to_wordnet_tag(text[1])) for text in body.tags]
+  body = [(text[0], text[1]) for text in body if text[1] != '']
+  # Lemmatisation
+  lem = WordNetLemmatizer()
+  body = [lem.lemmatize(text[0], text[1]) for text in body]
   return body
+
+
+# Convert nltk tags to tags recognised by the lemmatizer
+def to_wordnet_tag(tag):
+    if tag.startswith('J'):
+        return wordnet.ADJ
+    elif tag.startswith('V'):
+        return wordnet.VERB
+    elif tag.startswith('N'):
+        return wordnet.NOUN
+    elif tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return ''
 
 
 # Run named entity recogniser
 def named_entities(tagged_body):
-  body = ne_chunk(tagged_body.tags)
-  print body
+  body = ne_chunk(tagged_body)
   return body
 
 
