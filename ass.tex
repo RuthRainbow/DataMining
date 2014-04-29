@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color}
+
+\title{CS909: Week 10}
+\author{1037559}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Data Input}
+The first task was to read in the data, which is in SGM format. This was done using the \verb|BeautifulSoup| module for Python. This module is able to parse SGM files so data can be extracted by tag, which is useful for this assignment as items such as the topic can easily be extracted. For each data file a \verb|BeautifulSoup| object was created, and these added to a list of ``soups''.
+
+The next task was to extract the relevant tags from the soups. \verb|BeautifulSoup| objects provide methods for extracting tags easily, for example using the methods \verb|find_all| and \verb|findChildren|. \verb|find_all| was used to find all text tags and reuters tags. Within the reuters tags the lewissplit and topic attributes were extracted. Topics were extracted in this way in order to provide a list of topics where an article includes multiple topics.
+
+All extracted entries are then examined. Firstly the body is preprocessed as discussed in the preprocessing section. This is to avoid repeating preprocessing, which is computationally expensive, for bodies with multiple topics. The corresponding topics are then checked to see if they are a topic we are interested in, if so the lewis attribute is checked to find whether to place the text in the training or test lists. The text is added one time for every topic tag it contains that we are interested in. This is it can be labelled with every relevant label, as each text in the classification may only have one label.
+
+The table below shows the frequency of each topic label obtained over the 22 SGM files:
+\\
+\begin{center}
+\begin{tabular}{l | l}
+Topic & Frequency \\ \hline
+earn & 3961 \\
+acq & 2367 \\
+money-fx & 717 \\
+grain & 583 \\
+crude & 580 \\
+trade & 487 \\
+interest & 480 \\
+ship & 287 \\
+wheat & 283 \\
+corn & 239 \\ \hline
+Total number of texts: 9984 \\
+\end{tabular}
+\end{center}
+
+\section{Preprocessing}
+After the relevant texts had been extracted preprocessing takes place. This is done text by text when extracting text tags as described above using the \verb|preprocess| function. The level of preprocessing depends upon the classification methods being used - if the \verb|scilearn| classifiers are being used these come with their own preprocessing methods so a more similar form of preprocessing is carried out.
+
+For the basic preprocessing firstly the text is changed to utf-8 encoding so all characters can be manipulated by the Python string methods. Secondly the title and date are removed, as these should not be part of the text. Next the word ``Reuter'' is removed from the end of the text - this is present as it is part of the tag for all texts. The text is then converted to lower case and punctuation and numbers removed, using the \verb|regex| module for Python. If \verb|scilearn| is being used no further preprocessing is required here. An example of the effects of this preprocessing can be seen below:
+
+Before preprocessing (raw data):
+\\``U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN
+    LONDON, March 3 - The Bank of England said it had revised
+its forecast of the shortage in the money market down to 450
+mln stg before taking account of its morning operations. At
+noon the bank had estimated the shortfall at 500 mln stg.
+ REUTER
+''
+
+Post basic preprocessing:
+\\``the bank of england said it had revised its forecast of the shortage in the money market down to mln stg before taking account of its morning operations at noon the bank had estimated the shortfall at mln stg''
+
+If \verb|scilearn| is not being used some further preprocessing is required. Firstly Stopwords are removed, using an English corpora as all stopwords should be English. This corpora of stopwords was obtained through the \verb|nltk| module. Next a spell corrector from the \verb|WordNet| module is used and a part of speech tagger applied. After this words are lemmatised in order to obtain the ``stem'' of a word, for example ``runner'' should be reduced to ``run''. This requires the tags to be in a slightly simpler form, so a helper method was included to convert to this form. An English language lemmatiser is then used from the \verb|nltk| module. Optionally a named entity tagger may also be applied to replace things such as company names in the texts. This is optional as it is very computationally expensive and may take a long time. The results of this can be seen in the example below, where it's clear that words have been lemmatised fairly successfully:
+
+``[u'bank', u'england', 'say', u'revise', u'forecast', u'shortage', u'money', u'market', u'man', u'st', u'take', u'account', u'morning', u'operation', u'noon', u'bank', u'estimate', u'shortfall', u'man', u'st']''
+
+\section{Feature Selection}
+A number of different feature selection mechanisms were implemented and evaluated to determine the method must suitable for the task. Features are selected as words present or absent in each text.
+
+\subsection{Bag of words}
+Firstly, a `bag of words' approach was implemented, where each text is represented as a vector where every column represents a word in the vocabulary. Entries in the vector indicate the presence or absence of a word. This creates a sparse vector representation of every text.
+
+This approach was implemented in two ways. Firstly, using \verb|nltk| to create a dictionary of all vocabulary and using this to convert each text. This allowed any words which appeared in less than $n$ documents to be filtered out to attempt to reduce the dimensionality of the final vectors.
+
+The second approach used scilearn's \verb|CountingVectorizer|. ...
+
+\subsection{Term Frequency - Inverse Document Frequency (TF-IDF)}
+This approach attempts to normalise the data and take into account the relative frequencies of words in the text in comparison to the frequency over all texts. This approach provides more information than the previous approach as it also takes into account frequency, which may be important to classification.
+
+The first implementation of this was provided by manually summing the frequencies of all words.
+
+The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words. 
+
+\subsection{Feature Reduction}
+Feature reduction is lastly applied to all feature selection methods in order to eliminate irrelevant or rare features from the dataset and reduce the dimensionality of the vectors to further focus on more relevant features.
+
+\section{Topic Models}
+Topic models were created using the \verb|gensim| module. A ``bag of words'' approach was used, firstly by creating a dictionary mapping words to identifiers. Then the sparsity was reduced by removing all words that only occur once over the entire data set. All texts are then converted to vectors, mapping word identifiers to the frequency of the words occurring in that text. These vectors can then be used to create topic models, which give probability distributions for each text appearing in a given number of topics. The models were created using 10 topics, as we know this is the number present from the preprocessing.
+
+Firstly an LDA model was created, as described in the lectures. This was created by passing the dictionary and the vectors into an \verb|LdaModel| object, from the \verb|gensim| module.
+
+\section{Classification}
+
+\section{Clustering}
+
+\section{Conclusions}
+
+\end{document}
