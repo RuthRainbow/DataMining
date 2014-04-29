@@ -20,11 +20,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import BernoulliNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestCentroid
 from sklearn.svm import LinearSVC
 from sklearn import metrics
+from sklearn import preprocessing
 
 from textblob import TextBlob, Word
 from textblob.classifiers import NaiveBayesClassifier
@@ -50,8 +51,8 @@ def main():
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    if i == 0 or i == 21:
-    #if True:
+    #if i == 0 or i == 21:
+    if True:
       new_soup = BeautifulSoup(open("/home/rawr/uni/data_mining/ass/data/reut2-0"+num+".sgm"))
       soups.append(new_soup)
 
@@ -69,7 +70,7 @@ def main():
     
     for j in range(1, len(these_topics)):
       body = these_bodies[j].text
-      cleaned = clean_body(body, scilearn)
+      cleaned = preprocess(body, scilearn)
       for topic in these_topics[j]:
         topic = str(topic)[3:-4]
         if topic in interested_topics:
@@ -97,10 +98,10 @@ def main():
   # FOR TESTING
   if len(test_data) == 0:
     print 'Making artificial test data'
-    text = 'i am a test data, hello!'
+    text = preprocess('i am a test data, hello!', scilearn)
     topic = 'earn'
-    test_set.append([clean_body(body, scilearn), topic])
-    test_data.append(clean_body(body, scilearn))
+    test_set.append([text, topic])
+    test_data.append(text)
     test_topics.append(topic)
 
   if scilearn:
@@ -118,7 +119,12 @@ def main():
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
     featured_test = chi.transform(featured_test)
+    featured_texts = chi.fit_transform(featured_texts, topics)
     print 'Finished chi^2'
+
+    featured_train = preprocessing.normalize(featured_train)
+    featured_texts = preprocessing.normalize(featured_texts)
+    featured_test = preprocessing.normalize(featured_test)
 
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
@@ -129,7 +135,6 @@ def main():
              featured_test,
              test_topics,
              interested_topics)
-             #True)
 
     classify(BernoulliNB(),
              featured_train,
@@ -144,7 +149,6 @@ def main():
              featured_test,
              test_topics,
              interested_topics)
-             #True)
 
     classify(RandomForestClassifier(),
              featured_train.toarray(),
@@ -173,11 +177,12 @@ def main():
     cluster(KMeans(n_clusters=num_clusters), featured_texts, topics)
     cluster(SpectralClustering(n_clusters=num_clusters), featured_texts, topics)
     cluster(AffinityPropagation(), featured_texts, topics)
+    # These methods don't support sparse matrices, so aren't suitable for text mining.
     #cluster(DBSCAN(), featured_texts, topics)
     # GMM
-    gmm = GMM(n_components=num_clusters)
-    gmm.means_ = numpy.array([featured_texts[topics == i].mean(axis=0) for i in xrange(num_clusters)])
-    #cluster(gmm, featured_texts, topics)
+    #gmm = GMM(n_components=num_clusters)
+    #gmm.means_ = numpy.array([featured_texts[topics == i].mean(axis=0) for i in xrange(num_clusters)])
+    #cluster(GMM(), featured_texts, topics)
 
   if not scilearn:
     # Feature selection methods:
@@ -279,11 +284,8 @@ def bag_of_words(texts):
   print model[vectors[2]]
 
 
-# Method to carry out pre-processing and cleaning of bodies
-def clean_body(body, scilearn):
-  # If using scilearn for feature extraction just remove whitespace
-  #if scilearn:
-  #  return ' '.join(body.split())
+# Preprocessing and cleaning of text bodies
+def preprocess(body, scilearn):
   # Remove title and date - we only want the text. Join also removes excess whitespace
   body = ' '.join([body.split('-')[i] for i in range(1, len(body.split('-')))])
   # Tokenise & Remove the final word "reuter"
@@ -294,6 +296,14 @@ def clean_body(body, scilearn):
   body = regex.sub(ur'\p{P}+', '', ' '.join(body)).split()
   # Remove numbers
   body = [i for i in body if not i.isdigit()]
+  if not scilearn:
+    return clean_body(body)
+  else:
+    return ' '.join(body)
+
+
+# Spell correction, lemmatisation and stopwords
+def clean_body(body):
   # Apply spell corrector and transform into TextBlob to apply
   # part of speech tagger
   body = TextBlob(' '.join(body)).correct()
