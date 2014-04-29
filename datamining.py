@@ -1,15 +1,19 @@
 #!/usr/bin/python
 
+import math
+import numpy
+import regex
+
 from bs4 import BeautifulSoup
+
 from gensim import corpora, models
 from gensim.models import ldamodel
-import math
+
 from nltk.chunk import ne_chunk
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
-import numpy
-import regex
+
 from sklearn.cluster import AffinityPropagation, DBSCAN, KMeans, SpectralClustering
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -21,6 +25,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestCentroid
 from sklearn.svm import LinearSVC
 from sklearn import metrics
+
 from textblob import TextBlob, Word
 from textblob.classifiers import NaiveBayesClassifier
 
@@ -45,8 +50,8 @@ def main():
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    #if i == 0 or i == 21:
-    if True:
+    if i == 0 or i == 21:
+    #if True:
       new_soup = BeautifulSoup(open("/home/rawr/uni/data_mining/ass/data/reut2-0"+num+".sgm"))
       soups.append(new_soup)
 
@@ -63,22 +68,23 @@ def main():
       these_topics.append(reut.topics.findChildren())
     
     for j in range(1, len(these_topics)):
+      body = these_bodies[j].text
+      cleaned = clean_body(body, scilearn)
       for topic in these_topics[j]:
         topic = str(topic)[3:-4]
         if topic in interested_topics:
-          body = these_bodies[j].text
           if lewis[j] == 'TRAIN':
-            training_set.append([clean_body(body, scilearn), topic])
-            training_data.append(clean_body(body, scilearn))
+            training_set.append([cleaned, topic])
+            training_data.append(cleaned)
             training_topics.append(topic)
           elif lewis[j] == 'TEST':
-            test_set.append([clean_body(body, scilearn), topic])
-            test_data.append(clean_body(body, scilearn))
+            test_set.append([cleaned, topic])
+            test_data.append(cleaned)
             test_topics.append(topic)
           if lewis[j] == 'TRAIN' or lewis[j] == 'TEST':
-            texts.append(clean_body(body, scilearn))
+            texts.append(cleaned)
             raw_texts.append(body)
-            #print clean_body(body, scilearn)
+            #print cleaned
             topics.append(topic)
 
   topic_dict = {}
@@ -124,6 +130,13 @@ def main():
              test_topics,
              interested_topics)
              #True)
+
+    classify(BernoulliNB(),
+             featured_train,
+             training_topics,
+             featured_test,
+             test_topics,
+             interested_topics)
 
     classify(LinearSVC(),
              featured_train,
@@ -269,8 +282,8 @@ def bag_of_words(texts):
 # Method to carry out pre-processing and cleaning of bodies
 def clean_body(body, scilearn):
   # If using scilearn for feature extraction just remove whitespace
-  if scilearn:
-    return ' '.join(body.split())
+  #if scilearn:
+  #  return ' '.join(body.split())
   # Remove title and date - we only want the text. Join also removes excess whitespace
   body = ' '.join([body.split('-')[i] for i in range(1, len(body.split('-')))])
   # Tokenise & Remove the final word "reuter"
