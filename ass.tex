@@ -63,32 +63,47 @@ If \verb|scilearn| is not being used some further preprocessing is required. Fir
 \section{Feature Selection}
 A number of different feature selection mechanisms were implemented and evaluated to determine the method must suitable for the task. Features are selected as words present or absent in each text.
 
+SHOW RESULTS
+
 \subsection{Bag of words}
 Firstly, a `bag of words' approach was implemented, where each text is represented as a vector where every column represents a word in the vocabulary. Entries in the vector indicate the presence or absence of a word. This creates a sparse vector representation of every text.
 
 This approach was implemented in two ways. Firstly, using \verb|nltk| to create a dictionary of all vocabulary and using this to convert each text. This allowed any words which appeared in less than $n$ documents to be filtered out to attempt to reduce the dimensionality of the final vectors.
 
-The second approach used scilearn's \verb|CountingVectorizer|. ...
+The second approach used scilearn's \verb|CountingVectorizer|. This simply creates feature vectors for each text with a frequency count for each ``feature'' or word in the vocabulary.
 
 \subsection{Term Frequency - Inverse Document Frequency (TF-IDF)}
 This approach attempts to normalise the data and take into account the relative frequencies of words in the text in comparison to the frequency over all texts. This approach provides more information than the previous approach as it also takes into account frequency, which may be important to classification.
 
-The first implementation of this was provided by manually summing the frequencies of all words.
+The first implementation of this was provided by manually summing the frequencies of all words and applying the formaluae for TF and IDF as defined in the lectures:
+\\$tf(t, d) = \frac{Frequency of term t in document d}{max. frequency of t in any doc d}$
+\\$idf(t, D) = log\frac{|D|}{df(t,D)}$ where $D$ is the set of all documents.
 
-The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words. 
+The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, so only the simpler preprocessing is required for SciLearn. This also normalises the features.
 
 \subsection{Feature Reduction}
 Feature reduction is lastly applied to all feature selection methods in order to eliminate irrelevant or rare features from the dataset and reduce the dimensionality of the vectors to further focus on more relevant features.
 
-\section{Topic Models}
-Topic models were created using the \verb|gensim| module. A ``bag of words'' approach was used, firstly by creating a dictionary mapping words to identifiers. Then the sparsity was reduced by removing all words that only occur once over the entire data set. All texts are then converted to vectors, mapping word identifiers to the frequency of the words occurring in that text. These vectors can then be used to create topic models, which give probability distributions for each text appearing in a given number of topics. The models were created using 10 topics, as we know this is the number present from the preprocessing.
+For SciLearn, a $\chi^2$ test is applied to select the k best features. This test determines how relevant words are to determining a class, and the k most relevant features are retained for each class.
 
-Firstly an LDA model was created, as described in the lectures. This was created by passing the dictionary and the vectors into an \verb|LdaModel| object, from the \verb|gensim| module.
+\subsubsection{Clustering}
+It was found that these feature selection methods still created too sparse a vector for some clustering methods. There is also a greater number of examples for these algorithms to fit as the algorithms are unsupervised so the data is not split into testing and training sets. For this reason a \verb|HashingVectorizer| was used before the vectors listed above so the process for the larger number of texts is more memory scalable. Less features are also retained during the $\chi^2$ test.
+
+To further reduce dimensionality the feature vectors a form of Principle Components Analysis (PCA) is applied. The implementation of this was carried out using \verb|TruncatedSVD| from SciLearn, which is a variant of PCA that is able to work on feature vectors in a memory efficient way. This was required as the implementation of PCA was not able to keep all texts in memory with the full data set. After this the vectors need to be renormalised for the clustering algorithms. 
+
+\subsection{Topic Models}
+Topic models were created using the \verb|gensim| module. A ``bag of words'' approach was used as described above. All texts are then converted to vectors, mapping word identifiers to the frequency of the words occurring in that text. These vectors can then be used to create topic models, which give probability distributions for each text appearing in a given number of topics. The models were created using 10 topics, as we know this is the number present from the preprocessing.
+
+Firstly a Latent Dirichlet Allocation (LDA) model was created, as described in the lectures. This was created by passing the dictionary and the vectors into an \verb|LdaModel| object, from the \verb|gensim| module. Here are the results obtained from the first three texts:
+
+TODO
 
 \section{Classification}
+Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods.
 
 \section{Clustering}
 
 \section{Conclusions}
 
 \end{document}
+
