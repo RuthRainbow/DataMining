@@ -94,7 +94,8 @@ def main():
   preprocess(test, scilearn)
   
   topic_dict = {}
-  for topic in interested_topics:
+  num_topics = len(set(topics))
+  for topic in num_topics:
     topic_dict[topic] =  topics.count(topic)
     print topic + ': ' + str(topics.count(topic))
   print 'total number of docs: %d' % len(topics)
@@ -182,14 +183,13 @@ def main():
 
     # **** Clustering ****
     print '****************** Clustering ******************'
-    num_clusters = len(interested_topics)
     # Use SVD rather than PCA as it is able to work on sparse matrices
     svd = TruncatedSVD(n_components=2)
     dense_texts = svd.fit_transform(featured_texts)
     norm = preprocessing.Normalizer(copy=False)
     dense_texts = norm.fit_transform(dense_texts)
     
-    cluster(KMeans(n_clusters=num_clusters), featured_texts, topics)
+    cluster(KMeans(n_clusters=num_topics), featured_texts, topics)
     #cluster(AffinityPropagation(), dense_texts, topics)
     # These methods don't support sparse matrices, so aren't suitable for text mining.
     cluster(DBSCAN(), dense_texts, topics)
@@ -198,10 +198,9 @@ def main():
     dense_train = norm.fit_transform(dense_train)
     dense_test = svd.fit_transform(featured_test)
     dense_test = norm.fit_transform(dense_test)
-    gmm = GMM(n_components=num_clusters)
+    gmm = GMM(n_components=num_topics)
     mappings = {}
-    list_topics = list(interested_topics)
-    # TODO change number of clusters we want
+    list_topics = list(set(topics))
     for i in range(0, len(list_topics)):
       mappings[list_topics[i]] = i
     train_topics_mapped = []
