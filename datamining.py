@@ -17,7 +17,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn.cluster import AffinityPropagation, DBSCAN, KMeans, SpectralClustering
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import HashingVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
@@ -35,6 +35,7 @@ from textblob.taggers import NLTKTagger
 def main():
   # Whether we are using scilearn for features or our own custom.
   scilearn = True
+  tfidf = False
 
   soups = []
   raw_texts = []
@@ -113,20 +114,20 @@ def main():
     vect = HashingVectorizer(stop_words='english')
     featured_texts = vect.fit_transform(texts)
 
-    vect = TfidfVectorizer(strip_accents='unicode',
-                           sublinear_tf=True,
-                           max_df=0.5,
-                           stop_words='english')
+    if tfidf:
+      vect = TfidfVectorizer(strip_accents='unicode',
+                             sublinear_tf=True,
+                             stop_words='english')
+    else:
+      vect = CountVectorizer(strip_accents='unicode',
+                             stop_words='english')
+
     featured_train = vect.fit_transform(training_data)
     print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
     featured_test = vect.transform(test_data)
     print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
     featured_texts = vect.fit_transform(texts)
-    print 'Fininshed TfIdf vectoriser'
-
-    featured_train = preprocessing.normalize(featured_train)
-    featured_texts = preprocessing.normalize(featured_texts)
-    featured_test = preprocessing.normalize(featured_test)
+    print 'Fininshed vectoriser'
 
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
@@ -329,7 +330,7 @@ def bag_of_words(texts):
 
 # Preprocessing and cleaning of text bodies
 def preprocess(body, scilearn):
-  print body
+  #print body
   # Change to utf-8 encoding
   body = body.encode('utf-8')
   # Remove title and date - we only want the text. Join also removes excess whitespace
@@ -348,7 +349,7 @@ def preprocess(body, scilearn):
     print cleaned
     return clean_body(body)
   else:
-    print ' '.join(body)
+    #print ' '.join(body)
     return ' '.join(body)
 
 
