@@ -85,11 +85,10 @@ def main():
             test_set.append([cleaned, topic])
             test_data.append(cleaned)
             test_topics.append(topic)
-          if lewis[j] == 'TRAIN' or lewis[j] == 'TEST':
-            texts.append(cleaned)
-            raw_texts.append(body)
-            #print cleaned
-            topics.append(topic)
+        texts.append(cleaned)
+        raw_texts.append(body)
+        #print cleaned
+        topics.append(topic)
 
   test = 'U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN LONDON, March 3 - The Bank of England said it had revised its forecast of the shortage in the money market down to 450 mln stg before taking account of its morning operations. At noon the bank had estimated the shortfall at 500 mln stg. REUTER'
   preprocess(test, scilearn)
@@ -202,6 +201,7 @@ def main():
     gmm = GMM(n_components=num_clusters)
     mappings = {}
     list_topics = list(interested_topics)
+    # TODO change number of clusters we want
     for i in range(0, len(list_topics)):
       mappings[list_topics[i]] = i
     train_topics_mapped = []
