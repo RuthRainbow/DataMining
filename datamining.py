@@ -147,8 +147,6 @@ def main():
                    KNeighborsClassifier(), NearestCentroid()]
 
     kfolds = KFold(n=len(training_data), n_folds=10, shuffle=True)
-    acc = 0
-    best_classifier = None
     acc_values = {classifier: list() for classifier in classifiers}
     for train, test in kfolds:
       train_text = [featured_train.toarray()[j] for j in train]
@@ -164,9 +162,23 @@ def main():
                             interested_topics)
         acc_values[classifier].append(this_acc)
     acc_averages = {(i, numpy.mean(acc_values[i])) for i in classifiers}
+    acc_stds = {i: numpy.std(acc_values[i]) for i in classifiers}
+    
+    acc = 0
+    best_classifier = None
     for classifier, avg in acc_averages:
       print 'classifier: %s' % classifier.__class__.__name__
-      print 'accuracy: %f' % avg
+      print 'accuracy mean: %f standard deviation: %f' % (avg, acc_stds[classifier])
+      if avg > acc:
+        acc = avg
+        best_classifier = classifier
+
+    classify(best_classifier,
+             featured_train,
+             training_topics,
+             featured_test,
+             test_topics,
+             interested_topics)
 
     # **** Clustering ****
     print '****************** Clustering ******************'
