@@ -29,7 +29,7 @@ from sklearn import metrics
 from sklearn import preprocessing
 
 from textblob import TextBlob, Word
-from textblob.classifiers import NaiveBayesClassifier
+from textblob.classifiers import DecisionTreeClassifier, NaiveBayesClassifier
 from textblob.taggers import NLTKTagger
 
 def main():
@@ -242,6 +242,10 @@ def main():
 
     print NB.accuracy(test_set)
     print NB.show_informative_features(50)
+
+    DT = DecisionTreeClassifier(training_set)
+    print DT.accuracy(test_set)
+    print DT.show+informative_features(50)
 
 
 def classify(classifier,
