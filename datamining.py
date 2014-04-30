@@ -54,7 +54,9 @@ def main():
       num = "0" + str(i);
     #if i == 0 or i == 21:
     if True:
-      new_soup = BeautifulSoup(open("/home/rawr/uni/data_mining/ass/data/reut2-0"+num+".sgm"))
+      #addr = '/home/rawr/uni/data_mining/ass/data/reut2-0%s.sgm' % num
+      addr = '/home/ruth/uni/dm/ass/data/reut2-0%s.sgm' % num
+      new_soup = BeautifulSoup(open(addr))
       soups.append(new_soup)
 
   print 'loaded %d soups' % len(soups)
