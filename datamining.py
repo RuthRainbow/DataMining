@@ -21,7 +21,7 @@ from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, 
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
-from sklearn.naive_bayes import BernoulliNB, MultinomialNB
+from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neighbors import NearestCentroid
 from sklearn.svm import LinearSVC
@@ -54,8 +54,8 @@ def main():
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    #if i == 0 or i == 21:
-    if True:
+    if i == 0 or i == 21:
+    #if True:
       #addr = '/home/rawr/uni/data_mining/ass/data/reut2-0%s.sgm' % num
       addr = '/home/ruth/uni/dm/ass/data/reut2-0%s.sgm' % num
       new_soup = BeautifulSoup(open(addr))
@@ -97,7 +97,7 @@ def main():
   
   topic_dict = {}
   num_topics = len(set(topics))
-  for topic in num_topics:
+  for topic in set(topics):
     topic_dict[topic] =  topics.count(topic)
     print topic + ': ' + str(topics.count(topic))
   print 'total number of docs: %d' % len(topics)
@@ -141,47 +141,17 @@ def main():
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
 
-    classify(MultinomialNB(alpha=0.1),
-             featured_train,
-             training_topics,
-             featured_test,
-             test_topics,
-             interested_topics)
+    classifiers = {GaussianNB(), MultinomialNB(alpha=0.1),
+                   BernoulliNB(), LinearSVC(), RandomForestClassifier(),
+                   KNeighborsClassifier(), NearestCentroid()}
 
-    classify(BernoulliNB(),
-             featured_train,
-             training_topics,
-             featured_test,
-             test_topics,
-             interested_topics)
-
-    classify(LinearSVC(),
-             featured_train,
-             training_topics,
-             featured_test,
-             test_topics,
-             interested_topics)
-
-    classify(RandomForestClassifier(),
-             featured_train.toarray(),
-             training_topics,
-             featured_test.toarray(),
-             test_topics,
-             interested_topics)
-    # (supervised)
-    classify(KNeighborsClassifier(),
-             featured_train,
-             training_topics,
-             featured_test,
-             test_topics,
-             interested_topics)
-
-    classify(NearestCentroid(),
-             featured_train,
-             training_topics,
-             featured_test,
-             test_topics,
-             interested_topics)
+    for classifier in classifiers:
+      classify(classifier,
+               featured_train.toarray(),
+               training_topics,
+               featured_test.toarray(),
+               test_topics,
+               interested_topics)
 
     # **** Clustering ****
     print '****************** Clustering ******************'
@@ -195,6 +165,7 @@ def main():
     #cluster(AffinityPropagation(), dense_texts, topics)
     # These methods don't support sparse matrices, so aren't suitable for text mining.
     cluster(DBSCAN(), dense_texts, topics)
+    # TODO Add hierarchical clustering!
     # GMM
     dense_train = svd.fit_transform(featured_train)
     dense_train = norm.fit_transform(dense_train)
