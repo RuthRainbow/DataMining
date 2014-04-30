@@ -15,6 +15,7 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 
 from sklearn.cluster import DBSCAN, KMeans, Ward
+from sklearn.cross_validation import KFold
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
@@ -141,17 +142,31 @@ def main():
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
 
-    classifiers = {GaussianNB(), MultinomialNB(alpha=0.1),
+    classifiers = [GaussianNB(), MultinomialNB(alpha=0.1),
                    BernoulliNB(), LinearSVC(), RandomForestClassifier(),
-                   KNeighborsClassifier(), NearestCentroid()}
+                   KNeighborsClassifier(), NearestCentroid()]
 
-    for classifier in classifiers:
-      classify(classifier,
-               featured_train.toarray(),
-               training_topics,
-               featured_test.toarray(),
-               test_topics,
-               interested_topics)
+    kfolds = KFold(n=len(training_data), n_folds=10, shuffle=True)
+    acc = 0
+    best_classifier = None
+    acc_values = {classifier: list() for classifier in classifiers}
+    for train, test in kfolds:
+      train_text = [featured_train.toarray()[j] for j in train]
+      test_text = [featured_train.toarray()[j] for j in test]
+      train_topic = [training_topics[j] for j in train]
+      test_topic = [training_topics[j] for j in test]
+      for classifier in classifiers:
+        this_acc = classify(classifier,
+                            train_text,
+                            train_topic,
+                            test_text,
+                            test_topic,
+                            interested_topics)
+        acc_values[classifier].append(this_acc)
+    acc_averages = {(i, numpy.mean(acc_values[i])) for i in classifiers}
+    for classifier, avg in acc_averages:
+      print 'classifier: %s' % classifier.__class__.__name__
+      print 'accuracy: %f' % avg
 
     # **** Clustering ****
     print '****************** Clustering ******************'
@@ -227,7 +242,7 @@ def classify(classifier,
              test_topics,
              topics,
              report=True):
-  print 'training: ' + str(classifier)
+  print 'training %s' % str(classifier)
   classifier.fit(training_data, training_topics)
   print 'testing'
   pred = classifier.predict(test_data)
@@ -240,6 +255,7 @@ def classify(classifier,
   if report:
     print 'report:'
     print metrics.classification_report(test_topics, pred)
+  return metrics.accuracy_score(test_topics, pred)
 
 
 def cluster(classifier, data, topics):
