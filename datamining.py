@@ -13,12 +13,13 @@ from nltk.chunk import ne_chunk
 from nltk.corpus import stopwords, wordnet
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk import pos_tag, word_tokenize
 
 from sklearn.cluster import DBSCAN, KMeans, Ward
 from sklearn.cross_validation import KFold
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import BinaryVectorizer, CountVectorizer, HashingVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
@@ -33,9 +34,21 @@ from textblob import TextBlob, Word
 from textblob.classifiers import DecisionTreeClassifier, NaiveBayesClassifier
 from textblob.taggers import NLTKTagger
 
+
+class LemmatiserTokeniser(object):
+  def __init__(self):
+    self.lemma = WordNetLemmatizer()
+  def __call__(self, doc):
+    tagged = pos_tag(word_tokenize(doc))
+    tagged = [(text, to_wordnet_tag(tag)) for text, tag in tagged]
+    tagged = [(text, tag) for text, tag in tagged if tag != '']
+    return [self.lemma.lemmatize(text, tag) for text, tag in tagged]
+
+
 def main():
   # Whether we are using scilearn for features or our own custom.
   scilearn = True
+  # Whether to use TFIDF or frequency count
   tfidf = False
 
   soups = []
@@ -120,10 +133,12 @@ def main():
     if tfidf:
       vect = TfidfVectorizer(strip_accents='unicode',
                              sublinear_tf=True,
-                             stop_words='english')
+                             stop_words='english',
+                             tokenizer=LemmatiserTokeniser())
     else:
       vect = CountVectorizer(strip_accents='unicode',
-                             stop_words='english')
+                             stop_words='english',
+                             tokenizer=LemmatiserTokeniser())
 
     featured_train = vect.fit_transform(training_data)
     print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
@@ -131,6 +146,8 @@ def main():
     print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
     featured_texts = vect.fit_transform(texts)
     print 'Fininshed vectoriser'
+
+    #TODO write data to file
 
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
