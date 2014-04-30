@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color}
+
+\title{CS909: Week 10}
+\author{1037559}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Data Input}
+The first task was to read in the data, which is in SGM format. This was done using the \verb|BeautifulSoup| module for Python. This module is able to parse SGM files so data can be extracted by tag, which is useful for this assignment as items such as the topic can easily be extracted. For each data file a \verb|BeautifulSoup| object was created, and these added to a list of ``soups''.
+
+The next task was to extract the relevant tags from the soups. \verb|BeautifulSoup| objects provide methods for extracting tags easily, for example using the methods \verb|find_all| and \verb|findChildren|. \verb|find_all| was used to find all text tags and reuters tags. Within the reuters tags the lewissplit and topic attributes were extracted. Topics were extracted in this way in order to provide a list of topics where an article includes multiple topics.
+
+All extracted entries are then examined. Firstly the body is preprocessed as discussed in the preprocessing section. This is to avoid repeating preprocessing, which is computationally expensive, for bodies with multiple topics. The corresponding topics are then checked to see if they are a topic we are interested in, if so the lewis attribute is checked to find whether to place the text in the training or test lists. The text is added one time for every topic tag it contains that we are interested in. This is so it can be labelled with every relevant label, as each text in the classification may only have one label. All texts are also added once to a separate list in order to be used by the classification algorithms, which look at all data.
+
+The table below shows the frequency of each topic label obtained over the 22 SGM files:
+\\
+\begin{center}
+\begin{tabular}{l | l}
+Topic & Frequency \\ \hline
+earn & 3961 \\
+acq & 2367 \\
+money-fx & 717 \\
+grain & 583 \\
+crude & 580 \\
+trade & 487 \\
+interest & 480 \\
+ship & 287 \\
+wheat & 283 \\
+corn & 239 \\ \hline
+Total number of texts: 9984 \\
+\end{tabular}
+\end{center}
+
+\section{Preprocessing}
+After the relevant texts had been extracted preprocessing takes place. This is done text by text when extracting text tags as described above using the \verb|preprocess| function. The level of preprocessing depends upon the classification methods being used - if the \verb|scilearn| classifiers are being used these come with their own preprocessing methods so a more similar form of preprocessing is carried out.
+
+For the basic preprocessing firstly the text is changed to utf-8 encoding so all characters can be manipulated by the Python string methods. Secondly the title and date are removed, as these should not be part of the text. Next the word ``Reuter'' is removed from the end of the text - this is present as it is part of the tag for all texts. The text is then converted to lower case and punctuation and numbers removed, using the \verb|regex| module for Python. If \verb|scilearn| is being used no further preprocessing is required here. An example of the effects of this preprocessing can be seen below:
+
+Before preprocessing (raw data):
+\\``U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN
+    LONDON, March 3 - The Bank of England said it had revised
+its forecast of the shortage in the money market down to 450
+mln stg before taking account of its morning operations. At
+noon the bank had estimated the shortfall at 500 mln stg.
+ REUTER
+''
+
+Post basic preprocessing:
+\\``the bank of england said it had revised its forecast of the shortage in the money market down to mln stg before taking account of its morning operations at noon the bank had estimated the shortfall at mln stg''
+
+If \verb|scilearn| is not being used some further preprocessing is required. Firstly Stopwords are removed, using an English corpora as all stopwords should be English. This corpora of stopwords was obtained through the \verb|nltk| module. Next a spell corrector from the \verb|WordNet| module is used and a part of speech tagger applied. After this words are lemmatised in order to obtain the ``stem'' of a word, for example ``runner'' should be reduced to ``run''. This requires the tags to be in a slightly simpler form, so a helper method was included to convert to this form. An English language lemmatiser is then used from the \verb|nltk| module. Optionally a named entity tagger may also be applied to replace things such as company names in the texts. This is optional as it is very computationally expensive and may take a long time. The results of this can be seen in the example below, where it's clear that words have been lemmatised fairly successfully:
+
+``[u'bank', u'england', 'say', u'revise', u'forecast', u'shortage', u'money', u'market', u'man', u'st', u'take', u'account', u'morning', u'operation', u'noon', u'bank', u'estimate', u'shortfall', u'man', u'st']''
+
+\section{Feature Selection}
+A number of different feature selection mechanisms were implemented and evaluated to determine the method must suitable for the task. Features are selected as words present or absent in each text.
+
+SHOW RESULTS
+
+\subsection{Bag of words}
+Firstly, a `bag of words' approach was implemented, where each text is represented as a vector where every column represents a word in the vocabulary. Entries in the vector indicate the presence or absence of a word. This creates a sparse vector representation of every text.
+
+This approach was implemented in two ways. Firstly, using \verb|nltk| to create a dictionary of all vocabulary and using this to convert each text. This allowed any words which appeared in less than $n$ documents to be filtered out to attempt to reduce the dimensionality of the final vectors.
+
+The second approach used scilearn's \verb|CountingVectorizer|. This simply creates feature vectors for each text with a frequency count for each ``feature'' or word in the vocabulary.
+
+\subsection{Term Frequency - Inverse Document Frequency (TF-IDF)}
+This approach attempts to normalise the data and take into account the relative frequencies of words in the text in comparison to the frequency over all texts. This approach provides more information than the previous approach as it also takes into account frequency, which may be important to classification.
+
+The first implementation of this was provided by manually summing the frequencies of all words and applying the formaluae for TF and IDF as defined in the lectures:
+\\$tf(t, d) = \frac{Frequency of term t in document d}{max. frequency of t in any doc d}$
+\\$idf(t, D) = log\frac{|D|}{df(t,D)}$ where $D$ is the set of all documents.
+
+The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, so only the simpler preprocessing is required for SciLearn. This also normalises the features.
+
+\subsection{Feature Reduction}
+Feature reduction is lastly applied to all feature selection methods in order to eliminate irrelevant or rare features from the dataset and reduce the dimensionality of the vectors to further focus on more relevant features.
+
+For SciLearn, a $\chi^2$ test is applied to select the k best features. This test determines how relevant words are to determining a class, and the k most relevant features are retained for each class.
+
+\subsubsection{Clustering}
+It was found that these feature selection methods still created too sparse a vector for some clustering methods. There is also a greater number of examples for these algorithms to fit as the algorithms are unsupervised so the data is not split into testing and training sets. For this reason a \verb|HashingVectorizer| was used before the vectors listed above so the process for the larger number of texts is more memory scalable. Less features are also retained during the $\chi^2$ test.
+
+To further reduce dimensionality the feature vectors a form of Principle Components Analysis (PCA) is applied. The implementation of this was carried out using \verb|TruncatedSVD| from SciLearn, which is a variant of PCA that is able to work on feature vectors in a memory efficient way. This was required as the implementation of PCA was not able to keep all texts in memory with the full data set. After this the vectors need to be renormalised for the clustering algorithms. 
+
+\subsection{Topic Models}
+Topic models were created using the \verb|gensim| module. A ``bag of words'' approach was used as described above. All texts are then converted to vectors, mapping word identifiers to the frequency of the words occurring in that text. These vectors can then be used to create topic models, which give probability distributions for each text appearing in a given number of topics. The models were created using 10 topics, as we know this is the number present from the preprocessing.
+
+Firstly a Latent Dirichlet Allocation (LDA) model was created, as described in the lectures. This was created by passing the dictionary and the vectors into an \verb|LdaModel| object, from the \verb|gensim| module. Here are the results obtained from the first three texts:
+
+TODO
+
+\section{Classification}
+Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods. A variety of different classifiers were applied in order to compare their effectiveness at classifying the texts into topics. Training and test data sets were obtained using the lewissplit tag as desribed in the data input section.
+
+\subsection{TextBlob module}
+The \verb|TextBlob| module contains some simple classifier implementations which were experimented with first. These classifiers use their own simple binary feature selection method which indiciates whether words are present or absent in each text. Two classifier implementations were used; firstly a Na{\"i}ve Bayes classifier and secondly a decision tree classifier. However not a lot of metrics are easily available for these classes so only accuracy was compared. It is interesting to view the features these classifiers found most important for classifying the texts:
+
+... TODO compare most important features for each, show accuracies
+
+\subsection{SciLearn module}
+The SciLearn module provides a much greater variety of classifiers which are more customisable with a large number of optional flags. The output of these is also much more easily obtainable, with methods to provide accuracy, recall and f1 score for different accuracies and for each class.
+
+To make the code more readable a \verb|classify| method was written which takes in a classifier class as a parameter. This fits the classifier to the training data and uses this to predict labels for the test data. It then prints the f1 score, macro and micro precision and recalls and a classification report, including the precision and recall for each class.
+
+\section{Clustering}
+
+\section{Conclusions}
+
+\end{document}
+

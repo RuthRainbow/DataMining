@@ -10,14 +10,14 @@ from gensim import corpora, models
 from gensim.models import ldamodel
 
 from nltk.chunk import ne_chunk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 
 from sklearn.cluster import AffinityPropagation, DBSCAN, KMeans, SpectralClustering
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import HashingVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
@@ -29,11 +29,13 @@ from sklearn import metrics
 from sklearn import preprocessing
 
 from textblob import TextBlob, Word
-from textblob.classifiers import NaiveBayesClassifier
+from textblob.classifiers import DecisionTreeClassifier, NaiveBayesClassifier
+from textblob.taggers import NLTKTagger
 
 def main():
   # Whether we are using scilearn for features or our own custom.
   scilearn = True
+  tfidf = False
 
   soups = []
   raw_texts = []
@@ -85,14 +87,17 @@ def main():
             test_set.append([cleaned, topic])
             test_data.append(cleaned)
             test_topics.append(topic)
-          if lewis[j] == 'TRAIN' or lewis[j] == 'TEST':
-            texts.append(cleaned)
-            raw_texts.append(body)
-            #print cleaned
-            topics.append(topic)
+        texts.append(cleaned)
+        raw_texts.append(body)
+        #print cleaned
+        topics.append(topic)
 
+  test = 'U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN LONDON, March 3 - The Bank of England said it had revised its forecast of the shortage in the money market down to 450 mln stg before taking account of its morning operations. At noon the bank had estimated the shortfall at 500 mln stg. REUTER'
+  preprocess(test, scilearn)
+  
   topic_dict = {}
-  for topic in interested_topics:
+  num_topics = len(set(topics))
+  for topic in num_topics:
     topic_dict[topic] =  topics.count(topic)
     print topic + ': ' + str(topics.count(topic))
   print 'total number of docs: %d' % len(topics)
@@ -108,19 +113,23 @@ def main():
     test_topics.append(topic)
 
   if scilearn:
-    vect = HashingVectorizer()
+    vect = HashingVectorizer(stop_words='english')
     featured_texts = vect.fit_transform(texts)
 
-    vect = TfidfVectorizer(strip_accents = 'unicode',
-                           sublinear_tf = True,
-                           max_df = 0.5,
-                           stop_words = 'english')
+    if tfidf:
+      vect = TfidfVectorizer(strip_accents='unicode',
+                             sublinear_tf=True,
+                             stop_words='english')
+    else:
+      vect = CountVectorizer(strip_accents='unicode',
+                             stop_words='english')
+
     featured_train = vect.fit_transform(training_data)
     print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
     featured_test = vect.transform(test_data)
     print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
     featured_texts = vect.fit_transform(texts)
-    print 'Fininshed TfIdf vectoriser'
+    print 'Fininshed vectoriser'
 
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
@@ -128,10 +137,6 @@ def main():
     chi = SelectKBest(chi2, 5)
     featured_texts = chi.fit_transform(featured_texts, topics)
     print 'Finished chi^2'
-
-    featured_train = preprocessing.normalize(featured_train)
-    featured_texts = preprocessing.normalize(featured_texts)
-    featured_test = preprocessing.normalize(featured_test)
 
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
@@ -180,14 +185,13 @@ def main():
 
     # **** Clustering ****
     print '****************** Clustering ******************'
-    num_clusters = len(interested_topics)
     # Use SVD rather than PCA as it is able to work on sparse matrices
     svd = TruncatedSVD(n_components=2)
     dense_texts = svd.fit_transform(featured_texts)
     norm = preprocessing.Normalizer(copy=False)
     dense_texts = norm.fit_transform(dense_texts)
     
-    cluster(KMeans(n_clusters=num_clusters), featured_texts, topics)
+    cluster(KMeans(n_clusters=num_topics), featured_texts, topics)
     #cluster(AffinityPropagation(), dense_texts, topics)
     # These methods don't support sparse matrices, so aren't suitable for text mining.
     cluster(DBSCAN(), dense_texts, topics)
@@ -196,9 +200,9 @@ def main():
     dense_train = norm.fit_transform(dense_train)
     dense_test = svd.fit_transform(featured_test)
     dense_test = norm.fit_transform(dense_test)
-    gmm = GMM(n_components=num_clusters)
+    gmm = GMM(n_components=num_topics)
     mappings = {}
-    list_topics = list(interested_topics)
+    list_topics = list(set(topics))
     for i in range(0, len(list_topics)):
       mappings[list_topics[i]] = i
     train_topics_mapped = []
@@ -240,6 +244,10 @@ def main():
     print NB.accuracy(test_set)
     print NB.show_informative_features(50)
 
+    DT = DecisionTreeClassifier(training_set)
+    print DT.accuracy(test_set)
+    print DT.show+informative_features(50)
+
 
 def classify(classifier,
              training_data,
@@ -254,8 +262,12 @@ def classify(classifier,
   pred = classifier.predict(test_data)
   score = metrics.f1_score(test_topics, pred)
   print 'f1 score: %f' % score
-  print 'report:'
+  print 'recall macro: %f' % metrics.recall_score(test_topics, pred, average='macro')
+  print 'recall micro: %f' % metrics.recall_score(test_topics, pred, average='micro')
+  print 'precision macro: %f' % metrics.precision_score(test_topics, pred, average='macro')
+  print 'precision micro: %f' % metrics.precision_score(test_topics, pred, average='micro')
   if report:
+    print 'report:'
     print metrics.classification_report(test_topics, pred)
 
 
@@ -323,6 +335,7 @@ def bag_of_words(texts):
 
 # Preprocessing and cleaning of text bodies
 def preprocess(body, scilearn):
+  #print body
   # Change to utf-8 encoding
   body = body.encode('utf-8')
   # Remove title and date - we only want the text. Join also removes excess whitespace
@@ -336,30 +349,49 @@ def preprocess(body, scilearn):
   # Remove numbers
   body = [i for i in body if not i.isdigit()]
   if not scilearn:
+    cleaned = clean_body(body)
+    #tagged = named_entities(cleaned)
+    print cleaned
     return clean_body(body)
   else:
+    #print ' '.join(body)
     return ' '.join(body)
 
 
 # Spell correction, lemmatisation and stopwords
 def clean_body(body):
-  # Apply spell corrector and transform into TextBlob to apply
-  # part of speech tagger
-  body = TextBlob(' '.join(body)).correct()
-  # Lemmatisation
-  lem = WordNetLemmatizer()
-  body = [lem.lemmatize(i) for i in body.split()]
   # Remove English stopwords.
   stop = stopwords.words('english')
   body = TextBlob(' '.join([i for i in body if i not in stop]))
-  print body.words
+  # Apply spell corrector and transform into TextBlob to apply
+  # part of speech tagger
+  body = TextBlob(' '.join(body.words), pos_tagger=NLTKTagger()).correct()
+  # Convert to tags recognisable by the lemmatiser
+  body = [(text[0], to_wordnet_tag(text[1])) for text in body.tags]
+  body = [(text[0], text[1]) for text in body if text[1] != '']
+  # Lemmatisation
+  lem = WordNetLemmatizer()
+  body = [lem.lemmatize(text[0], text[1]) for text in body]
   return body
+
+
+# Convert nltk tags to tags recognised by the lemmatizer
+def to_wordnet_tag(tag):
+    if tag.startswith('J'):
+        return wordnet.ADJ
+    elif tag.startswith('V'):
+        return wordnet.VERB
+    elif tag.startswith('N'):
+        return wordnet.NOUN
+    elif tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return ''
 
 
 # Run named entity recogniser
 def named_entities(tagged_body):
-  body = ne_chunk(tagged_body.tags)
-  print body
+  body = ne_chunk(tagged_body)
   return body
 
 
