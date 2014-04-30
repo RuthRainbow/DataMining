@@ -49,12 +49,12 @@ def main():
 
   interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
-  for i in range(0, 1):
+  for i in range(0, 22):
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    if i == 0 or i == 21:
-    #if True:
+    #if i == 0 or i == 21:
+    if True:
       new_soup = BeautifulSoup(open("/home/rawr/uni/data_mining/ass/data/reut2-0"+num+".sgm"))
       soups.append(new_soup)
 
@@ -70,7 +70,7 @@ def main():
       lewis.append(reut.get('lewissplit'))
       these_topics.append(reut.topics.findChildren())
     
-    for j in range(1, len(these_bodies)):
+    for j in range(1, len(these_topics)):
       body = these_bodies[j].text
       cleaned = preprocess(body, scilearn)
       for topic in these_topics[j]:
@@ -110,13 +110,13 @@ def main():
     test_topics.append(topic)
 
   if scilearn:
-    vect = HashingVectorizer()
+    vect = HashingVectorizer(stop_words='english')
     featured_texts = vect.fit_transform(texts)
 
-    vect = TfidfVectorizer(strip_accents = 'unicode',
-                           sublinear_tf = True,
-                           max_df = 0.5,
-                           stop_words = 'english')
+    vect = TfidfVectorizer(strip_accents='unicode',
+                           sublinear_tf=True,
+                           max_df=0.5,
+                           stop_words='english')
     featured_train = vect.fit_transform(training_data)
     print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
     featured_test = vect.transform(test_data)
@@ -124,16 +124,16 @@ def main():
     featured_texts = vect.fit_transform(texts)
     print 'Fininshed TfIdf vectoriser'
 
+    featured_train = preprocessing.normalize(featured_train)
+    featured_texts = preprocessing.normalize(featured_texts)
+    featured_test = preprocessing.normalize(featured_test)
+
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
     featured_test = chi.transform(featured_test)
     chi = SelectKBest(chi2, 5)
     featured_texts = chi.fit_transform(featured_texts, topics)
     print 'Finished chi^2'
-
-    featured_train = preprocessing.normalize(featured_train)
-    featured_texts = preprocessing.normalize(featured_texts)
-    featured_test = preprocessing.normalize(featured_test)
 
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
@@ -256,8 +256,12 @@ def classify(classifier,
   pred = classifier.predict(test_data)
   score = metrics.f1_score(test_topics, pred)
   print 'f1 score: %f' % score
-  print 'report:'
+  print 'recall macro: %f' % metrics.recall_score(test_topics, pred, average='macro')
+  print 'recall micro: %f' % metrics.recall_score(test_topics, pred, average='micro')
+  print 'precision macro: %f' % metrics.precision_score(test_topics, pred, average='macro')
+  print 'precision micro: %f' % metrics.precision_score(test_topics, pred, average='micro')
   if report:
+    print 'report:'
     print metrics.classification_report(test_topics, pred)
 
 
