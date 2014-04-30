@@ -18,7 +18,7 @@ The first task was to read in the data, which is in SGM format. This was done us
 
 The next task was to extract the relevant tags from the soups. \verb|BeautifulSoup| objects provide methods for extracting tags easily, for example using the methods \verb|find_all| and \verb|findChildren|. \verb|find_all| was used to find all text tags and reuters tags. Within the reuters tags the lewissplit and topic attributes were extracted. Topics were extracted in this way in order to provide a list of topics where an article includes multiple topics.
 
-All extracted entries are then examined. Firstly the body is preprocessed as discussed in the preprocessing section. This is to avoid repeating preprocessing, which is computationally expensive, for bodies with multiple topics. The corresponding topics are then checked to see if they are a topic we are interested in, if so the lewis attribute is checked to find whether to place the text in the training or test lists. The text is added one time for every topic tag it contains that we are interested in. This is it can be labelled with every relevant label, as each text in the classification may only have one label.
+All extracted entries are then examined. Firstly the body is preprocessed as discussed in the preprocessing section. This is to avoid repeating preprocessing, which is computationally expensive, for bodies with multiple topics. The corresponding topics are then checked to see if they are a topic we are interested in, if so the lewis attribute is checked to find whether to place the text in the training or test lists. The text is added one time for every topic tag it contains that we are interested in. This is so it can be labelled with every relevant label, as each text in the classification may only have one label. All texts are also added once to a separate list in order to be used by the classification algorithms, which look at all data.
 
 The table below shows the frequency of each topic label obtained over the 22 SGM files:
 \\
@@ -101,7 +101,15 @@ TODO
 \section{Classification}
 Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods. A variety of different classifiers were applied in order to compare their effectiveness at classifying the texts into topics. Training and test data sets were obtained using the lewissplit tag as desribed in the data input section.
 
-Firstly a Na{\"i}ve Bayes 
+\subsection{TextBlob module}
+The \verb|TextBlob| module contains some simple classifier implementations which were experimented with first. These classifiers use their own simple binary feature selection method which indiciates whether words are present or absent in each text. Two classifier implementations were used; firstly a Na{\"i}ve Bayes classifier and secondly a decision tree classifier. However not a lot of metrics are easily available for these classes so only accuracy was compared. It is interesting to view the features these classifiers found most important for classifying the texts:
+
+... TODO compare most important features for each, show accuracies
+
+\subsection{SciLearn module}
+The SciLearn module provides a much greater variety of classifiers which are more customisable with a large number of optional flags. The output of these is also much more easily obtainable, with methods to provide accuracy, recall and f1 score for different accuracies and for each class.
+
+To make the code more readable a \verb|classify| method was written which takes in a classifier class as a parameter. This fits the classifier to the training data and uses this to predict labels for the test data. It then prints the f1 score, macro and micro precision and recalls and a classification report, including the precision and recall for each class.
 
 \section{Clustering}
 
