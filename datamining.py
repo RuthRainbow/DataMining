@@ -19,7 +19,7 @@ from sklearn.cluster import DBSCAN, KMeans, Ward
 from sklearn.cross_validation import KFold
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import BinaryVectorizer, CountVectorizer, HashingVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
@@ -48,8 +48,10 @@ class LemmatiserTokeniser(object):
 def main():
   # Whether we are using scilearn for features or our own custom.
   scilearn = True
-  # Whether to use TFIDF or frequency count
+  # Which vectorisation method to use (one must be true)
   tfidf = False
+  count = False
+  binary = True
 
   soups = []
   raw_texts = []
@@ -138,7 +140,8 @@ def main():
     else:
       vect = CountVectorizer(strip_accents='unicode',
                              stop_words='english',
-                             tokenizer=LemmatiserTokeniser())
+                             tokenizer=LemmatiserTokeniser(),
+                             binary=binary)
 
     featured_train = vect.fit_transform(training_data)
     print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
