@@ -14,7 +14,7 @@ from nltk.corpus import stopwords, wordnet
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 
-from sklearn.cluster import AffinityPropagation, DBSCAN, KMeans, SpectralClustering
+from sklearn.cluster import DBSCAN, KMeans, Ward
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
@@ -165,7 +165,7 @@ def main():
     #cluster(AffinityPropagation(), dense_texts, topics)
     # These methods don't support sparse matrices, so aren't suitable for text mining.
     cluster(DBSCAN(), dense_texts, topics)
-    # TODO Add hierarchical clustering!
+    cluster(Ward(n_clusters=num_topics), dense_texts, topics)
     # GMM
     dense_train = svd.fit_transform(featured_train)
     dense_train = norm.fit_transform(dense_train)
