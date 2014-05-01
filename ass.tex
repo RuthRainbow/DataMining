@@ -70,7 +70,7 @@ Firstly, a `bag of words' approach was implemented, where each text is represent
 
 This approach was implemented in two ways. Firstly, using \verb|nltk| to create a dictionary of all vocabulary and using this to convert each text. This allowed any words which appeared in less than $n$ documents to be filtered out to attempt to reduce the dimensionality of the final vectors.
 
-The second approach used scilearn's \verb|CountingVectorizer|. This simply creates feature vectors for each text with a frequency count for each ``feature'' or word in the vocabulary.
+The second approach used scilearn's \verb|CountVectorizer|. This simply creates feature vectors for each text with a frequency count for each ``feature'' or word in the vocabulary. Optionally this can be used as a binary vectoriser, indicating only the presence or absence of a word. This is also used to remove English stop words and accents. A lemmatiser is also applied through the vectoriser, as guided by part of speech tagging in a similar way to as described above for \verb|TextBlob| preprocessing.
 
 \subsection{Term Frequency - Inverse Document Frequency (TF-IDF)}
 This approach attempts to normalise the data and take into account the relative frequencies of words in the text in comparison to the frequency over all texts. This approach provides more information than the previous approach as it also takes into account frequency, which may be important to classification.
@@ -79,7 +79,7 @@ The first implementation of this was provided by manually summing the frequencie
 \\$tf(t, d) = \frac{Frequency of term t in document d}{max. frequency of t in any doc d}$
 \\$idf(t, D) = log\frac{|D|}{df(t,D)}$ where $D$ is the set of all documents.
 
-The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, so only the simpler preprocessing is required for SciLearn. This also normalises the features.
+The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, so only the simpler preprocessing is required for SciLearn. The same lemmatiser is applied as for the \verb|CountVectorizer|. This vectoriser also normalises the features.
 
 \subsection{Feature Reduction}
 Feature reduction is lastly applied to all feature selection methods in order to eliminate irrelevant or rare features from the dataset and reduce the dimensionality of the vectors to further focus on more relevant features.
@@ -110,6 +110,43 @@ The \verb|TextBlob| module contains some simple classifier implementations which
 The SciLearn module provides a much greater variety of classifiers which are more customisable with a large number of optional flags. The output of these is also much more easily obtainable, with methods to provide accuracy, recall and f1 score for different accuracies and for each class.
 
 To make the code more readable a \verb|classify| method was written which takes in a classifier class as a parameter. This fits the classifier to the training data and uses this to predict labels for the test data. It then prints the f1 score, macro and micro precision and recalls and a classification report, including the precision and recall for each class.
+
+Each classifier is trained using 10-fold cross validation, obtaining splits from the \verb|KFold| class. This shuffles the data and tells you the indexes from which each fold should be taken. Each classifier is ran over this and the accuracies recorded. From the 10 folds the mean and standard deviation of the accuracy is calculated using \verb|numpy|. These are used to calculate 95\% confidence intervals for the accuracy, assuming each follows a normal distribution. There are enough training examples for the distribution not to be skewed. This information is then printed after all 10 folds have been completed. The classifier which obtained the highest mean accuracy is trained over the entire training set, and its statistics output via the \verb|classify| method.
+
+The classifiers used can be split into four different categories, and will be discussed in the subsections below.
+
+\subsubsection{Na{\"i}ve Bayes}
+Na{\"i}ve Bayes methods are often used for text classification task. In this case three different methods were used and the results compared, as discussed in the evaluation section. Each will be described in turn, as well as any parameters chosen.
+
+\verb|GaussianNB| (Gaussian Na{\"i}ve Bayes) assumes each class follows a Gaussian distribution. This is usually useful for continuous data, so it is expected that the TF-IDF vectorisation will be more relevant here.
+
+\verb|MultinomialNB| (Multinomial Na{\"i}ve Bayes) uses a multinomial event model. This is expected to be relevant here in a multiclass scenario so should perform well. The default Laplascian parameter is used for smoothing and class prior probabilities are learnt. This should be used for discrete data, so should perform better for the count vectoriser.
+
+\verb|BernoulliNB| (Bernoulli Na{\"i}ve Bayes) uses a Bernoulli event model assuming a binary vectorisation. Because of this a parameter is applied as a threshold of how to convert the vector into binary - 1 is given. The same smoothing is used and again class prior probabilities are learnt. This model is simpler than Multinomial and so may overfit less.
+
+\subsubsection{Tree based}
+Decision tree methods for classification can work well, however they have a high tendency to overfit. As this task uses sparse vectors of features it is likely that overfitting will be reduced as there should be a number of examples from each class with diverse features.
+
+\verb|DecisionTreeClassifier| implements a decision tree classifier. Information gain is used for deciding whether to split attributes, as described in the lectures. The minimum samples per split and leaf were changed to 5 (greater than the default), as the amount of data is large and we want to avoid overfitting.
+
+\verb|RandomForestClassifier| is an ensemble method using decision trees. The same parameters are used as for the decision tree classifier in order to be able to compare the two.
+
+\subsubsection{Linear}
+\verb|LinearRegression| implements simple least squares regression to find class boundaries. For this the data is centralised and normalised using flags. This is not expected to perform well as it can only find linear boundaries.
+
+\verb|Perceptron| implements a linear perceptron, and also centralises the data. This is not expected to perform well as the data is not expected to be linearly separable into classes.
+
+\verb|LinearSVC| was used as a scalable implementation of a Support Vector Machine (SVM) with a linear kernel. The data is again centralised using a flag. SVMs have often been shown to work well for classification tasks so this classifier should do well.
+
+\verb|SVR| uses epsilon support vector regression, so allows some flexibility at the class boundaries. This also uses an 'rbf' kernel rather than a linear kernel so may perform differently to the linear SVC.
+
+\subsubsection{Nearest neighbours}
+\verb|KNeighborsClassifier| attempts to predict a class using an example's nearest neighbours and euclidean distance. The number of neighbours to check was increased to 10 in order to avoid classification based on outliers. 
+
+\verb|NearestCentroid| represents classes via a representative or centroid.  The nearest centroid is used to classify an example.
+
+\subsection{Evaluation}
+
 
 \section{Clustering}
 

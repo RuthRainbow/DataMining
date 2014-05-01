@@ -21,12 +21,13 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.linear_model import LinearRegression, Perceptron
 from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
 from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neighbors import NearestCentroid
-from sklearn.svm import LinearSVC
+from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
+from sklearn.svm import LinearSVC, SVR
+from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 from sklearn import preprocessing
 
@@ -168,9 +169,17 @@ def main():
     feature_names = numpy.asarray(vect.get_feature_names())
     print feature_names
 
-    classifiers = [GaussianNB(), MultinomialNB(alpha=0.1),
-                   BernoulliNB(), LinearSVC(), RandomForestClassifier(),
-                   KNeighborsClassifier(), NearestCentroid()]
+    classifiers = [GaussianNB(),
+                   MultinomialNB(fit_prior=True),
+                   BernoulliNB(binarizer=1.0, fit_prior=True),
+                   DecisionTreeClassifier(criterion='entropy', min_samples_split=5, min_samples_leaf=5),
+                   RandomForestClassifier(criterion='entropy', min_samples_split=5, min_samples_leaf=5),
+                   LinearRegression(normalize=True, fit_intercept=True)
+                   Perceptron(fit_intercept=True)
+                   LinearSVC(fit_intercept=True),
+                   SVR(),
+                   KNeighborsClassifier(n_neighbors=10),
+                   NearestCentroid()]
 
     kfolds = KFold(n=len(training_data), n_folds=10, shuffle=True)
     acc_values = {classifier: list() for classifier in classifiers}
