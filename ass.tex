@@ -13,6 +13,9 @@
 
 \maketitle
 
+\section{Introduction}
+This report details the implementation of the text classification system required for the week 10 assignment. It describes in detail each stage of the assignment, the reasons for any decisions and the outcomes of these. The first section corresponds to reading in the data, and then feature selection and reduction is discussed. The classification task is then described and evaluated, followed by the clustering task. Finally conclusions are made. Any results can be found in the appendices following the report. The code for the implementation may be found on GitHub, at https://github.com/RuthRainbow/DataMining.
+
 \section{Data Input}
 The first task was to read in the data, which is in SGM format. This was done using the \verb|BeautifulSoup| module for Python. This module is able to parse SGM files so data can be extracted by tag, which is useful for this assignment as items such as the topic can easily be extracted. For each data file a \verb|BeautifulSoup| object was created, and these added to a list of ``soups''.
 
@@ -77,7 +80,7 @@ This approach attempts to normalise the data and take into account the relative 
 
 The first implementation of this was provided by manually summing the frequencies of all words and applying the formaluae for TF and IDF as defined in the lectures:
 \\$tf(t, d) = \frac{Frequency of term t in document d}{max. frequency of t in any doc d}$
-\\$idf(t, D) = log\frac{|D|}{df(t,D)}$ where $D$ is the set of all documents.
+\\$idf(t, D) = log\frac{|D|}{df(t,D)}$ where $D$ is the set of all documents. The words with the highest 50 TF-IDF scores were used as features.
 
 The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, so only the simpler preprocessing is required for SciLearn. The same lemmatiser is applied as for the \verb|CountVectorizer|. This vectoriser also normalises the features.
 
@@ -98,20 +101,18 @@ Firstly a Latent Dirichlet Allocation (LDA) model was created, as described in t
 
 TODO
 
-\section{Classification}
+\section{Classifier Design \& Implementation}
 Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods. A variety of different classifiers were applied in order to compare their effectiveness at classifying the texts into topics. Training and test data sets were obtained using the lewissplit tag as desribed in the data input section.
 
 \subsection{TextBlob module}
-The \verb|TextBlob| module contains some simple classifier implementations which were experimented with first. These classifiers use their own simple binary feature selection method which indiciates whether words are present or absent in each text. Two classifier implementations were used; firstly a Na{\"i}ve Bayes classifier and secondly a decision tree classifier. However not a lot of metrics are easily available for these classes so only accuracy was compared. It is interesting to view the features these classifiers found most important for classifying the texts:
-
-... TODO compare most important features for each, show accuracies
+The \verb|TextBlob| module contains some simple classifier implementations which were experimented with first. These classifiers use their own simple binary feature selection method which indiciates whether words are present or absent in each text. Two classifier implementations were used; firstly a Na{\"i}ve Bayes classifier and secondly a decision tree classifier. However not a lot of metrics are easily available for these classes so only accuracy was compared. These classifiers are interesting as they allow you to view the most important features they used for each class, however due to the lack of metrics the main classification was done using the SciLearn model, as described below.
 
 \subsection{SciLearn module}
-The SciLearn module provides a much greater variety of classifiers which are more customisable with a large number of optional flags. The output of these is also much more easily obtainable, with methods to provide accuracy, recall and f1 score for different accuracies and for each class.
+The SciLearn module provides a much greater variety of classifiers which are more customisable with a large number of optional flags. The output of these is also much more easily obtainable, with methods to provide metrics for the classifier and for each class.
 
-To make the code more readable a \verb|classify| method was written which takes in a classifier class as a parameter. This fits the classifier to the training data and uses this to predict labels for the test data. It then prints the f1 score, macro and micro precision and recalls and a classification report, including the precision and recall for each class.
+To make the code more readable a \verb|classify| method was written which takes in a classifier class as a parameter. This fits the classifier to the training data and uses this to predict labels for the test data. It then prints the metrics as discussed below.
 
-Each classifier is trained using 10-fold cross validation, obtaining splits from the \verb|KFold| class. This shuffles the data and tells you the indexes from which each fold should be taken. Each classifier is ran over this and the accuracies recorded. From the 10 folds the mean and standard deviation of the accuracy is calculated using \verb|numpy|. These are used to calculate 95\% confidence intervals for the accuracy, assuming each follows a normal distribution. There are enough training examples for the distribution not to be skewed. This information is then printed after all 10 folds have been completed. The classifier which obtained the highest mean accuracy is trained over the entire training set, and its statistics output via the \verb|classify| method.
+Each classifier is trained using 10-fold cross validation, obtaining splits from the \verb|KFold| class. This aims to obtain independent estimates of how well the classifier will perform on unseen data. The method shuffles the data and tells you the indexes from which each fold should be taken. Each classifier is ran over this and the accuracy metrics for each fold recorded. From the 10 folds the mean and standard deviation of the accuracy is calculated using \verb|numpy|. These are used to calculate 95\% confidence intervals for the accuracy, assuming each follows a normal distribution. There are enough training examples for the distribution not to be skewed. This information is then printed after all 10 folds have been completed. The classifier which obtained the highest mean accuracy is trained over the entire training set, and its statistics output via the \verb|classify| method.
 
 The classifiers used can be split into four different categories, and will be discussed in the subsections below.
 
@@ -145,12 +146,54 @@ Decision tree methods for classification can work well, however they have a high
 
 \verb|NearestCentroid| represents classes via a representative or centroid.  The nearest centroid is used to classify an example.
 
-\subsection{Evaluation}
+\subsection{Metrics}
+A number of different metrics will be used to evaluate the clustering algorithms. Most of these are available only for the SciLearn classifier algorithms, which will form the focus of most of the evaluation. All metrics take into account the multi-class scenario, using multi-class true and false positives and negatives (TP, FP, TN, FN).
 
+The first of these, as used by both TextBlob and SciLearn, is the accuracy of the classifier. This metric describes where the label was predicted correctly for examples (TPs), and is normalised to a value between 0 and 1, where 1 is all examples being classified correctly. This metric will be used as described above during 10-fold cross validation to discover confidence intervals for the accuracy of each of the SciLearn classifiers.
+
+The second metric to be used is the recall for each class over each of the 10 folds. This represents the formula $\frac{TP}{TP+FN}$, which informs about the classifier's ability to label positive examples correctly. Precision will also be reported for each class, which uses the formula $\frac{TP}{TP+FP}$ and represents a classifier's ability to label negative examples correctly. The f1 score represents the harmonic mean between precision and recall, giving a weighted average. 
+
+The micro and macro averages for both precision and recall will also be reported, over all classes. The macro average averages the precision and recall values for each class, whereas the micro average calculates precision and recall using the average TP, FP and FN values for each class.
+
+\section{Classifier Evaluation}
+Each of the classifiers described above was trained over the training set, manipulated as described in the feature selection section, and then tested for the metrics described above. The results of this will be described in this section of the report.
+
+\subsection{TextBlob classification}
+Firstly the performance of the TextBlob classifiers will be described. For these there were not a lot of metrics easily available so only accuracy is displayed. These classifiers are interesting as they allow you to view the most informative features, as displayed below:
+
+\subsection{SciLearn classification}
+For SciLearn many more metrics were easily available, such as the f1 score and macro and micro recall. As 10-fold cross validation was also used we can create confidence intervals for the classifier accuracy. These are shown in the tables in the appendices.
 
 \section{Clustering}
+Unsupervised clustering algorithms were also used to try to determine clusters relating to topics in the data. This task was completed using the SciLearn module, which includes various clustering algorithms. Feature selection was carried out as described above, using PCA to convert sparse vectors into dense vectors where required. In clustering algorithms the objective is to minimise inter-cluster distance whilst maximising intra-cluster distance.
+
+\subsection{Algorithms}
+The first algorithm used was the \verb|KMeans| algorithm, which takes as input the number of clusters to create. We know this as the number of unique topics present in the input data so it can be provided as a parameter. This algorithm iteratively moves the centroids of each cluster minimising the objective function. This algorithm works successfully on sparse vectors so PCA is not required.
+
+The second clustering algorithm applied is \verb|Ward|, which is a hierarchical clustering method. The method recursively joins clusters which minimise inter-cluster distance, and then prunes the final dendrogram. This algorithm also allows the number of clusters as a parameter, and requires dense vectors as generated by PCA.
+
+The third algorithm used is the \verb|DBSCAN| algorithm, which in contrast to \verb|KMeans| allows clusters to be any shape, so is capable of learning a much greater number of different boundaries. This algorithm aims to create high density clusters, with low density areas between them. The default parameters defining `density' are used. This algorithm requires dense vectors so PCA must be used. However it is likely that the clusters found won't closely correspond to the actual topics as DBSCAN is not aware of how many clusters should be formed.
+
+\subsection{Metrics}
+Five metrics will be used to evaluate the cluster algorithms in the section below. As we know the true labels of the data we can make comparisons between the clusters generated by the algorithms and the true topic clusters of the data.
+
+The first three metrics used are related. Homogeneity is used to represent clusters containing members only of a single class, and the ideal value for this is 1. Completeness represents all members of a given topic being assigned to the same cluster, with an ideal value again of 1. The v-measure is the harmonic mean of these two metrics, and is equivalent to the normalised mutual information between the true and predicted topics. These metrics make no assumptions about the structure of clusters, however even a random assignment of examples to topics won't give 0, the worst possible score, when there are a large number of clusters, as in this example.
+
+In this case, with a large number of clusters, it is recommended to use alternative metrics, such as the Adjusted Rand Index (ARI), which is given as the next metric. This measures the similarity between the clusters obtained and the true clustering of the data. If these match perfectly the score given by this metric is 1. Again this metric makes no assumptions about cluster structure.
+
+The final metric used is the silhouette score, which does not require knowledge about the true labels of the data which aren't available in many real life clustering applications, however they are available in this case.  This indicates how well `defined' a cluster is using the following formula:
+
+\begin{center}
+$\frac{b-a}{max(a,b)}$
+\end{center}
+
+Where $a$ is the mean distance between an example and the other points in the same cluster, and $b$ is the mean distance between an example and all other points in the cluster that is the next closest after the one it was assigned to. A score of 1 indicates highly dense clustering, whereas -1 indicates an incorrect clustering. However the score is biased towards convex clusters, such as those generated by KMeans. In this case it is also a disadvantage that the true values are not used, however the density of a cluster still represents how closely the clusters found follow the concept of a true cluster. 
+
+\subsection{Evaluation}
 
 \section{Conclusions}
+
+\section{Appendices}
 
 \end{document}
 
