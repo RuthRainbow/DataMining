@@ -23,7 +23,7 @@ The next task was to extract the relevant tags from the soups. \verb|BeautifulSo
 
 All extracted entries are then examined. Firstly the body is preprocessed as discussed in the preprocessing section. This is to avoid repeating preprocessing, which is computationally expensive, for bodies with multiple topics. The corresponding topics are then checked to see if they are a topic we are interested in, if so the lewis attribute is checked to find whether to place the text in the training or test lists. The text is added one time for every topic tag it contains that we are interested in. This is so it can be labelled with every relevant label, as each text in the classification may only have one label. All texts are also added once to a separate list in order to be used by the classification algorithms, which look at all data.
 
-The table below shows the frequency of each topic label obtained over the 22 SGM files:
+The table below shows the frequency of the main topic labels for classification obtained over the 22 SGM files:
 \\
 \begin{center}
 \begin{tabular}{l | l}
@@ -41,6 +41,8 @@ corn & 239 \\ \hline
 Total number of texts: 9984 \\
 \end{tabular}
 \end{center}
+
+Taking all topics into account TODO topics were present.
 
 \section{Preprocessing}
 After the relevant texts had been extracted preprocessing takes place. This is done text by text when extracting text tags as described above using the \verb|preprocess| function. The level of preprocessing depends upon the classification methods being used - if the \verb|scilearn| classifiers are being used these come with their own preprocessing methods so a more similar form of preprocessing is carried out.
@@ -89,6 +91,8 @@ Feature reduction is lastly applied to all feature selection methods in order to
 
 For SciLearn, a $\chi^2$ test is applied to select the k best features. This test determines how relevant words are to determining a class, and the k most relevant features are retained for each class.
 
+TODO show chosen features
+
 \subsubsection{Clustering}
 It was found that these feature selection methods still created too sparse a vector for some clustering methods. There is also a greater number of examples for these algorithms to fit as the algorithms are unsupervised so the data is not split into testing and training sets. For this reason a \verb|HashingVectorizer| was used before the vectors listed above so the process for the larger number of texts is more memory scalable. Less features are also retained during the $\chi^2$ test.
 
@@ -102,10 +106,10 @@ Firstly a Latent Dirichlet Allocation (LDA) model was created, as described in t
 TODO
 
 \section{Classifier Design \& Implementation}
-Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods. A variety of different classifiers were applied in order to compare their effectiveness at classifying the texts into topics. Training and test data sets were obtained using the lewissplit tag as desribed in the data input section.
+Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods. A variety of different classifiers were applied in order to compare their effectiveness at classifying the texts into topics. Training and test data sets were obtained using the lewissplit tag as described in the data input section.
 
 \subsection{TextBlob module}
-The \verb|TextBlob| module contains some simple classifier implementations which were experimented with first. These classifiers use their own simple binary feature selection method which indiciates whether words are present or absent in each text. Two classifier implementations were used; firstly a Na{\"i}ve Bayes classifier and secondly a decision tree classifier. However not a lot of metrics are easily available for these classes so only accuracy was compared. These classifiers are interesting as they allow you to view the most important features they used for each class, however due to the lack of metrics the main classification was done using the SciLearn model, as described below.
+The \verb|TextBlob| module contains some simple classifier implementations which were experimented with first. These classifiers use their own simple binary feature selection method which indicates whether words are present or absent in each text. Two classifier implementations were used; firstly a Na{\"i}ve Bayes classifier and secondly a decision tree classifier. However not a lot of metrics are easily available for these classes so only accuracy was compared. These classifiers are interesting as they allow you to view the most important features they used for each class, however due to the lack of metrics the main classification was done using the SciLearn model, as described below.
 
 \subsection{SciLearn module}
 The SciLearn module provides a much greater variety of classifiers which are more customisable with a large number of optional flags. The output of these is also much more easily obtainable, with methods to provide metrics for the classifier and for each class.
@@ -161,8 +165,14 @@ Each of the classifiers described above was trained over the training set, manip
 \subsection{TextBlob classification}
 Firstly the performance of the TextBlob classifiers will be described. For these there were not a lot of metrics easily available so only accuracy is displayed. These classifiers are interesting as they allow you to view the most informative features, as displayed below:
 
+TODO
+
 \subsection{SciLearn classification}
 For SciLearn many more metrics were easily available, such as the f1 score and macro and micro recall. As 10-fold cross validation was also used we can create confidence intervals for the classifier accuracy. These are shown in the tables in the appendices.
+
+TODO discuss results
+
+TODO discuss performance of overall most successful
 
 \section{Clustering}
 Unsupervised clustering algorithms were also used to try to determine clusters relating to topics in the data. This task was completed using the SciLearn module, which includes various clustering algorithms. Feature selection was carried out as described above, using PCA to convert sparse vectors into dense vectors where required. In clustering algorithms the objective is to minimise inter-cluster distance whilst maximising intra-cluster distance.
@@ -173,6 +183,8 @@ The first algorithm used was the \verb|KMeans| algorithm, which takes as input t
 The second clustering algorithm applied is \verb|Ward|, which is a hierarchical clustering method. The method recursively joins clusters which minimise inter-cluster distance, and then prunes the final dendrogram. This algorithm also allows the number of clusters as a parameter, and requires dense vectors as generated by PCA.
 
 The third algorithm used is the \verb|DBSCAN| algorithm, which in contrast to \verb|KMeans| allows clusters to be any shape, so is capable of learning a much greater number of different boundaries. This algorithm aims to create high density clusters, with low density areas between them. The default parameters defining `density' are used. This algorithm requires dense vectors so PCA must be used. However it is likely that the clusters found won't closely correspond to the actual topics as DBSCAN is not aware of how many clusters should be formed.
+
+The final algorithm used was \verb|GMM| (Gaussian Mixture Model), an implementation of the expectation-maximisation algorithm. This attempts to estimate the parameters of n Gaussian distributions, which in this case is the number of topics (for each topic we want one Gaussian distribution). The distribution each point is most likely to belong to corresponds to a `cluster' in the sense of clustering algorithms. This method is supervised, as it uses the actual topics in order to estimate the Gaussian parameters. This means it can also be tested over the test set, using the lewissplit in the same way as for the classification algorithms. However it requires dense vectors so PCA must be applied to both the training set and the test set. GMM has the ability to model any distribution of points around a cluster, however there will be outliers in the data and some topics may have very few examples.
 
 \subsection{Metrics}
 Five metrics will be used to evaluate the cluster algorithms in the section below. As we know the true labels of the data we can make comparisons between the clusters generated by the algorithms and the true topic clusters of the data.
@@ -187,7 +199,9 @@ The final metric used is the silhouette score, which does not require knowledge 
 $\frac{b-a}{max(a,b)}$
 \end{center}
 
-Where $a$ is the mean distance between an example and the other points in the same cluster, and $b$ is the mean distance between an example and all other points in the cluster that is the next closest after the one it was assigned to. A score of 1 indicates highly dense clustering, whereas -1 indicates an incorrect clustering. However the score is biased towards convex clusters, such as those generated by KMeans. In this case it is also a disadvantage that the true values are not used, however the density of a cluster still represents how closely the clusters found follow the concept of a true cluster. 
+Where $a$ is the mean distance between an example and the other points in the same cluster, and $b$ is the mean distance between an example and all other points in the cluster that is the next closest after the one it was assigned to. A score of 1 indicates highly dense clustering, whereas -1 indicates an incorrect clustering. However the score is biased towards convex clusters, such as those generated by KMeans. In this case it is also a disadvantage that the true values are not used, however the density of a cluster still represents how closely the clusters found follow the concept of a true cluster.
+
+The \verb|GMM| class is not in the same class hierarchy as the other clustering methods as it is supervised, so different metrics are available. This clustering algorithm will be evaluated using accuracy over both the training and test sets, and the results will not be very comparable with the other clustering methods.  
 
 \subsection{Evaluation}
 
