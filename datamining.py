@@ -55,14 +55,17 @@ def main():
 
   soups = []
   raw_texts = []
+  # All text and topic pairs to be used for clustering
   texts = []
   topics = []
-  training_set = []
+  # Training and test sets based on lewissplit for SciLearn
   training_data = []
   training_topics = []
-  test_set = []
   test_data = []
   test_topics = []
+  # Training and test sets using lewissplit for TextBlob
+  training_set = []
+  test_set = []
 
   interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
@@ -72,8 +75,8 @@ def main():
       num = "0" + str(i);
     if i == 0 or i == 21:
     #if True:
-      #addr = '/home/rawr/uni/data_mining/ass/data/reut2-0%s.sgm' % num
-      addr = '/home/ruth/uni/dm/ass/data/reut2-0%s.sgm' % num
+      addr = '/home/rawr/uni/data_mining/ass/DataMining/data/reut2-0%s.sgm' % num
+      #addr = '/home/ruth/uni/dm/ass/DataMining/data/reut2-0%s.sgm' % num
       new_soup = BeautifulSoup(open(addr))
       soups.append(new_soup)
 
@@ -150,7 +153,10 @@ def main():
     featured_texts = vect.fit_transform(texts)
     print 'Fininshed vectoriser'
 
-    #TODO write data to file
+    # Write featured text lists and topic lists to file so this does
+    # not have to be repeated (lemmatisation is expensive)
+    # write_all(featured_train, featured_test, training_topics, test_topics,
+    #          texts, topics, training_set, test_set)
 
     chi = SelectKBest(chi2, 10)
     featured_train = chi.fit_transform(featured_train, training_topics)
@@ -187,8 +193,12 @@ def main():
     acc = 0
     best_classifier = None
     for classifier, avg in acc_averages:
+      std = acc_stds[classifier]
       print 'classifier: %s' % classifier.__class__.__name__
-      print 'accuracy mean: %f standard deviation: %f' % (avg, acc_stds[classifier])
+      print 'accuracy mean: %f standard deviation: %f' % (avg, std)
+      left = avg - (1.96 * std)
+      right = avg + (1.96 * std)
+      print 'confidence: [%f, %f]' % (left, right)
       if avg > acc:
         acc = avg
         best_classifier = classifier
@@ -265,6 +275,19 @@ def main():
     DT = DecisionTreeClassifier(training_set)
     print DT.accuracy(test_set)
     print DT.show+informative_features(50)
+
+
+def write_all(featured_train, featured_test, train_topics, test_topics,
+              texts, topics, training_set, test_set):
+  filenames = ['featured_train', 'featured_test', 'train_topics', 'test_topics',
+               'all_texts', 'all_topics', 'training_set_textblob',
+               'test_set_textblob']
+  lists = [featured_train, featured_test, train_topics, test_topics,
+            texts, topics, training_set, test_set]
+  for i in xrange(len(filenames)):
+    with open(filenames[i], 'w') as f:
+      for thing in lists[i]:
+        f.write(str(thing) + '\n')
 
 
 def classify(classifier,
