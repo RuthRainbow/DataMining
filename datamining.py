@@ -48,7 +48,7 @@ class LemmatiserTokeniser(object):
 
 def main():
   # Whether we are using scilearn for features or our own custom.
-  scilearn = True
+  scilearn = False
   # Which vectorisation method to use (one must be true)
   tfidf = False
   count = False
@@ -74,8 +74,8 @@ def main():
     num = str(i)
     if (i < 10): 
       num = "0" + str(i);
-    if i == 0 or i == 21:
-    #if True:
+    #if i == 0 or i == 21:
+    if True:
       addr = '/home/rawr/uni/data_mining/ass/DataMining/data/reut2-0%s.sgm' % num
       #addr = '/home/ruth/uni/dm/ass/DataMining/data/reut2-0%s.sgm' % num
       new_soup = BeautifulSoup(open(addr))
@@ -174,8 +174,8 @@ def main():
                    BernoulliNB(binarizer=1.0, fit_prior=True),
                    DecisionTreeClassifier(criterion='entropy', min_samples_split=5, min_samples_leaf=5),
                    RandomForestClassifier(criterion='entropy', min_samples_split=5, min_samples_leaf=5),
-                   LinearRegression(normalize=True, fit_intercept=True)
-                   Perceptron(fit_intercept=True)
+                   LinearRegression(normalize=True, fit_intercept=True),
+                   Perceptron(fit_intercept=True),
                    LinearSVC(fit_intercept=True),
                    SVR(),
                    KNeighborsClassifier(n_neighbors=10),
@@ -264,27 +264,26 @@ def main():
 
   if not scilearn:
     # Feature selection methods:
-    #bag_of_words(texts)
-    #print calc_tf_idf(texts, 10)
+    bag_of_words(texts)
+    print calc_tf_idf(texts, 50)
 
-    print 'Alternative Naive Bayes:'
-    # Classification
+    # Classification using TextBlob:
+    print 'TextBlob Naive Bayes:'
     NB = NaiveBayesClassifier(training_set)
     print test_set[0]
     print NB.classify((test_set[0])[0])
     print test_set[(test_set[0])[1]]
-    #print NB.classify(['things', 'profit'])
-
-    #print NB.classify(training_set[0][0])
-    #print training_set[0][1]
-
     print NB.accuracy(test_set)
     print NB.show_informative_features(50)
 
+    print 'TextBlob Decision Tree:'
     DT = DecisionTreeClassifier(training_set)
     print DT.accuracy(test_set)
-    print DT.show+informative_features(50)
-
+    print DT.show_informative_features(50)
+    print test_set[0]
+    print DT.classify((test_set[0])[0])
+    print test_set[(test_set[0])[1]]
+    
 
 def write_all(featured_train, featured_test, train_topics, test_topics,
               texts, topics, training_set, test_set):
@@ -328,6 +327,8 @@ def cluster(classifier, data, topics):
     labels = classifier.labels_
     print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
     print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
+    print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
+    print 'Adjusted Rand index: %0.3f' % metrics.adjusted_random_score(topics, labels)
     print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
     print ' ***************** '
 
@@ -402,7 +403,7 @@ def preprocess(body, scilearn):
   if not scilearn:
     cleaned = clean_body(body)
     #tagged = named_entities(cleaned)
-    print cleaned
+    #print cleaned
     return clean_body(body)
   else:
     #print ' '.join(body)
