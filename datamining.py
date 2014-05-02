@@ -82,6 +82,16 @@ def main():
       soups.append(new_soup)
 
   print 'loaded %d soups' % len(soups)
+
+  done_so_far = []
+  with open('textblob.txt', 'r') as f:
+    for line in f:
+      item = line.split('\', u\'')
+      item[0] = item[0][3:]
+      item[len(item)-1] = item[len(item)-1][:len(item)-4]
+      done_so_far.append(item)
+  done_index = 0
+  print len(done_so_far)
     
   for i in range(0, len(soups)):
     this_soup = soups[i]
@@ -95,25 +105,34 @@ def main():
     
     for j in range(1, len(these_topics)):
       body = these_bodies[j].text
-      cleaned = preprocess(body, scilearn)
-      for topic in these_topics[j]:
-        topic = str(topic)[3:-4]
-        if topic in interested_topics:
-          if lewis[j] == 'TRAIN':
-            training_set.append([cleaned, topic])
-            training_data.append(cleaned)
-            training_topics.append(topic)
-          elif lewis[j] == 'TEST':
-            test_set.append([cleaned, topic])
-            test_data.append(cleaned)
-            test_topics.append(topic)
-        texts.append(cleaned)
-        raw_texts.append(body)
-        #print cleaned
-        topics.append(topic)
+      # Ignore entries with empty bodies
+      #if body:
+      if True:
+        if done_index < len(done_so_far):
+          cleaned = done_so_far[done_index]
+          done_index += 1
+        else:
+          cleaned = preprocess(body, scilearn)
+        for topic in these_topics[j]:
+          topic = str(topic)[3:-4]
+          if topic in interested_topics:
+            if lewis[j] == 'TRAIN':
+              training_set.append([cleaned, topic])
+              training_data.append(cleaned)
+              training_topics.append(topic)
+            elif lewis[j] == 'TEST':
+              test_set.append([cleaned, topic])
+              test_data.append(cleaned)
+              test_topics.append(topic)
+          texts.append(cleaned)
+          raw_texts.append(body)
+          #print cleaned
+          topics.append(topic)
 
   test = 'U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN LONDON, March 3 - The Bank of England said it had revised its forecast of the shortage in the money market down to 450 mln stg before taking account of its morning operations. At noon the bank had estimated the shortfall at 500 mln stg. REUTER'
-  preprocess(test, scilearn)
+  #preprocess(test, scilearn)
+
+  
   
   topic_dict = {}
   num_topics = len(set(topics))
@@ -362,7 +381,7 @@ def tfidf(word, text, texts):
 
 def bag_of_words(texts):
   # Use dictionary to create 'Bag of words'
-  dictionary = corpora.Dictionary([i.words for i in texts])
+  dictionary = corpora.Dictionary(texts)
 
   # Apply thresholding to reduce dimensionality - remove all
   # words which appear only once over all documents
@@ -375,14 +394,13 @@ def bag_of_words(texts):
   # Convert the bodies to sparse vectors
   vectors = []
   for text in texts:
-    vectors.append(dictionary.doc2bow(text.words))
+    vectors.append(dictionary.doc2bow(text))
 
   # Apply an LDA Model to the bag of words
   model = ldamodel.LdaModel(vectors, id2word=dictionary, num_topics=10)
   # For example print the probability distribution for the first text
-  print model[vectors[0]]
-  print model[vectors[1]]
-  print model[vectors[2]]
+  for i in xrange(10):
+    print model[vectors[i]]
 
 
 # Preprocessing and cleaning of text bodies
@@ -403,7 +421,7 @@ def preprocess(body, scilearn):
   if not scilearn:
     cleaned = clean_body(body)
     #tagged = named_entities(cleaned)
-    #print cleaned
+    print cleaned
     return clean_body(body)
   else:
     #print ' '.join(body)
