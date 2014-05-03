@@ -37,16 +37,18 @@ def main(argv):
 
     for j in range(1, len(these_topics)):
       cleaned = loaded[done_index]
-      for topic in these_topics[j]:
-        topic = str(topic)[3:-4]
-        if topic in interested_topics:
-          if lewis[j] == 'TRAIN':
-            training_set.append([' '.join(cleaned), topic])
-          elif lewis[j] == 'TEST':
-            test_set.append([' '.join(cleaned), topic])
-          if lewis[j] == 'TRAIN' or lewis[j] == 'TEST':
-            topics.append(topic)
-            texts.append(cleaned)
+      done_index += 1
+      if len(cleaned) > 0:
+        for topic in these_topics[j]:
+          topic = str(topic)[3:-4]
+          if topic in interested_topics:
+            if lewis[j] == 'TRAIN':
+              training_set.append([' '.join(cleaned), topic])
+            elif lewis[j] == 'TEST':
+              test_set.append([' '.join(cleaned), topic])
+            if lewis[j] == 'TRAIN' or lewis[j] == 'TEST':
+              topics.append(topic)
+              texts.append(cleaned)
 
   print_topic_info(topics)
 

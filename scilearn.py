@@ -27,8 +27,8 @@ interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade
 def main(argv):
   # Which type of vectorisation to use (one must be true)
   tfidf = False
-  count = False
-  binary = True
+  count = True
+  binary = False
 
   # All text and topic pairs to be used for clustering
   texts = []
@@ -52,20 +52,23 @@ def main(argv):
     for reut in reuters:
       lewis.append(reut.get('lewissplit'))
       these_topics.append(reut.topics.findChildren())
+    print 'size of done is %d, size of this is %d' % (len(loaded), len(these_topics))
     
     for j in range(1, len(these_topics)):
       cleaned = loaded[done_index]
-      for topic in these_topics[j]:
-        topic = str(topic)[3:-4]
-        if topic in interested_topics:
-          if lewis[j] == 'TRAIN':
-            training_data.append(cleaned)
-            training_topics.append(topic)
-          elif lewis[j] == 'TEST':
-            test_data.append(cleaned)
-            test_topics.append(topic)
-        texts.append(cleaned)
-        topics.append(topic)
+      done_index += 1
+      if len(cleaned) > 0:
+        for topic in these_topics[j]:
+          topic = str(topic)[3:-4]
+          if topic in interested_topics:
+            if lewis[j] == 'TRAIN':
+              training_data.append(cleaned)
+              training_topics.append(topic)
+            elif lewis[j] == 'TEST':
+              test_data.append(cleaned)
+              test_topics.append(topic)
+          texts.append(cleaned)
+          topics.append(topic)
 
   print_topic_info(test_topics + training_topics)
 
@@ -91,10 +94,10 @@ def main(argv):
   featured_texts = vect.fit_transform(texts)
   print 'Fininshed vectoriser'
 
-  chi = SelectKBest(chi2, 3)
+  chi = SelectKBest(chi2, 5)
   featured_train = chi.fit_transform(featured_train, training_topics)
   featured_test = chi.transform(featured_test)
-  chi = SelectKBest(chi2, 3)
+  chi = SelectKBest(chi2, 5)
   featured_texts = chi.fit_transform(featured_texts, topics)
   print 'Finished chi^2'
 

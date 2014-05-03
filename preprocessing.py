@@ -20,26 +20,19 @@ interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade
 def main(argv):
   soups = load_soups(argv[0])
 
-  # Print each cleaned body which we are interested in
+  # Print each cleaned body one time
   for i in range(0, len(soups)):
     this_soup = soups[i]
     these_bodies = this_soup.find_all('text')
     reuters = this_soup.find_all('reuters')
-    these_topics = []
-    for reut in reuters:
-      these_topics.append(reut.topics.findChildren())
-    for j in range(1, len(these_topics)):
+    for j in range(1, len(these_bodies)):
       body = these_bodies[j].text
-      # Ignore entries with empty bodies
-      if body:
-        cleaned = preprocess(body)
-        for topic in these_topics[j]:
-          topic = str(topic)[3:-4]
-          if topic in interested_topics:
-            print cleaned
+      cleaned = preprocess(body)
+      print cleaned
 
 
 def load_soups(base_addr):
+  soups = []
   for i in range(0, 22):
     num = str(i)
     if (i < 10): 
@@ -48,6 +41,7 @@ def load_soups(base_addr):
       addr = base_addr + '/reut2-0%s.sgm' % num
       new_soup = BeautifulSoup(open(addr))
       soups.append(new_soup)
+  return soups
 
 
 # Preprocessing and cleaning of text bodies
