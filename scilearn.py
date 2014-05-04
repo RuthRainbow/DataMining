@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy
+import regex
 import sys
 
 from bs4 import BeautifulSoup
@@ -26,9 +27,12 @@ interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade
 
 def main(argv):
   # Which type of vectorisation to use (one must be true)
-  tfidf = False
-  count = True
+  tfidf = True
+  count = False
   binary = False
+  
+  # Whether to use lemmatised input
+  lemmatise = False
 
   # All text and topic pairs to be used for clustering
   texts = []
@@ -47,6 +51,7 @@ def main(argv):
   for i in range(0, len(soups)):
     this_soup = soups[i]
     reuters = this_soup.find_all('reuters')
+    these_bodies = this_soup.find_all('text')
     lewis = []
     these_topics = []
     for reut in reuters:
@@ -55,7 +60,12 @@ def main(argv):
     print 'size of done is %d, size of this is %d' % (len(loaded), len(these_topics))
     
     for j in range(1, len(these_topics)):
-      cleaned = loaded[done_index]
+      #cleaned = loaded[done_index]
+      body = these_bodies[j]
+      if lemmatise:
+        cleaned = loaded[done_index]
+      else:
+        cleaned = preprocess(body)
       done_index += 1
       if len(cleaned) > 0:
         for topic in these_topics[j]:
@@ -94,10 +104,10 @@ def main(argv):
   featured_texts = vect.fit_transform(texts)
   print 'Fininshed vectoriser'
 
-  chi = SelectKBest(chi2, 5)
+  chi = SelectKBest(chi2, 4)
   featured_train = chi.fit_transform(featured_train, training_topics)
   featured_test = chi.transform(featured_test)
-  chi = SelectKBest(chi2, 5)
+  chi = SelectKBest(chi2, 2)
   featured_texts = chi.fit_transform(featured_texts, topics)
   print 'Finished chi^2'
 
@@ -160,7 +170,7 @@ def main(argv):
 
   print '****************** Clustering ******************'
   # Use SVD to reduce to sparse vectors to dense vectors and reduce the number of features
-  svd = TruncatedSVD(n_components=2)
+  svd = TruncatedSVD(n_components=1)
   dense_texts = svd.fit_transform(featured_texts)
   norm = preprocessing.Normalizer(copy=False)
   dense_texts = norm.fit_transform(dense_texts)
@@ -173,6 +183,24 @@ def main(argv):
 
   # GMM
   gmm(featured_train, featured_test, training_topics, test_topics)
+
+
+# Preprocessing and cleaning of text bodies
+def preprocess(body):
+  #print body
+  # Change to utf-8 encoding
+  body = body.encode('utf-8')
+  # Remove title and date - we only want the text. Join also removes excess whitespace
+  body = ' '.join([body.split('-')[i] for i in range(1, len(body.split('-')))])
+  # Tokenise & Remove the final word "reuter"
+  body = body.split()[0:-1]
+  # Convert to lower case
+  body = [str(i).lower() for i in body]
+  # Remove punctuation
+  body = regex.sub(ur'\p{P}+', '', ' '.join(body)).split()
+  # Remove numbers
+  body = [i for i in body if not i.isdigit()]
+  return body
 
 
 def load_data():
@@ -241,7 +269,7 @@ def cluster(classifier, data, topics):
     print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
     print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
     print 'Adjusted Rand index: %0.3f' % metrics.adjusted_rand_score(topics, labels)
-    print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
+    #print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
     print ' ***************** '
 
 
