@@ -17,10 +17,10 @@
 \maketitle
 
 \section{Introduction}
-This report details the implementation of the text classification system required for the week 10 assignment. It describes in detail each stage of the assignment, the reasons for any decisions and the outcomes of these. The first section corresponds to reading in the data, and then feature selection and reduction is discussed. The classification task is then described and evaluated, followed by the clustering task. Finally conclusions are made. Any results can be found in the appendices following the report. The code for the implementation may be found on GitHub, at https://github.com/RuthRainbow/DataMining.
+This report details the implementation of the text classification system required for the week 10 assignment. It describes in detail each stage of the assignment, the reasons for any decisions made and the outcomes of these. The first section corresponds to reading in the data, and then feature selection and reduction is discussed. The classification task is then described and evaluated, followed by the clustering task. Finally conclusions are made. Any results can be found in the appendices following the report. The code for the implementation may be found on GitHub\footnote{https://github.com/RuthRainbow/DataMining}. The assignment was implemented using Python.
 
 \section{Data Input}
-The first task was to read in the data, which is in SGM format. This was done using the \verb|BeautifulSoup| module for Python. This module is able to parse SGM files so data can be extracted by tag, which is useful for this assignment as items such as the topic can easily be extracted. For each data file a \verb|BeautifulSoup| object was created, and these added to a list of ``soups''.
+The first task was to read in the data, which is in SGM format. This was done using the \verb|BeautifulSoup| module for Python. This module is able to parse SGM files so data can be extracted by tag, which is useful for this assignment as items such as the topic can easily be extracted. For each data file a \verb|BeautifulSoup| object was created, and these added to a list of `soups'.
 
 The next task was to extract the relevant tags from the soups. \verb|BeautifulSoup| objects provide methods for extracting tags easily, for example using the methods \verb|find_all| and \verb|findChildren|. \verb|find_all| was used to find all text tags and reuters tags. Within the reuters tags the lewissplit and topic attributes were extracted. Topics were extracted in this way in order to provide a list of topics where an article includes multiple topics.
 
@@ -92,7 +92,7 @@ The second implementation used the \verb|TfidfVectorizer| from SciLearn. This ve
 \subsection{Feature Reduction}
 Feature reduction is lastly applied to all feature selection methods in order to eliminate irrelevant or rare features from the dataset and reduce the dimensionality of the vectors to further focus on more relevant features.
 
-For SciLearn, a $\chi^2$ test is applied to select the k best features. This test determines how relevant words are to determining a class, and the k most relevant features are retained for each class.
+For SciLearn, a $\chi^2$ test was applied to select the k best features. This test determines how relevant words are to determining a class, and the $k$ most relevant features are retained for each class. However it was found that this was detrimental to results and reduced the accuracies obtained, so this was left commented out for collecting results.
 
 TODO show chosen features
 
@@ -167,17 +167,29 @@ Firstly the performance of the TextBlob classifiers will be described. For these
 TODO
 
 \subsection{SciLearn classification}
-For SciLearn many more metrics were easily available, such as the f1 score and macro and micro recall. As 10-fold cross validation was also used we can create confidence intervals for the classifier accuracy. These are shown in the tables in the appendices.
+For SciLearn many more metrics were easily available, such as the f1 score and macro and micro recall. As 10-fold cross validation was also used we can create confidence intervals for the classifier accuracy. These are shown in the tables TODO in the appendices.
 
-Firstly the best classifier from the three variations of vectorisation will be compared. The 
+\subsubsection{Vectorisers}
+Firstly the best classifier from the three variations of vectorisation will be compared. \verb|MultinomialNB| had the highest mean accuracy for both the count vectoriser and the binary vectoriser, and obtained accuracies of 81.6\% and 81.1\% respectively. The best classifier for the tfidf vectoriser was the  \verb|LinearSVC|, which obtained an accuracy of 84.2\% over the test data. This shows that a more accurate classifier was obtained when using tfidf. The macro and micro precision and recall values are also higher for tfidf. The results from count and binary suggest that the actual count of features rather than simply the presence doesn't have a lot of impact on the success of the Na{\"i}ve Bayes classifier. SVM seemed to work better on results normalised as in tfidf.
 
-TODO discuss results
+For the binary vectoriser it can be noted that the best classifier was completely unsuccessful at classifying the topics with the lowest support. For both 'wheat' and 'corn' the best classifier, \verb|MultinomialNB|, obtained precision and recall of 0, with no instances being classified correctly. This suggests that the binary vectoriser requires a greater amount of support. These two categories also convey fairly similar things so it could be considered to merge these topics; grain is also likely to have a high level of overlap with these two and is consistently classified poorly so could be merged. The tfidf vectoriser and the count vectorisers perform similarly on the topics with low support, suggesting either of these methods are appropriate when classifying with few examples.
 
-TODO make t tests per classifier group, per all
+As the tfidf vectoriser was the most successful we will look at the results for the classifiers obtained from this method of feature selection more closely. For the best classifier, \verb|LinearSVC|, it can be seen that the performance greatly varied over topics. For example the classifier performed extremely well for the 'earn' category, with an f1-score of 97\%. This accuracy is far above that obtained by the other vectorisers and is probably why the classifier overall is the most accurate. This suggests tfidf vectorisation is the best method for classification with large numbers of support. This could be due to the normalisation that takes place. 
 
-TODO comment on which classes were easier to classify/overlap between classes?
+Overall for tfidf the precision and recall average values do not differ very much - this suggests the classifier is equally likely to classify false positives and false negatives. This seems to suggest there are an equal number of incorrect examples on either side of the decision boundary in the SVM, further suggesting that the classifier has not overfit the data. This makes sense as linear models tend to underfit due to their low variance and high bias.
 
-TODO discuss performance of overall most successful
+\subsubsection{Comparison of classifier performance}
+As the tfidf vectoriser produced the most successful classifier we will use the results from this to compare classifiers over all 10 folds. The results for this can be found in table TODO. It can be seen that a wide range of accuracies were obtained, with \verb|BernoulliNB| performing the worst at an average of 39.9\% accuracy, and |LinearSVC| performing the best at an average accuracy of 76.5\%. This range was greater than that obtained by the other vectorisers, which had a much higher worst average and a lower best average. This suggests that the tfidf method was not suitable for some classifiers.
+
+A paired t-test was carried out in order to compare the best three classifiers, which interestingly came from three different classifier categories. This shows that although some classifiers seemed very sensitive to the vectorisation method, tfidf is still applicable to a wide range of classifier categories. The three classifiers chosen for the t-test were \verb|LinearSVC|, \verb|MultinomialNB| and \verb|RandomForestClassifier|. \verb|Perceptron|, also a linear classifier, and \verb|NearestCentroid|, coming from the fourth category, also obtained accuracies of over 70\%.
+
+The null hypothesis for the paired t-test is that there is no difference between the performance of the two classifiers being tested. First the difference between the classifier's performance over each of the ten folds is calculated. The mean average ($\mu$) and standard deviation ($\sigma^2$) of this is then calculated. The test statistic for the t-test, where $n$ is the number of samples, is:
+\begin{center}
+$t = \frac{\mu}{\sigma^2 / \sqrt{n}}$
+\end{center}
+We then use this statistic to find out at which confidence interval we can say each classifier outperforms the others, using 9 degrees of freedom (as we are using 10 folds).
+
+The results of this can be found in table TODO. This shows that we can be 99\% confident that \verb|LinearSVC| outperforms the other two classifiers, however the difference between these is very low. The high confidence level for SVM is due to it scoring consistently higher than the other classifiers for every fold, and the relatively low standard deviation for the accuracy of all classifiers.
 
 \section{Clustering}
 Unsupervised clustering algorithms were also used to try to determine clusters relating to topics in the data. This task was completed using the SciLearn module, which includes various clustering algorithms. Feature selection was carried out as described above, using PCA to convert sparse vectors into dense vectors where required. In clustering algorithms the objective is to minimise inter-cluster distance whilst maximising intra-cluster distance.
@@ -283,7 +295,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 
 \begin{table}[h]
 \begin{tabular}{l|l}
-\textbf{Accuracy}        & 0.841935 \\
+\textbf{Accuracy}        & 0.810753 \\
 \textbf{Recall macro}    & 0.579237 \\
 \textbf{Recall micro}    & 0.810753 \\
 \textbf{Precision macro} & 0.581382 \\
@@ -354,6 +366,46 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 \textbf{NearestCentroid}        & 0.715178      & 0.010247                    & {[}0.695094, 0.735261{]}    
 \end{tabular}
 \caption {TFIDF: Confidence intervals for accuracy of all classifiers}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{llll}
+\textbf{Fold}      & \textbf{RandomForest} & \textbf{LinearSVC} & \textbf{MultinomialNB} \\ \hline
+\textbf{1}         & 0.746                 & 0.779              & 0.760                  \\
+\textbf{2}         & 0.733                 & 0.763              & 0.729                  \\
+\textbf{3}         & 0.753                 & 0.778              & 0.769                  \\
+\textbf{4}         & 0.735                 & 0.768              & 0.739                  \\
+\textbf{5}         & 0.765                 & 0.777              & 0.757                  \\
+\textbf{6}         & 0.773                 & 0.768              & 0.758                  \\
+\textbf{7}         & 0.708                 & 0.740              & 0.713                  \\
+\textbf{8}         & 0.736                 & 0.757              & 0.752                  \\
+\textbf{9}         & 0.722                 & 0.754              & 0.702                  \\
+\textbf{10}        & 0.755                 & 0.769              & 0.752                  \\ \hline
+\textbf{Mean}      & 0.7426                & 0.7653             & 0.743                  \\ \hline
+\textbf{Std. dev.} & 0.01976079171         & 0.01227508769      & 0.02196183558       
+\end{tabular}
+\caption {TFIDF: Per fold accuracies for three best classifiers}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{llll}
+\textbf{Fold}      & \textbf{RF-SVM} & \textbf{RF-NB} & \textbf{SVM-NB} \\ \hline
+\textbf{1}         & -0.033          & -0.014         & 0.019           \\
+\textbf{2}         & -0.03           & 0.004          & 0.034           \\
+\textbf{3}         & -0.025          & -0.016         & 0.009           \\
+\textbf{4}         & -0.033          & -0.004         & 0.029           \\
+\textbf{5}         & -0.012          & 0.008          & 0.020           \\
+\textbf{6}         & 0.005           & 0.015          & 0.010           \\
+\textbf{7}         & -0.032          & -0.005         & 0.027           \\
+\textbf{8}         & -0.021          & -0.016         & 0.005           \\
+\textbf{9}         & -0.032          & 0.020          & 0.052           \\
+\textbf{10}        & -0.014          & 0.003          & 0.017           \\ \hline
+\textbf{Mean}      & -0.0227         & -0.001         & 0.022           \\ \hline
+\textbf{Std. dev.} & 0.0125          & 0.0127         & 0.0140          \\ \hline
+\textbf{t-value}   & -5.7471         & -0.1241        & 5.0236          \\ \hline
+\textbf{p-value}   & 0.9999          & 0.5480         & 0.9996         
+\end{tabular}
+\caption{TFIDF: Paired t-test for per fold accuracies of three best classifiers}
 \end{table}
 
 \section{Clustering Results}
