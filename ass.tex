@@ -221,6 +221,13 @@ Where $a$ is the mean distance between an example and the other points in the sa
 The \verb|GMM| class is not in the same class hierarchy as the other clustering methods as it is supervised, so different metrics are available. This clustering algorithm will be evaluated using accuracy over both the training and test sets, and the results will not be very comparable with the other clustering methods.  
 
 \subsection{Evaluation}
+The results for the three clustering algorithms for each vectoriser can be found in tables TODO. The classification task for these algorithms was much more difficult than that for the classifiers as there were many more topics. Unfortunately the silhouette coefficient could not be reported as this required too much memory (TODO - run and fix this?)
+
+Firstly the unsupervised clustering algorithms will be evaluated. It can be seen that for all vectorisers the \verb|DBSCAN| method performed very poorly. This is most likely due to the large number of clusters. the \verb|DBSCAN| algorithm is not informed about the number of clusters and it's likely that far fewer are being created, due to the large number of overlap between topics. \verb|KMeans| and \verb|Ward| seem to perform fairly similarly in homogeneity, completeness and v-measure. This suggests that these algorithms were successful to an extent at creating clusters which encompassed or consisted of entire topics. However \verb|KMeans| consistently obtained a higher ARI value, regardless of the vectorisation method used. This suggests that the clusters it generated were more similar to the true topics of that data, indicating that it is the more successful clustering method.
+
+\verb|DBSCAN| performed equally poorly over all feature selection methods, suggesting that this task was just not suitable for this method of clustering. \verb|KMeans| performed best with tfidf vectorisation, indicating that it requires normalised data. \verb|Ward| performed best with binary vectorisation, suggesting that it prefers simpler features where a word is either present or absent. This variety shows that the vectorisation method should be chosen based on the clustering algorithm to be used.
+
+For GMM higher accuracies were obtained than for the unsupervised methods, although the accuracies were lower than those obtained by the classification algorithms. The best results were obtained with the count vectoriser, suggesting the number of features is important to this algorithm.
 
 \section{Conclusion}
 
@@ -228,7 +235,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 
 \section{Count Vectorisation Results}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{l|llll}
 \textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
 \textbf{acq}         & 0.95               & 0.86            & 0.9               & 718              \\
@@ -246,7 +253,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 \caption {Count best classifier: MultinomialNB; per topic metrics}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{l|l}
 \textbf{Accuracy}        & 0.816846 \\
 \textbf{Recall macro}    & 0.614784 \\
@@ -257,7 +264,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 \caption {Count best classifier: MultinomialNB; average metrics}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{l|lll}
 \textbf{Classifier}             & \textbf{Mean} & \textbf{Std. Dev.} & \textbf{Confidence Interval} \\ \hline
 \textbf{GaussianNB}             & 0.549348      & 0.012712                    & {[}0.524431, 0.574264{]}     \\
@@ -275,7 +282,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 
 \section{Binary Vectorisation Results}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{l|llll}
 \textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
 \textbf{acq}         & 0.95               & 0.86            & 0.9               & 718              \\
@@ -293,7 +300,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 \caption {Binary best classifier: MultinomialNB; per topic metrics}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{l|l}
 \textbf{Accuracy}        & 0.810753 \\
 \textbf{Recall macro}    & 0.579237 \\
@@ -304,7 +311,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 \caption {Binary best classifier: MultinomialNB; average metrics}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{llll}
 \textbf{Classifier}             & \textbf{Mean} & \textbf{Standard Deviation} & \textbf{Confidence Interval} \\
 \textbf{GaussianNB}             & 0.549486      & 0.017148                    & {[}0.515876, 0.583096{]}     \\
@@ -322,7 +329,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 
 \section{TFIDF Vectorisation Results}
 
-\begin{table}[h]
+\begin{table}[h!]
 \label{tab:title}
 \begin{tabular}{l|llll}
 \textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
@@ -411,7 +418,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 \section{Clustering Results}
 \begin{table}[h]
 \begin{tabular}{l|llll}
-\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{Adjusted Rand index} \\ \hline
+\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{ARI} \\ \hline
 \textbf{KMeans}    & 0.306                & 0.292                 & 0.299              & 0.103                        \\
 \textbf{DBSCAN}    & 0.005                & 0.062                 & 0.008              & 0.001                        \\
 \textbf{Ward}      & 0.247                & 0.17                  & 0.201              & 0.029                       
@@ -429,7 +436,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 
 \begin{table}[h]
 \begin{tabular}{lllll}
-\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{Adjusted Rand index} \\
+\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{ARI} \\
 \textbf{KMeans}    & 0.37                 & 0.378                 & 0.374              & 0.148                        \\
 \textbf{DBSCAN}    & 0.005                & 0.062                 & 0.008              & 0.001                        \\
 \textbf{Ward}      & 0.361                & 0.234                 & 0.284              & 0.043                       
@@ -447,7 +454,7 @@ The \verb|GMM| class is not in the same class hierarchy as the other clustering 
 
 \begin{table}[h]
 \begin{tabular}{l|llll}
-\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{Adjusted Rand index} \\ \hline
+\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{ARI} \\ \hline
 \textbf{KMeans}    & 0.392                & 0.39                  & 0.391              & 0.175                        \\
 \textbf{DBSCAN}    & 0.005                & 0.062                 & 0.008              & 0.001                        \\
 \textbf{Ward}      & 0.267                & 0.183                 & 0.217              & 0.023                       
