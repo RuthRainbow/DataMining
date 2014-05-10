@@ -17,6 +17,7 @@ from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
 from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
+from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC, SVR
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
@@ -26,13 +27,20 @@ interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade
 
 
 def main(argv):
-  # Which type of vectorisation to use (one must be true)
+  """ 
+  Which type of vectorisation to use. Possible combinations:
+  TFIDF: TFIDF only
+  count: Count only (no normalisation)
+  count + binary: Binary only (no normalisation)
+  TFIDF + count: count then normalised with TFIDF
+  TFIDF + count + binary: binary then normalised with TFIDF
+  """
   tfidf = True
   count = False
   binary = False
   
   # Whether to use lemmatised input
-  lemmatise = False
+  lemmatise = True
 
   # All text and topic pairs to be used for clustering
   texts = []
@@ -86,29 +94,34 @@ def main(argv):
   vect = HashingVectorizer(stop_words='english')
   featured_texts = vect.fit_transform(texts)
 
-  if tfidf:
+  if tfidf and not count:
     vect = TfidfVectorizer(strip_accents='unicode',
                            sublinear_tf=True,
-                           stop_words='english')
+                           ngram_range=(1, 2))
+    pipeline = Pipeline([('tfidf', vect)])
+  elif count and tfidf:
+    vect = CountVectorizer(binary=binary)
+    vect2 = TfidfVectorizer(sublinear_tf=True)
+    pipeline = Pipeline([('count', vect), ('tfidf', vect2)])
   else:
     vect = CountVectorizer(strip_accents='unicode',
-                           stop_words='english',
                            binary=binary)
+    pipeline = Pipeline([('count', vect)])
 
   training_data = [' '.join(text) for text in training_data]
   test_data = [' '.join(text) for text in test_data]
-  featured_train = vect.fit_transform(training_data)
+  featured_train = pipeline.fit_transform(training_data)
   print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
-  featured_test = vect.transform(test_data)
+  featured_test = pipeline.transform(test_data)
   print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
-  featured_texts = vect.fit_transform(texts)
+  featured_texts = pipeline.fit_transform(texts)
   print 'Fininshed vectoriser'
 
-  chi = SelectKBest(chi2, 4)
-  featured_train = chi.fit_transform(featured_train, training_topics)
-  featured_test = chi.transform(featured_test)
-  chi = SelectKBest(chi2, 2)
-  featured_texts = chi.fit_transform(featured_texts, topics)
+  #chi = SelectKBest(chi2, 25)
+  #featured_train = chi.fit_transform(featured_train, training_topics)
+  #featured_test = chi.transform(featured_test)
+  #chi = SelectKBest(chi2, 20)
+  #featured_texts = chi.fit_transform(featured_texts, topics)
   print 'Finished chi^2'
 
   feature_names = numpy.asarray(vect.get_feature_names())
@@ -116,7 +129,7 @@ def main(argv):
 
   classifiers = [GaussianNB(),
                  MultinomialNB(fit_prior=True),
-                 BernoulliNB(binarize=1.0, fit_prior=True),
+                 #BernoulliNB(binarize=1.0, fit_prior=True),
                  DecisionTreeClassifier(criterion='entropy',
                                         min_samples_split=5,
                                         min_samples_leaf=5),
@@ -131,10 +144,11 @@ def main(argv):
   # Perform 10-fold cross validation and save accuracy for each classifier
   kfolds = KFold(n=len(training_data), n_folds=10, shuffle=True)
   acc_values = {classifier: list() for classifier in classifiers}
+  featured_train_arr = featured_train.toarray()
   for train, test in kfolds:
     # TODO change away from list constructor so more features can be used (MemoryError)
-    train_text = [featured_train.toarray()[j] for j in train]
-    test_text = [featured_train.toarray()[j] for j in test]
+    train_text = [featured_train_arr[j] for j in train]
+    test_text = [featured_train_arr[j] for j in test]
     train_topic = [training_topics[j] for j in train]
     test_topic = [training_topics[j] for j in test]
     for classifier in classifiers:
@@ -167,10 +181,11 @@ def main(argv):
            featured_test.toarray(),
            test_topics,
            interested_topics)
-
+  
   print '****************** Clustering ******************'
   # Use SVD to reduce to sparse vectors to dense vectors and reduce the number of features
-  svd = TruncatedSVD(n_components=1)
+  """
+  svd = TruncatedSVD(n_components=3)
   dense_texts = svd.fit_transform(featured_texts)
   norm = preprocessing.Normalizer(copy=False)
   dense_texts = norm.fit_transform(dense_texts)
@@ -180,9 +195,11 @@ def main(argv):
   # These methods don't support sparse matrices, so aren't suitable for text mining.
   cluster(DBSCAN(), dense_texts, topics)
   cluster(Ward(n_clusters=num_topics), dense_texts, topics)
-
+  
   # GMM
-  gmm(featured_train, featured_test, training_topics, test_topics)
+  list_topics = list(set(topics))
+  gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics)
+  """
 
 
 # Preprocessing and cleaning of text bodies
@@ -258,7 +275,9 @@ def classify(classifier,
   if report:
     print 'report:'
     print metrics.classification_report(test_topics, pred)
-  return metrics.accuracy_score(test_topics, pred)
+  acc = metrics.accuracy_score(test_topics, pred)
+  print 'accuracy: %f' % acc
+  return acc
 
 
 def cluster(classifier, data, topics):
@@ -273,7 +292,7 @@ def cluster(classifier, data, topics):
     print ' ***************** '
 
 
-def gmm(featured_train, featured_test, training_topics, test_topics):
+def gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics):
   print 'GMM'
   dense_train = svd.fit_transform(featured_train)
   dense_train = norm.fit_transform(dense_train)
@@ -282,8 +301,8 @@ def gmm(featured_train, featured_test, training_topics, test_topics):
   gmm = GMM(n_components=num_topics)
   train_topics_mapped = map_topics_to_nums(training_topics)
   test_topics_mapped = map_topics_to_nums(test_topics)
-  gmm.means_ = numpy.array([dense_train[train_topics_mapped == i].mean(axis=0)
-	                    for i in xrange(len(list_topics))])
+  #gmm.means_ = numpy.array([dense_train[train_topics_mapped == i].mean(axis=0)
+  #	                    for i in xrange(len(list_topics))])
   gmm.fit(dense_train)
   train_pred = gmm.predict(dense_train)
   test_pred = gmm.predict(dense_test)
