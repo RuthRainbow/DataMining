@@ -1,0 +1,2399 @@
+loaded 22 soups
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 1000
+size of done is 21556, size of this is 578
+earn: 3961
+wheat: 283
+money-fx: 717
+corn: 239
+trade: 487
+acq: 2367
+grain: 583
+interest: 480
+crude: 580
+ship: 287
+total number of docs: 9984
+***********************
+Training: n_samples: 7194, n_features: 11413
+Test: n_samples: 2790, n_features: 11413
+Fininshed vectoriser
+Finished chi^2
+[u'100p' u'1016p' u'101p' ..., u'zuckerman' u'zuyuan' u'zwermann']
+training GaussianNB()
+testing
+f1 score: 0.595490
+recall macro: 0.434127
+recall micro: 0.572222
+precision macro: 0.444894
+precision micro: 0.572222
+report:
+             precision    recall  f1-score   support
+
+        acq       0.67      0.63      0.65       159
+       corn       0.04      0.21      0.07        14
+      crude       0.48      0.59      0.53        27
+       earn       0.83      0.73      0.78       290
+      grain       0.17      0.12      0.14        48
+   interest       0.34      0.64      0.44        28
+   money-fx       0.59      0.35      0.44        65
+       ship       0.58      0.28      0.38        25
+      trade       0.58      0.50      0.54        42
+      wheat       0.15      0.27      0.19        22
+
+avg / total       0.64      0.57      0.60       720
+
+accuracy: 0.572222
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.710600
+recall macro: 0.449349
+recall micro: 0.759722
+precision macro: 0.527524
+precision micro: 0.759722
+report:
+             precision    recall  f1-score   support
+
+        acq       0.73      0.89      0.80       159
+       corn       0.00      0.00      0.00        14
+      crude       0.67      0.44      0.53        27
+       earn       0.83      0.96      0.89       290
+      grain       0.52      0.71      0.60        48
+   interest       1.00      0.07      0.13        28
+   money-fx       0.72      0.85      0.78        65
+       ship       0.00      0.00      0.00        25
+      trade       0.80      0.57      0.67        42
+      wheat       0.00      0.00      0.00        22
+
+avg / total       0.71      0.76      0.71       720
+
+accuracy: 0.759722
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.231298
+recall macro: 0.100000
+recall micro: 0.402778
+precision macro: 0.040278
+precision micro: 0.402778
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       159
+       corn       0.00      0.00      0.00        14
+      crude       0.00      0.00      0.00        27
+       earn       0.40      1.00      0.57       290
+      grain       0.00      0.00      0.00        48
+   interest       0.00      0.00      0.00        28
+   money-fx       0.00      0.00      0.00        65
+       ship       0.00      0.00      0.00        25
+      trade       0.00      0.00      0.00        42
+      wheat       0.00      0.00      0.00        22
+
+avg / total       0.16      0.40      0.23       720
+
+accuracy: 0.402778
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.672971
+recall macro: 0.430157
+recall micro: 0.675000
+precision macro: 0.467693
+precision micro: 0.675000
+report:
+             precision    recall  f1-score   support
+
+        acq       0.68      0.85      0.75       159
+       corn       0.00      0.00      0.00        14
+      crude       0.53      0.59      0.56        27
+       earn       0.91      0.87      0.89       290
+      grain       0.21      0.17      0.18        48
+   interest       0.29      0.36      0.32        28
+   money-fx       0.57      0.42      0.48        65
+       ship       0.69      0.36      0.47        25
+      trade       0.75      0.64      0.69        42
+      wheat       0.05      0.05      0.05        22
+
+avg / total       0.68      0.68      0.67       720
+
+accuracy: 0.675000
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.733202
+recall macro: 0.488273
+recall micro: 0.745833
+precision macro: 0.532082
+precision micro: 0.745833
+report:
+             precision    recall  f1-score   support
+
+        acq       0.69      0.94      0.80       159
+       corn       0.00      0.00      0.00        14
+      crude       0.73      0.59      0.65        27
+       earn       0.96      0.91      0.93       290
+      grain       0.35      0.38      0.36        48
+   interest       0.53      0.32      0.40        28
+   money-fx       0.67      0.65      0.66        65
+       ship       0.62      0.32      0.42        25
+      trade       0.72      0.74      0.73        42
+      wheat       0.06      0.05      0.05        22
+
+avg / total       0.74      0.75      0.73       720
+
+accuracy: 0.745833
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.747066
+recall macro: 0.506691
+recall micro: 0.730556
+precision macro: 0.521830
+precision micro: 0.730556
+report:
+             precision    recall  f1-score   support
+
+        acq       0.96      0.84      0.90       159
+       corn       0.00      0.00      0.00        14
+      crude       0.27      1.00      0.43        27
+       earn       0.98      0.93      0.96       290
+      grain       0.16      0.10      0.12        48
+   interest       0.41      0.43      0.42        28
+   money-fx       0.71      0.55      0.62        65
+       ship       0.75      0.36      0.49        25
+      trade       0.91      0.76      0.83        42
+      wheat       0.06      0.09      0.07        22
+
+avg / total       0.79      0.73      0.75       720
+
+accuracy: 0.730556
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.773569
+recall macro: 0.534025
+recall micro: 0.779167
+precision macro: 0.563036
+precision micro: 0.779167
+report:
+             precision    recall  f1-score   support
+
+        acq       0.80      0.97      0.88       159
+       corn       0.00      0.00      0.00        14
+      crude       0.73      0.70      0.72        27
+       earn       0.98      0.94      0.96       290
+      grain       0.27      0.21      0.24        48
+   interest       0.48      0.39      0.43        28
+   money-fx       0.72      0.66      0.69        65
+       ship       0.78      0.56      0.65        25
+      trade       0.81      0.81      0.81        42
+      wheat       0.07      0.09      0.08        22
+
+avg / total       0.77      0.78      0.77       720
+
+accuracy: 0.779167
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.447707
+recall macro: 0.222612
+recall micro: 0.491667
+precision macro: 0.304323
+precision micro: 0.491667
+report:
+             precision    recall  f1-score   support
+
+        acq       0.36      0.65      0.46       159
+       corn       0.00      0.00      0.00        14
+      crude       0.20      0.19      0.19        27
+       earn       0.66      0.74      0.70       290
+      grain       0.43      0.06      0.11        48
+   interest       0.44      0.25      0.32        28
+   money-fx       0.46      0.26      0.33        65
+       ship       0.00      0.00      0.00        25
+      trade       0.50      0.07      0.12        42
+      wheat       0.00      0.00      0.00        22
+
+avg / total       0.47      0.49      0.45       720
+
+accuracy: 0.491667
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.727323
+recall macro: 0.638131
+recall micro: 0.726389
+precision macro: 0.634599
+precision micro: 0.726389
+report:
+             precision    recall  f1-score   support
+
+        acq       0.61      0.97      0.75       159
+       corn       0.29      0.36      0.32        14
+      crude       0.67      0.67      0.67        27
+       earn       1.00      0.71      0.83       290
+      grain       0.57      0.25      0.35        48
+   interest       0.57      0.61      0.59        28
+   money-fx       0.82      0.63      0.71        65
+       ship       0.80      0.80      0.80        25
+      trade       0.70      0.88      0.78        42
+      wheat       0.32      0.50      0.39        22
+
+avg / total       0.78      0.73      0.73       720
+
+accuracy: 0.726389
+training GaussianNB()
+testing
+f1 score: 0.572268
+recall macro: 0.408760
+recall micro: 0.540278
+precision macro: 0.423644
+precision micro: 0.540278
+report:
+             precision    recall  f1-score   support
+
+        acq       0.59      0.63      0.61       148
+       corn       0.03      0.16      0.05        19
+      crude       0.55      0.59      0.57        44
+       earn       0.88      0.67      0.76       286
+      grain       0.23      0.11      0.15        56
+   interest       0.35      0.58      0.43        31
+   money-fx       0.46      0.29      0.35        56
+       ship       0.41      0.39      0.40        18
+      trade       0.68      0.56      0.61        45
+      wheat       0.06      0.12      0.08        17
+
+avg / total       0.63      0.54      0.57       720
+
+accuracy: 0.540278
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.683239
+recall macro: 0.430483
+recall micro: 0.729167
+precision macro: 0.537120
+precision micro: 0.729167
+report:
+             precision    recall  f1-score   support
+
+        acq       0.65      0.83      0.73       148
+       corn       0.00      0.00      0.00        19
+      crude       0.78      0.41      0.54        44
+       earn       0.80      0.96      0.87       286
+      grain       0.56      0.66      0.61        56
+   interest       1.00      0.10      0.18        31
+   money-fx       0.65      0.77      0.70        56
+       ship       0.00      0.00      0.00        18
+      trade       0.93      0.58      0.71        45
+      wheat       0.00      0.00      0.00        17
+
+avg / total       0.69      0.73      0.68       720
+
+accuracy: 0.729167
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.225856
+recall macro: 0.100000
+recall micro: 0.397222
+precision macro: 0.039722
+precision micro: 0.397222
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       148
+       corn       0.00      0.00      0.00        19
+      crude       0.00      0.00      0.00        44
+       earn       0.40      1.00      0.57       286
+      grain       0.00      0.00      0.00        56
+   interest       0.00      0.00      0.00        31
+   money-fx       0.00      0.00      0.00        56
+       ship       0.00      0.00      0.00        18
+      trade       0.00      0.00      0.00        45
+      wheat       0.00      0.00      0.00        17
+
+avg / total       0.16      0.40      0.23       720
+
+accuracy: 0.397222
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.654721
+recall macro: 0.424454
+recall micro: 0.659722
+precision macro: 0.438871
+precision micro: 0.659722
+report:
+             precision    recall  f1-score   support
+
+        acq       0.62      0.84      0.71       148
+       corn       0.15      0.11      0.12        19
+      crude       0.60      0.64      0.62        44
+       earn       0.93      0.85      0.89       286
+      grain       0.23      0.18      0.20        56
+   interest       0.42      0.45      0.44        31
+   money-fx       0.50      0.39      0.44        56
+       ship       0.27      0.17      0.21        18
+      trade       0.67      0.62      0.64        45
+      wheat       0.00      0.00      0.00        17
+
+avg / total       0.66      0.66      0.65       720
+
+accuracy: 0.659722
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.720043
+recall macro: 0.478848
+recall micro: 0.733333
+precision macro: 0.511432
+precision micro: 0.733333
+report:
+             precision    recall  f1-score   support
+
+        acq       0.67      0.95      0.79       148
+       corn       0.00      0.00      0.00        19
+      crude       0.74      0.73      0.74        44
+       earn       0.94      0.88      0.91       286
+      grain       0.39      0.39      0.39        56
+   interest       0.61      0.35      0.45        31
+   money-fx       0.63      0.64      0.64        56
+       ship       0.33      0.17      0.22        18
+      trade       0.79      0.67      0.72        45
+      wheat       0.00      0.00      0.00        17
+
+avg / total       0.72      0.73      0.72       720
+
+accuracy: 0.733333
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.714692
+recall macro: 0.524457
+recall micro: 0.698611
+precision macro: 0.504234
+precision micro: 0.698611
+report:
+             precision    recall  f1-score   support
+
+        acq       0.96      0.77      0.85       148
+       corn       0.06      0.05      0.06        19
+      crude       0.32      0.95      0.48        44
+       earn       0.99      0.87      0.93       286
+      grain       0.20      0.11      0.14        56
+   interest       0.52      0.52      0.52        31
+   money-fx       0.64      0.48      0.55        56
+       ship       0.48      0.56      0.51        18
+      trade       0.79      0.76      0.77        45
+      wheat       0.09      0.18      0.12        17
+
+avg / total       0.76      0.70      0.71       720
+
+accuracy: 0.698611
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.758449
+recall macro: 0.547418
+recall micro: 0.763889
+precision macro: 0.577903
+precision micro: 0.763889
+report:
+             precision    recall  f1-score   support
+
+        acq       0.74      0.99      0.85       148
+       corn       0.14      0.11      0.12        19
+      crude       0.79      0.75      0.77        44
+       earn       0.98      0.91      0.95       286
+      grain       0.23      0.16      0.19        56
+   interest       0.65      0.42      0.51        31
+   money-fx       0.67      0.71      0.69        56
+       ship       0.69      0.61      0.65        18
+      trade       0.85      0.76      0.80        45
+      wheat       0.04      0.06      0.04        17
+
+avg / total       0.77      0.76      0.76       720
+
+accuracy: 0.763889
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.425040
+recall macro: 0.228708
+recall micro: 0.465278
+precision macro: 0.289349
+precision micro: 0.465278
+report:
+             precision    recall  f1-score   support
+
+        acq       0.32      0.66      0.44       148
+       corn       0.14      0.11      0.12        19
+      crude       0.15      0.09      0.11        44
+       earn       0.65      0.70      0.68       286
+      grain       0.25      0.02      0.03        56
+   interest       0.52      0.35      0.42        31
+   money-fx       0.52      0.27      0.35        56
+       ship       0.00      0.00      0.00        18
+      trade       0.33      0.09      0.14        45
+      wheat       0.00      0.00      0.00        17
+
+avg / total       0.44      0.47      0.43       720
+
+accuracy: 0.465278
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.702995
+recall macro: 0.663226
+recall micro: 0.704167
+precision macro: 0.631905
+precision micro: 0.704167
+report:
+             precision    recall  f1-score   support
+
+        acq       0.56      0.97      0.71       148
+       corn       0.42      0.53      0.47        19
+      crude       0.80      0.89      0.84        44
+       earn       1.00      0.66      0.80       286
+      grain       0.46      0.20      0.28        56
+   interest       0.53      0.61      0.57        31
+   money-fx       0.78      0.57      0.66        56
+       ship       0.76      0.89      0.82        18
+      trade       0.77      0.91      0.84        45
+      wheat       0.24      0.41      0.30        17
+
+avg / total       0.76      0.70      0.70       720
+
+accuracy: 0.704167
+training GaussianNB()
+testing
+f1 score: 0.599446
+recall macro: 0.409495
+recall micro: 0.575000
+precision macro: 0.387239
+precision micro: 0.575000
+report:
+             precision    recall  f1-score   support
+
+        acq       0.71      0.66      0.69       176
+       corn       0.11      0.35      0.17        23
+      crude       0.45      0.56      0.50        32
+       earn       0.86      0.73      0.79       295
+      grain       0.05      0.02      0.03        41
+   interest       0.20      0.37      0.26        27
+   money-fx       0.59      0.37      0.46        59
+       ship       0.48      0.57      0.52        21
+      trade       0.36      0.31      0.33        32
+      wheat       0.06      0.14      0.08        14
+
+avg / total       0.64      0.57      0.60       720
+
+accuracy: 0.575000
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.727823
+recall macro: 0.473550
+recall micro: 0.769444
+precision macro: 0.613937
+precision micro: 0.769444
+report:
+             precision    recall  f1-score   support
+
+        acq       0.79      0.85      0.82       176
+       corn       0.00      0.00      0.00        23
+      crude       0.75      0.66      0.70        32
+       earn       0.82      0.96      0.88       295
+      grain       0.50      0.83      0.62        41
+   interest       0.75      0.11      0.19        27
+   money-fx       0.73      0.78      0.75        59
+       ship       1.00      0.05      0.09        21
+      trade       0.80      0.50      0.62        32
+      wheat       0.00      0.00      0.00        14
+
+avg / total       0.74      0.77      0.73       720
+
+accuracy: 0.769444
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.238164
+recall macro: 0.100000
+recall micro: 0.409722
+precision macro: 0.040972
+precision micro: 0.409722
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       176
+       corn       0.00      0.00      0.00        23
+      crude       0.00      0.00      0.00        32
+       earn       0.41      1.00      0.58       295
+      grain       0.00      0.00      0.00        41
+   interest       0.00      0.00      0.00        27
+   money-fx       0.00      0.00      0.00        59
+       ship       0.00      0.00      0.00        21
+      trade       0.00      0.00      0.00        32
+      wheat       0.00      0.00      0.00        14
+
+avg / total       0.17      0.41      0.24       720
+
+accuracy: 0.409722
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.703085
+recall macro: 0.461351
+recall micro: 0.705556
+precision macro: 0.467924
+precision micro: 0.705556
+report:
+             precision    recall  f1-score   support
+
+        acq       0.71      0.84      0.77       176
+       corn       0.11      0.09      0.10        23
+      crude       0.61      0.59      0.60        32
+       earn       0.92      0.88      0.90       295
+      grain       0.17      0.15      0.16        41
+   interest       0.40      0.52      0.45        27
+   money-fx       0.73      0.51      0.60        59
+       ship       0.36      0.38      0.37        21
+      trade       0.66      0.66      0.66        32
+      wheat       0.00      0.00      0.00        14
+
+avg / total       0.71      0.71      0.70       720
+
+accuracy: 0.705556
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.743622
+recall macro: 0.503315
+recall micro: 0.752778
+precision macro: 0.528686
+precision micro: 0.752778
+report:
+             precision    recall  f1-score   support
+
+        acq       0.72      0.95      0.82       176
+       corn       0.00      0.00      0.00        23
+      crude       0.73      0.69      0.71        32
+       earn       0.96      0.88      0.92       295
+      grain       0.36      0.39      0.38        41
+   interest       0.50      0.56      0.53        27
+   money-fx       0.77      0.51      0.61        59
+       ship       0.58      0.33      0.42        21
+      trade       0.66      0.72      0.69        32
+      wheat       0.00      0.00      0.00        14
+
+avg / total       0.75      0.75      0.74       720
+
+accuracy: 0.752778
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.724563
+recall macro: 0.512760
+recall micro: 0.701389
+precision macro: 0.479457
+precision micro: 0.701389
+report:
+             precision    recall  f1-score   support
+
+        acq       0.95      0.73      0.82       176
+       corn       0.05      0.04      0.05        23
+      crude       0.23      0.78      0.35        32
+       earn       0.98      0.89      0.93       295
+      grain       0.15      0.07      0.10        41
+   interest       0.46      0.59      0.52        27
+   money-fx       0.72      0.49      0.59        59
+       ship       0.40      0.57      0.47        21
+      trade       0.79      0.81      0.80        32
+      wheat       0.07      0.14      0.10        14
+
+avg / total       0.78      0.70      0.72       720
+
+accuracy: 0.701389
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.775366
+recall macro: 0.537793
+recall micro: 0.777778
+precision macro: 0.545428
+precision micro: 0.777778
+report:
+             precision    recall  f1-score   support
+
+        acq       0.81      0.94      0.87       176
+       corn       0.00      0.00      0.00        23
+      crude       0.74      0.72      0.73        32
+       earn       0.97      0.93      0.95       295
+      grain       0.18      0.15      0.16        41
+   interest       0.49      0.63      0.55        27
+   money-fx       0.85      0.58      0.69        59
+       ship       0.65      0.62      0.63        21
+      trade       0.76      0.81      0.79        32
+      wheat       0.00      0.00      0.00        14
+
+avg / total       0.78      0.78      0.78       720
+
+accuracy: 0.777778
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.461356
+recall macro: 0.220475
+recall micro: 0.497222
+precision macro: 0.280926
+precision micro: 0.497222
+report:
+             precision    recall  f1-score   support
+
+        acq       0.38      0.59      0.46       176
+       corn       0.12      0.04      0.06        23
+      crude       0.22      0.19      0.20        32
+       earn       0.66      0.75      0.70       295
+      grain       0.43      0.15      0.22        41
+   interest       0.21      0.22      0.21        27
+   money-fx       0.67      0.24      0.35        59
+       ship       0.00      0.00      0.00        21
+      trade       0.12      0.03      0.05        32
+      wheat       0.00      0.00      0.00        14
+
+avg / total       0.47      0.50      0.46       720
+
+accuracy: 0.497222
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.728875
+recall macro: 0.669047
+recall micro: 0.729167
+precision macro: 0.640732
+precision micro: 0.729167
+report:
+             precision    recall  f1-score   support
+
+        acq       0.64      0.97      0.77       176
+       corn       0.55      0.48      0.51        23
+      crude       0.66      0.72      0.69        32
+       earn       1.00      0.69      0.82       295
+      grain       0.53      0.20      0.29        41
+   interest       0.54      0.70      0.61        27
+   money-fx       0.77      0.58      0.66        59
+       ship       0.80      0.95      0.87        21
+      trade       0.71      0.91      0.79        32
+      wheat       0.21      0.50      0.29        14
+
+avg / total       0.79      0.73      0.73       720
+
+accuracy: 0.729167
+training GaussianNB()
+testing
+f1 score: 0.583195
+recall macro: 0.439392
+recall micro: 0.558333
+precision macro: 0.428751
+precision micro: 0.558333
+report:
+             precision    recall  f1-score   support
+
+        acq       0.62      0.61      0.62       158
+       corn       0.05      0.31      0.09        13
+      crude       0.59      0.57      0.58        40
+       earn       0.85      0.69      0.77       287
+      grain       0.26      0.17      0.21        52
+   interest       0.39      0.53      0.45        40
+   money-fx       0.38      0.27      0.32        51
+       ship       0.45      0.38      0.42        26
+      trade       0.54      0.66      0.59        32
+      wheat       0.15      0.19      0.17        21
+
+avg / total       0.62      0.56      0.58       720
+
+accuracy: 0.558333
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.686479
+recall macro: 0.441534
+recall micro: 0.738889
+precision macro: 0.573069
+precision micro: 0.738889
+report:
+             precision    recall  f1-score   support
+
+        acq       0.74      0.88      0.80       158
+       corn       0.00      0.00      0.00        13
+      crude       0.81      0.42      0.56        40
+       earn       0.81      0.97      0.88       287
+      grain       0.54      0.73      0.62        52
+   interest       1.00      0.05      0.10        40
+   money-fx       0.54      0.73      0.62        51
+       ship       0.50      0.04      0.07        26
+      trade       0.79      0.59      0.68        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.72      0.74      0.69       720
+
+accuracy: 0.738889
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.227212
+recall macro: 0.100000
+recall micro: 0.398611
+precision macro: 0.039861
+precision micro: 0.398611
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       158
+       corn       0.00      0.00      0.00        13
+      crude       0.00      0.00      0.00        40
+       earn       0.40      1.00      0.57       287
+      grain       0.00      0.00      0.00        52
+   interest       0.00      0.00      0.00        40
+   money-fx       0.00      0.00      0.00        51
+       ship       0.00      0.00      0.00        26
+      trade       0.00      0.00      0.00        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.16      0.40      0.23       720
+
+accuracy: 0.398611
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.673192
+recall macro: 0.459106
+recall micro: 0.680556
+precision macro: 0.451223
+precision micro: 0.680556
+report:
+             precision    recall  f1-score   support
+
+        acq       0.69      0.87      0.77       158
+       corn       0.00      0.00      0.00        13
+      crude       0.68      0.75      0.71        40
+       earn       0.92      0.85      0.89       287
+      grain       0.20      0.15      0.17        52
+   interest       0.42      0.45      0.43        40
+   money-fx       0.41      0.33      0.37        51
+       ship       0.55      0.46      0.50        26
+      trade       0.64      0.72      0.68        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.67      0.68      0.67       720
+
+accuracy: 0.680556
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.720754
+recall macro: 0.493356
+recall micro: 0.734722
+precision macro: 0.508068
+precision micro: 0.734722
+report:
+             precision    recall  f1-score   support
+
+        acq       0.73      0.97      0.83       158
+       corn       0.00      0.00      0.00        13
+      crude       0.80      0.70      0.75        40
+       earn       0.94      0.88      0.91       287
+      grain       0.41      0.46      0.43        52
+   interest       0.47      0.38      0.42        40
+   money-fx       0.47      0.45      0.46        51
+       ship       0.60      0.35      0.44        26
+      trade       0.67      0.75      0.71        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.72      0.73      0.72       720
+
+accuracy: 0.734722
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.726679
+recall macro: 0.544990
+recall micro: 0.715278
+precision macro: 0.529030
+precision micro: 0.715278
+report:
+             precision    recall  f1-score   support
+
+        acq       0.92      0.78      0.85       158
+       corn       0.12      0.23      0.16        13
+      crude       0.34      0.93      0.50        40
+       earn       0.99      0.89      0.94       287
+      grain       0.16      0.10      0.12        52
+   interest       0.56      0.35      0.43        40
+   money-fx       0.51      0.69      0.58        51
+       ship       0.70      0.62      0.65        26
+      trade       0.89      0.78      0.83        32
+      wheat       0.10      0.10      0.10        21
+
+avg / total       0.76      0.72      0.73       720
+
+accuracy: 0.715278
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.764480
+recall macro: 0.560425
+recall micro: 0.768056
+precision macro: 0.556448
+precision micro: 0.768056
+report:
+             precision    recall  f1-score   support
+
+        acq       0.81      0.97      0.88       158
+       corn       0.06      0.08      0.07        13
+      crude       0.80      0.82      0.81        40
+       earn       0.98      0.91      0.94       287
+      grain       0.28      0.25      0.27        52
+   interest       0.51      0.47      0.49        40
+   money-fx       0.54      0.53      0.53        51
+       ship       0.75      0.69      0.72        26
+      trade       0.82      0.88      0.85        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.77      0.77      0.76       720
+
+accuracy: 0.768056
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.455543
+recall macro: 0.233946
+recall micro: 0.502778
+precision macro: 0.295143
+precision micro: 0.502778
+report:
+             precision    recall  f1-score   support
+
+        acq       0.39      0.70      0.50       158
+       corn       0.09      0.08      0.08        13
+      crude       0.33      0.15      0.21        40
+       earn       0.67      0.75      0.71       287
+      grain       0.20      0.06      0.09        52
+   interest       0.34      0.33      0.33        40
+   money-fx       0.42      0.22      0.29        51
+       ship       0.00      0.00      0.00        26
+      trade       0.50      0.06      0.11        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.46      0.50      0.46       720
+
+accuracy: 0.502778
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.709488
+recall macro: 0.688240
+recall micro: 0.712500
+precision macro: 0.641041
+precision micro: 0.712500
+report:
+             precision    recall  f1-score   support
+
+        acq       0.61      0.98      0.75       158
+       corn       0.38      0.69      0.49        13
+      crude       0.79      0.85      0.82        40
+       earn       0.99      0.66      0.79       287
+      grain       0.58      0.27      0.37        52
+   interest       0.52      0.62      0.57        40
+   money-fx       0.58      0.43      0.49        51
+       ship       0.79      0.85      0.81        26
+      trade       0.72      0.91      0.81        32
+      wheat       0.45      0.62      0.52        21
+
+avg / total       0.77      0.71      0.71       720
+
+accuracy: 0.712500
+training GaussianNB()
+testing
+f1 score: 0.568973
+recall macro: 0.370470
+recall micro: 0.535466
+precision macro: 0.378678
+precision micro: 0.535466
+report:
+             precision    recall  f1-score   support
+
+        acq       0.70      0.63      0.66       172
+       corn       0.00      0.00      0.00        17
+      crude       0.38      0.37      0.37        38
+       earn       0.82      0.67      0.74       296
+      grain       0.16      0.12      0.14        41
+   interest       0.30      0.47      0.36        34
+   money-fx       0.52      0.31      0.39        51
+       ship       0.38      0.47      0.42        17
+      trade       0.43      0.47      0.45        32
+      wheat       0.11      0.19      0.14        21
+
+avg / total       0.62      0.54      0.57       719
+
+accuracy: 0.535466
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.710270
+recall macro: 0.446047
+recall micro: 0.756606
+precision macro: 0.594001
+precision micro: 0.756606
+report:
+             precision    recall  f1-score   support
+
+        acq       0.78      0.85      0.82       172
+       corn       0.00      0.00      0.00        17
+      crude       0.71      0.26      0.38        38
+       earn       0.82      0.99      0.90       296
+      grain       0.46      0.78      0.58        41
+   interest       0.75      0.09      0.16        34
+   money-fx       0.63      0.75      0.68        51
+       ship       1.00      0.18      0.30        17
+      trade       0.78      0.56      0.65        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.73      0.76      0.71       719
+
+accuracy: 0.756606
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.240115
+recall macro: 0.100000
+recall micro: 0.411683
+precision macro: 0.041168
+precision micro: 0.411683
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       172
+       corn       0.00      0.00      0.00        17
+      crude       0.00      0.00      0.00        38
+       earn       0.41      1.00      0.58       296
+      grain       0.00      0.00      0.00        41
+   interest       0.00      0.00      0.00        34
+   money-fx       0.00      0.00      0.00        51
+       ship       0.00      0.00      0.00        17
+      trade       0.00      0.00      0.00        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.17      0.41      0.24       719
+
+accuracy: 0.411683
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.710446
+recall macro: 0.478168
+recall micro: 0.714882
+precision macro: 0.496285
+precision micro: 0.714882
+report:
+             precision    recall  f1-score   support
+
+        acq       0.73      0.88      0.80       172
+       corn       0.14      0.18      0.15        17
+      crude       0.61      0.50      0.55        38
+       earn       0.92      0.88      0.90       296
+      grain       0.20      0.20      0.20        41
+   interest       0.59      0.50      0.54        34
+   money-fx       0.57      0.49      0.53        51
+       ship       0.50      0.53      0.51        17
+      trade       0.71      0.62      0.67        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.71      0.71      0.71       719
+
+accuracy: 0.714882
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.749356
+recall macro: 0.500156
+recall micro: 0.764951
+precision macro: 0.537505
+precision micro: 0.764951
+report:
+             precision    recall  f1-score   support
+
+        acq       0.74      0.97      0.84       172
+       corn       0.00      0.00      0.00        17
+      crude       0.65      0.39      0.49        38
+       earn       0.94      0.92      0.93       296
+      grain       0.35      0.49      0.41        41
+   interest       0.68      0.50      0.58        34
+   money-fx       0.70      0.61      0.65        51
+       ship       0.58      0.41      0.48        17
+      trade       0.72      0.72      0.72        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.75      0.76      0.75       719
+
+accuracy: 0.764951
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.735387
+recall macro: 0.529792
+recall micro: 0.719054
+precision macro: 0.517160
+precision micro: 0.719054
+report:
+             precision    recall  f1-score   support
+
+        acq       0.97      0.75      0.85       172
+       corn       0.10      0.18      0.13        17
+      crude       0.27      0.89      0.41        38
+       earn       0.98      0.91      0.94       296
+      grain       0.08      0.02      0.04        41
+   interest       0.58      0.62      0.60        34
+   money-fx       0.65      0.47      0.55        51
+       ship       0.62      0.47      0.53        17
+      trade       0.73      0.75      0.74        32
+      wheat       0.19      0.24      0.21        21
+
+avg / total       0.78      0.72      0.74       719
+
+accuracy: 0.719054
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.771661
+recall macro: 0.552951
+recall micro: 0.777469
+precision macro: 0.561530
+precision micro: 0.777469
+report:
+             precision    recall  f1-score   support
+
+        acq       0.80      0.97      0.88       172
+       corn       0.06      0.06      0.06        17
+      crude       0.78      0.66      0.71        38
+       earn       0.96      0.92      0.94       296
+      grain       0.20      0.22      0.21        41
+   interest       0.60      0.62      0.61        34
+   money-fx       0.68      0.55      0.61        51
+       ship       0.76      0.76      0.76        17
+      trade       0.76      0.78      0.77        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.77      0.78      0.77       719
+
+accuracy: 0.777469
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.470967
+recall macro: 0.229134
+recall micro: 0.509040
+precision macro: 0.298279
+precision micro: 0.509040
+report:
+             precision    recall  f1-score   support
+
+        acq       0.39      0.66      0.49       172
+       corn       0.00      0.00      0.00        17
+      crude       0.27      0.08      0.12        38
+       earn       0.68      0.73      0.70       296
+      grain       0.25      0.12      0.16        41
+   interest       0.48      0.29      0.36        34
+   money-fx       0.48      0.31      0.38        51
+       ship       0.33      0.06      0.10        17
+      trade       0.10      0.03      0.05        32
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.47      0.51      0.47       719
+
+accuracy: 0.509040
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.718654
+recall macro: 0.619273
+recall micro: 0.719054
+precision macro: 0.605521
+precision micro: 0.719054
+report:
+             precision    recall  f1-score   support
+
+        acq       0.62      0.98      0.76       172
+       corn       0.24      0.29      0.26        17
+      crude       0.79      0.71      0.75        38
+       earn       1.00      0.71      0.83       296
+      grain       0.36      0.20      0.25        41
+   interest       0.60      0.74      0.66        34
+   money-fx       0.78      0.49      0.60        51
+       ship       0.65      0.76      0.70        17
+      trade       0.68      0.84      0.75        32
+      wheat       0.33      0.48      0.39        21
+
+avg / total       0.77      0.72      0.72       719
+
+accuracy: 0.719054
+training GaussianNB()
+testing
+f1 score: 0.598483
+recall macro: 0.390941
+recall micro: 0.570236
+precision macro: 0.385866
+precision micro: 0.570236
+report:
+             precision    recall  f1-score   support
+
+        acq       0.70      0.66      0.68       169
+       corn       0.06      0.24      0.10        21
+      crude       0.39      0.37      0.38        38
+       earn       0.87      0.73      0.80       296
+      grain       0.10      0.07      0.08        45
+   interest       0.33      0.47      0.39        34
+   money-fx       0.47      0.35      0.40        49
+       ship       0.20      0.38      0.26         8
+      trade       0.68      0.55      0.61        38
+      wheat       0.06      0.10      0.07        21
+
+avg / total       0.64      0.57      0.60       719
+
+accuracy: 0.570236
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.716296
+recall macro: 0.446523
+recall micro: 0.757997
+precision macro: 0.590452
+precision micro: 0.757997
+report:
+             precision    recall  f1-score   support
+
+        acq       0.82      0.89      0.85       169
+       corn       0.00      0.00      0.00        21
+      crude       1.00      0.39      0.57        38
+       earn       0.81      0.99      0.89       296
+      grain       0.42      0.60      0.50        45
+   interest       1.00      0.12      0.21        34
+   money-fx       0.57      0.76      0.65        49
+       ship       0.50      0.25      0.33         8
+      trade       0.78      0.47      0.59        38
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.74      0.76      0.72       719
+
+accuracy: 0.757997
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.240115
+recall macro: 0.100000
+recall micro: 0.411683
+precision macro: 0.041168
+precision micro: 0.411683
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       169
+       corn       0.00      0.00      0.00        21
+      crude       0.00      0.00      0.00        38
+       earn       0.41      1.00      0.58       296
+      grain       0.00      0.00      0.00        45
+   interest       0.00      0.00      0.00        34
+   money-fx       0.00      0.00      0.00        49
+       ship       0.00      0.00      0.00         8
+      trade       0.00      0.00      0.00        38
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.17      0.41      0.24       719
+
+accuracy: 0.411683
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.706857
+recall macro: 0.431374
+recall micro: 0.707928
+precision macro: 0.420563
+precision micro: 0.707928
+report:
+             precision    recall  f1-score   support
+
+        acq       0.79      0.86      0.82       169
+       corn       0.00      0.00      0.00        21
+      crude       0.56      0.53      0.54        38
+       earn       0.96      0.93      0.94       296
+      grain       0.14      0.13      0.14        45
+   interest       0.47      0.44      0.45        34
+   money-fx       0.46      0.47      0.46        49
+       ship       0.19      0.38      0.25         8
+      trade       0.65      0.58      0.61        38
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.71      0.71      0.71       719
+
+accuracy: 0.707928
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.759984
+recall macro: 0.537173
+recall micro: 0.773296
+precision macro: 0.527374
+precision micro: 0.773296
+report:
+             precision    recall  f1-score   support
+
+        acq       0.78      0.94      0.85       169
+       corn       0.00      0.00      0.00        21
+      crude       0.74      0.53      0.62        38
+       earn       0.97      0.94      0.95       296
+      grain       0.37      0.49      0.42        45
+   interest       0.54      0.44      0.48        34
+   money-fx       0.57      0.57      0.57        49
+       ship       0.50      0.75      0.60         8
+      trade       0.82      0.71      0.76        38
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.75      0.77      0.76       719
+
+accuracy: 0.773296
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.740511
+recall macro: 0.515556
+recall micro: 0.726008
+precision macro: 0.487681
+precision micro: 0.726008
+report:
+             precision    recall  f1-score   support
+
+        acq       0.97      0.78      0.86       169
+       corn       0.05      0.05      0.05        21
+      crude       0.29      0.76      0.42        38
+       earn       0.98      0.95      0.96       296
+      grain       0.13      0.07      0.09        45
+   interest       0.51      0.53      0.52        34
+   money-fx       0.65      0.45      0.53        49
+       ship       0.36      0.62      0.45         8
+      trade       0.83      0.76      0.79        38
+      wheat       0.11      0.19      0.14        21
+
+avg / total       0.78      0.73      0.74       719
+
+accuracy: 0.726008
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.762317
+recall macro: 0.498776
+recall micro: 0.767733
+precision macro: 0.499700
+precision micro: 0.767733
+report:
+             precision    recall  f1-score   support
+
+        acq       0.83      0.95      0.89       169
+       corn       0.07      0.05      0.06        21
+      crude       0.71      0.58      0.64        38
+       earn       0.98      0.96      0.97       296
+      grain       0.12      0.11      0.12        45
+   interest       0.57      0.50      0.53        34
+   money-fx       0.62      0.57      0.60        49
+       ship       0.31      0.50      0.38         8
+      trade       0.78      0.76      0.77        38
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.76      0.77      0.76       719
+
+accuracy: 0.767733
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.453774
+recall macro: 0.194615
+recall micro: 0.492350
+precision macro: 0.215346
+precision micro: 0.492350
+report:
+             precision    recall  f1-score   support
+
+        acq       0.39      0.61      0.47       169
+       corn       0.00      0.00      0.00        21
+      crude       0.21      0.13      0.16        38
+       earn       0.70      0.77      0.73       296
+      grain       0.19      0.07      0.10        45
+   interest       0.38      0.15      0.21        34
+   money-fx       0.29      0.22      0.25        49
+       ship       0.00      0.00      0.00         8
+      trade       0.00      0.00      0.00        38
+      wheat       0.00      0.00      0.00        21
+
+avg / total       0.44      0.49      0.45       719
+
+accuracy: 0.492350
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.712828
+recall macro: 0.632498
+recall micro: 0.716273
+precision macro: 0.587348
+precision micro: 0.716273
+report:
+             precision    recall  f1-score   support
+
+        acq       0.62      0.96      0.75       169
+       corn       0.35      0.43      0.38        21
+      crude       0.71      0.58      0.64        38
+       earn       1.00      0.72      0.83       296
+      grain       0.31      0.11      0.16        45
+   interest       0.65      0.65      0.65        34
+   money-fx       0.74      0.63      0.68        49
+       ship       0.47      0.88      0.61         8
+      trade       0.72      0.89      0.80        38
+      wheat       0.31      0.48      0.38        21
+
+avg / total       0.76      0.72      0.71       719
+
+accuracy: 0.716273
+training GaussianNB()
+testing
+f1 score: 0.554190
+recall macro: 0.369714
+recall micro: 0.527121
+precision macro: 0.381648
+precision micro: 0.527121
+report:
+             precision    recall  f1-score   support
+
+        acq       0.63      0.71      0.66       157
+       corn       0.03      0.14      0.06        22
+      crude       0.40      0.43      0.42        53
+       earn       0.88      0.64      0.74       283
+      grain       0.07      0.08      0.08        37
+   interest       0.43      0.67      0.52        36
+   money-fx       0.47      0.31      0.37        52
+       ship       0.25      0.35      0.29        17
+      trade       0.50      0.26      0.35        34
+      wheat       0.15      0.11      0.12        28
+
+avg / total       0.61      0.53      0.55       719
+
+accuracy: 0.527121
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.659424
+recall macro: 0.412622
+recall micro: 0.713491
+precision macro: 0.518769
+precision micro: 0.713491
+report:
+             precision    recall  f1-score   support
+
+        acq       0.76      0.90      0.82       157
+       corn       0.00      0.00      0.00        22
+      crude       0.85      0.42      0.56        53
+       earn       0.79      0.96      0.87       283
+      grain       0.35      0.65      0.45        37
+   interest       1.00      0.03      0.05        36
+   money-fx       0.58      0.73      0.64        52
+       ship       0.25      0.06      0.10        17
+      trade       0.62      0.38      0.47        34
+      wheat       0.00      0.00      0.00        28
+
+avg / total       0.68      0.71      0.66       719
+
+accuracy: 0.713491
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.222334
+recall macro: 0.100000
+recall micro: 0.393602
+precision macro: 0.039360
+precision micro: 0.393602
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       157
+       corn       0.00      0.00      0.00        22
+      crude       0.00      0.00      0.00        53
+       earn       0.39      1.00      0.56       283
+      grain       0.00      0.00      0.00        37
+   interest       0.00      0.00      0.00        36
+   money-fx       0.00      0.00      0.00        52
+       ship       0.00      0.00      0.00        17
+      trade       0.00      0.00      0.00        34
+      wheat       0.00      0.00      0.00        28
+
+avg / total       0.15      0.39      0.22       719
+
+accuracy: 0.393602
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.671742
+recall macro: 0.433766
+recall micro: 0.681502
+precision macro: 0.448371
+precision micro: 0.681502
+report:
+             precision    recall  f1-score   support
+
+        acq       0.68      0.90      0.77       157
+       corn       0.04      0.05      0.04        22
+      crude       0.75      0.57      0.65        53
+       earn       0.93      0.89      0.91       283
+      grain       0.12      0.14      0.13        37
+   interest       0.44      0.44      0.44        36
+   money-fx       0.48      0.38      0.43        52
+       ship       0.36      0.47      0.41        17
+      trade       0.68      0.50      0.58        34
+      wheat       0.00      0.00      0.00        28
+
+avg / total       0.67      0.68      0.67       719
+
+accuracy: 0.681502
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.691839
+recall macro: 0.455252
+recall micro: 0.707928
+precision macro: 0.480912
+precision micro: 0.707928
+report:
+             precision    recall  f1-score   support
+
+        acq       0.66      0.97      0.78       157
+       corn       0.00      0.00      0.00        22
+      crude       0.81      0.47      0.60        53
+       earn       0.95      0.88      0.91       283
+      grain       0.21      0.35      0.27        37
+   interest       0.65      0.42      0.51        36
+   money-fx       0.60      0.62      0.61        52
+       ship       0.31      0.29      0.30        17
+      trade       0.61      0.56      0.58        34
+      wheat       0.00      0.00      0.00        28
+
+avg / total       0.70      0.71      0.69       719
+
+accuracy: 0.707928
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.707874
+recall macro: 0.482730
+recall micro: 0.698192
+precision macro: 0.484996
+precision micro: 0.698192
+report:
+             precision    recall  f1-score   support
+
+        acq       0.92      0.83      0.87       157
+       corn       0.05      0.05      0.05        22
+      crude       0.35      0.81      0.49        53
+       earn       0.99      0.89      0.94       283
+      grain       0.06      0.05      0.06        37
+   interest       0.56      0.25      0.35        36
+   money-fx       0.55      0.62      0.58        52
+       ship       0.34      0.65      0.45        17
+      trade       0.91      0.62      0.74        34
+      wheat       0.11      0.07      0.09        28
+
+avg / total       0.75      0.70      0.71       719
+
+accuracy: 0.698192
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.732283
+recall macro: 0.498658
+recall micro: 0.739917
+precision macro: 0.506728
+precision micro: 0.739917
+report:
+             precision    recall  f1-score   support
+
+        acq       0.76      0.98      0.86       157
+       corn       0.00      0.00      0.00        22
+      crude       0.82      0.58      0.68        53
+       earn       0.98      0.92      0.95       283
+      grain       0.06      0.08      0.07        37
+   interest       0.61      0.47      0.53        36
+   money-fx       0.62      0.62      0.62        52
+       ship       0.42      0.65      0.51        17
+      trade       0.73      0.65      0.69        34
+      wheat       0.07      0.04      0.05        28
+
+avg / total       0.74      0.74      0.73       719
+
+accuracy: 0.739917
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.441616
+recall macro: 0.227130
+recall micro: 0.489569
+precision macro: 0.354628
+precision micro: 0.489569
+report:
+             precision    recall  f1-score   support
+
+        acq       0.37      0.66      0.47       157
+       corn       0.00      0.00      0.00        22
+      crude       0.43      0.19      0.26        53
+       earn       0.62      0.74      0.67       283
+      grain       0.18      0.05      0.08        37
+   interest       0.43      0.17      0.24        36
+   money-fx       0.51      0.35      0.41        52
+       ship       0.50      0.06      0.11        17
+      trade       0.50      0.06      0.11        34
+      wheat       0.00      0.00      0.00        28
+
+avg / total       0.46      0.49      0.44       719
+
+accuracy: 0.489569
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.695011
+recall macro: 0.622527
+recall micro: 0.695410
+precision macro: 0.604063
+precision micro: 0.695410
+report:
+             precision    recall  f1-score   support
+
+        acq       0.58      0.97      0.73       157
+       corn       0.38      0.45      0.42        22
+      crude       0.82      0.70      0.76        53
+       earn       1.00      0.66      0.80       283
+      grain       0.24      0.14      0.17        37
+   interest       0.69      0.75      0.72        36
+   money-fx       0.73      0.52      0.61        52
+       ship       0.50      0.76      0.60        17
+      trade       0.58      0.76      0.66        34
+      wheat       0.52      0.50      0.51        28
+
+avg / total       0.75      0.70      0.70       719
+
+accuracy: 0.695410
+training GaussianNB()
+testing
+f1 score: 0.581239
+recall macro: 0.387070
+recall micro: 0.554937
+precision macro: 0.408622
+precision micro: 0.554937
+report:
+             precision    recall  f1-score   support
+
+        acq       0.65      0.68      0.66       168
+       corn       0.07      0.27      0.11        22
+      crude       0.47      0.53      0.49        40
+       earn       0.85      0.69      0.76       291
+      grain       0.11      0.11      0.11        38
+   interest       0.30      0.34      0.32        35
+   money-fx       0.62      0.36      0.45        45
+       ship       0.43      0.36      0.39        25
+      trade       0.56      0.50      0.53        30
+      wheat       0.04      0.04      0.04        25
+
+avg / total       0.62      0.55      0.58       719
+
+accuracy: 0.554937
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.698942
+recall macro: 0.452421
+recall micro: 0.752434
+precision macro: 0.553108
+precision micro: 0.752434
+report:
+             precision    recall  f1-score   support
+
+        acq       0.81      0.90      0.85       168
+       corn       0.00      0.00      0.00        22
+      crude       0.78      0.45      0.57        40
+       earn       0.83      0.99      0.90       291
+      grain       0.37      0.74      0.49        38
+   interest       1.00      0.03      0.06        35
+   money-fx       0.60      0.84      0.70        45
+       ship       0.25      0.04      0.07        25
+      trade       0.89      0.53      0.67        30
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.72      0.75      0.70       719
+
+accuracy: 0.752434
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.233220
+recall macro: 0.100000
+recall micro: 0.404729
+precision macro: 0.040473
+precision micro: 0.404729
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       168
+       corn       0.00      0.00      0.00        22
+      crude       0.00      0.00      0.00        40
+       earn       0.40      1.00      0.58       291
+      grain       0.00      0.00      0.00        38
+   interest       0.00      0.00      0.00        35
+   money-fx       0.00      0.00      0.00        45
+       ship       0.00      0.00      0.00        25
+      trade       0.00      0.00      0.00        30
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.16      0.40      0.23       719
+
+accuracy: 0.404729
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.681466
+recall macro: 0.454000
+recall micro: 0.688456
+precision macro: 0.468318
+precision micro: 0.688456
+report:
+             precision    recall  f1-score   support
+
+        acq       0.70      0.85      0.76       168
+       corn       0.03      0.05      0.04        22
+      crude       0.65      0.55      0.59        40
+       earn       0.91      0.88      0.90       291
+      grain       0.08      0.08      0.08        38
+   interest       0.57      0.34      0.43        35
+   money-fx       0.61      0.51      0.55        45
+       ship       0.50      0.52      0.51        25
+      trade       0.64      0.77      0.70        30
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.68      0.69      0.68       719
+
+accuracy: 0.688456
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.718991
+recall macro: 0.492526
+recall micro: 0.735744
+precision macro: 0.521415
+precision micro: 0.735744
+report:
+             precision    recall  f1-score   support
+
+        acq       0.69      0.94      0.80       168
+       corn       0.00      0.00      0.00        22
+      crude       0.82      0.57      0.68        40
+       earn       0.95      0.89      0.92       291
+      grain       0.27      0.45      0.34        38
+   interest       0.56      0.29      0.38        35
+   money-fx       0.68      0.67      0.67        45
+       ship       0.47      0.28      0.35        25
+      trade       0.65      0.80      0.72        30
+      wheat       0.12      0.04      0.06        25
+
+avg / total       0.72      0.74      0.72       719
+
+accuracy: 0.735744
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.732126
+recall macro: 0.487191
+recall micro: 0.723227
+precision macro: 0.527699
+precision micro: 0.723227
+report:
+             precision    recall  f1-score   support
+
+        acq       0.97      0.84      0.90       168
+       corn       0.12      0.14      0.12        22
+      crude       0.30      0.88      0.45        40
+       earn       0.97      0.91      0.94       291
+      grain       0.11      0.11      0.11        38
+   interest       0.73      0.23      0.35        35
+   money-fx       0.67      0.73      0.70        45
+       ship       0.50      0.16      0.24        25
+      trade       0.83      0.80      0.81        30
+      wheat       0.08      0.08      0.08        25
+
+avg / total       0.78      0.72      0.73       719
+
+accuracy: 0.723227
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.748248
+recall macro: 0.508390
+recall micro: 0.756606
+precision macro: 0.540784
+precision micro: 0.756606
+report:
+             precision    recall  f1-score   support
+
+        acq       0.77      0.93      0.84       168
+       corn       0.00      0.00      0.00        22
+      crude       0.81      0.62      0.70        40
+       earn       0.97      0.94      0.95       291
+      grain       0.12      0.16      0.13        38
+   interest       0.73      0.31      0.44        35
+   money-fx       0.69      0.80      0.74        45
+       ship       0.52      0.52      0.52        25
+      trade       0.80      0.80      0.80        30
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.75      0.76      0.75       719
+
+accuracy: 0.756606
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.440746
+recall macro: 0.215812
+recall micro: 0.486787
+precision macro: 0.292633
+precision micro: 0.486787
+report:
+             precision    recall  f1-score   support
+
+        acq       0.38      0.70      0.49       168
+       corn       0.08      0.05      0.06        22
+      crude       0.38      0.20      0.26        40
+       earn       0.65      0.69      0.67       291
+      grain       0.15      0.05      0.08        38
+   interest       0.50      0.09      0.15        35
+   money-fx       0.38      0.31      0.34        45
+       ship       0.00      0.00      0.00        25
+      trade       0.40      0.07      0.11        30
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.45      0.49      0.44       719
+
+accuracy: 0.486787
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.703033
+recall macro: 0.634382
+recall micro: 0.706537
+precision macro: 0.614289
+precision micro: 0.706537
+report:
+             precision    recall  f1-score   support
+
+        acq       0.60      0.95      0.74       168
+       corn       0.38      0.55      0.44        22
+      crude       0.69      0.72      0.71        40
+       earn       0.99      0.67      0.80       291
+      grain       0.44      0.18      0.26        38
+   interest       0.64      0.40      0.49        35
+   money-fx       0.72      0.73      0.73        45
+       ship       0.62      0.80      0.70        25
+      trade       0.68      0.93      0.79        30
+      wheat       0.38      0.40      0.39        25
+
+avg / total       0.75      0.71      0.70       719
+
+accuracy: 0.706537
+training GaussianNB()
+testing
+f1 score: 0.564235
+recall macro: 0.390251
+recall micro: 0.536857
+precision macro: 0.443131
+precision micro: 0.536857
+report:
+             precision    recall  f1-score   support
+
+        acq       0.60      0.63      0.62       157
+       corn       0.06      0.26      0.10        19
+      crude       0.49      0.51      0.50        37
+       earn       0.84      0.68      0.76       273
+      grain       0.18      0.18      0.18        38
+   interest       0.38      0.44      0.41        48
+   money-fx       0.54      0.35      0.42        60
+       ship       0.71      0.25      0.37        20
+      trade       0.50      0.43      0.46        42
+      wheat       0.12      0.16      0.14        25
+
+avg / total       0.61      0.54      0.56       719
+
+accuracy: 0.536857
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.648459
+recall macro: 0.432362
+recall micro: 0.702364
+precision macro: 0.606764
+precision micro: 0.702364
+report:
+             precision    recall  f1-score   support
+
+        acq       0.72      0.82      0.76       157
+       corn       0.00      0.00      0.00        19
+      crude       0.80      0.43      0.56        37
+       earn       0.76      0.97      0.85       273
+      grain       0.43      0.74      0.54        38
+   interest       1.00      0.06      0.12        48
+   money-fx       0.56      0.73      0.63        60
+       ship       1.00      0.10      0.18        20
+      trade       0.80      0.48      0.60        42
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.70      0.70      0.65       719
+
+accuracy: 0.702364
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.208985
+recall macro: 0.100000
+recall micro: 0.379694
+precision macro: 0.037969
+precision micro: 0.379694
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       157
+       corn       0.00      0.00      0.00        19
+      crude       0.00      0.00      0.00        37
+       earn       0.38      1.00      0.55       273
+      grain       0.00      0.00      0.00        38
+   interest       0.00      0.00      0.00        48
+   money-fx       0.00      0.00      0.00        60
+       ship       0.00      0.00      0.00        20
+      trade       0.00      0.00      0.00        42
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.14      0.38      0.21       719
+
+accuracy: 0.379694
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.675559
+recall macro: 0.456269
+recall micro: 0.687065
+precision macro: 0.485281
+precision micro: 0.687065
+report:
+             precision    recall  f1-score   support
+
+        acq       0.68      0.89      0.77       157
+       corn       0.07      0.05      0.06        19
+      crude       0.73      0.59      0.66        37
+       earn       0.91      0.89      0.90       273
+      grain       0.11      0.13      0.12        38
+   interest       0.49      0.42      0.45        48
+   money-fx       0.49      0.47      0.48        60
+       ship       0.73      0.55      0.63        20
+      trade       0.63      0.57      0.60        42
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.67      0.69      0.68       719
+
+accuracy: 0.687065
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.704799
+recall macro: 0.474184
+recall micro: 0.721836
+precision macro: 0.552263
+precision micro: 0.721836
+report:
+             precision    recall  f1-score   support
+
+        acq       0.66      0.98      0.79       157
+       corn       0.00      0.00      0.00        19
+      crude       0.95      0.51      0.67        37
+       earn       0.95      0.89      0.92       273
+      grain       0.27      0.37      0.31        38
+   interest       0.57      0.42      0.48        48
+   money-fx       0.57      0.58      0.58        60
+       ship       0.70      0.35      0.47        20
+      trade       0.71      0.60      0.65        42
+      wheat       0.14      0.04      0.06        25
+
+avg / total       0.72      0.72      0.70       719
+
+accuracy: 0.721836
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.716950
+recall macro: 0.498170
+recall micro: 0.699583
+precision macro: 0.526452
+precision micro: 0.699583
+report:
+             precision    recall  f1-score   support
+
+        acq       0.92      0.83      0.87       157
+       corn       0.12      0.11      0.11        19
+      crude       0.25      0.78      0.38        37
+       earn       0.98      0.90      0.94       273
+      grain       0.20      0.18      0.19        38
+   interest       0.56      0.56      0.56        48
+   money-fx       0.53      0.47      0.50        60
+       ship       0.79      0.55      0.65        20
+      trade       0.81      0.52      0.64        42
+      wheat       0.10      0.08      0.09        25
+
+avg / total       0.76      0.70      0.72       719
+
+accuracy: 0.699583
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.744753
+recall macro: 0.519398
+recall micro: 0.753825
+precision macro: 0.564854
+precision micro: 0.753825
+report:
+             precision    recall  f1-score   support
+
+        acq       0.76      0.99      0.86       157
+       corn       0.11      0.11      0.11        19
+      crude       0.85      0.62      0.72        37
+       earn       0.97      0.93      0.95       273
+      grain       0.19      0.24      0.21        38
+   interest       0.58      0.52      0.55        48
+   money-fx       0.59      0.62      0.60        60
+       ship       0.80      0.60      0.69        20
+      trade       0.80      0.57      0.67        42
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.75      0.75      0.74       719
+
+accuracy: 0.753825
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.430701
+recall macro: 0.214963
+recall micro: 0.481224
+precision macro: 0.246121
+precision micro: 0.481224
+report:
+             precision    recall  f1-score   support
+
+        acq       0.37      0.67      0.48       157
+       corn       0.00      0.00      0.00        19
+      crude       0.19      0.16      0.17        37
+       earn       0.65      0.75      0.69       273
+      grain       0.00      0.00      0.00        38
+   interest       0.27      0.17      0.21        48
+   money-fx       0.49      0.33      0.40        60
+       ship       0.00      0.00      0.00        20
+      trade       0.50      0.07      0.12        42
+      wheat       0.00      0.00      0.00        25
+
+avg / total       0.42      0.48      0.43       719
+
+accuracy: 0.481224
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.717242
+recall macro: 0.638778
+recall micro: 0.716273
+precision macro: 0.652253
+precision micro: 0.716273
+report:
+             precision    recall  f1-score   support
+
+        acq       0.59      0.97      0.74       157
+       corn       0.29      0.37      0.33        19
+      crude       0.83      0.78      0.81        37
+       earn       0.99      0.69      0.82       273
+      grain       0.39      0.24      0.30        38
+   interest       0.60      0.67      0.63        48
+   money-fx       0.76      0.58      0.66        60
+       ship       0.80      0.80      0.80        20
+      trade       0.70      0.76      0.73        42
+      wheat       0.57      0.52      0.54        25
+
+avg / total       0.76      0.72      0.72       719
+
+accuracy: 0.716273
+training GaussianNB()
+testing
+f1 score: 0.565164
+recall macro: 0.338151
+recall micro: 0.536857
+precision macro: 0.377381
+precision micro: 0.536857
+report:
+             precision    recall  f1-score   support
+
+        acq       0.66      0.59      0.62       185
+       corn       0.00      0.00      0.00        13
+      crude       0.46      0.52      0.49        42
+       earn       0.80      0.71      0.75       276
+      grain       0.14      0.13      0.14        38
+   interest       0.33      0.47      0.39        34
+   money-fx       0.43      0.30      0.35        50
+       ship       0.31      0.19      0.24        21
+      trade       0.59      0.40      0.48        42
+      wheat       0.06      0.06      0.06        18
+
+avg / total       0.60      0.54      0.57       719
+
+accuracy: 0.536857
+training MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.707698
+recall macro: 0.440092
+recall micro: 0.752434
+precision macro: 0.571356
+precision micro: 0.752434
+report:
+             precision    recall  f1-score   support
+
+        acq       0.79      0.89      0.84       185
+       corn       0.00      0.00      0.00        13
+      crude       0.95      0.48      0.63        42
+       earn       0.80      0.97      0.88       276
+      grain       0.49      0.82      0.61        38
+   interest       1.00      0.12      0.21        34
+   money-fx       0.55      0.72      0.63        50
+       ship       0.33      0.05      0.08        21
+      trade       0.79      0.36      0.49        42
+      wheat       0.00      0.00      0.00        18
+
+avg / total       0.73      0.75      0.71       719
+
+accuracy: 0.752434
+training BernoulliNB(alpha=1.0, binarize=1.0, class_prior=None, fit_prior=True)
+testing
+f1 score: 0.212959
+recall macro: 0.100000
+recall micro: 0.383866
+precision macro: 0.038387
+precision micro: 0.383866
+report:
+             precision    recall  f1-score   support
+
+        acq       0.00      0.00      0.00       185
+       corn       0.00      0.00      0.00        13
+      crude       0.00      0.00      0.00        42
+       earn       0.38      1.00      0.55       276
+      grain       0.00      0.00      0.00        38
+   interest       0.00      0.00      0.00        34
+   money-fx       0.00      0.00      0.00        50
+       ship       0.00      0.00      0.00        21
+      trade       0.00      0.00      0.00        42
+      wheat       0.00      0.00      0.00        18
+
+avg / total       0.15      0.38      0.21       719
+
+accuracy: 0.383866
+training DecisionTreeClassifier(compute_importances=None, criterion=entropy,
+            max_depth=None, max_features=None, min_density=None,
+            min_samples_leaf=5, min_samples_split=5, random_state=None,
+            splitter=best)
+testing
+f1 score: 0.693062
+recall macro: 0.426597
+recall micro: 0.695410
+precision macro: 0.462303
+precision micro: 0.695410
+report:
+             precision    recall  f1-score   support
+
+        acq       0.71      0.88      0.78       185
+       corn       0.05      0.08      0.06        13
+      crude       0.71      0.60      0.65        42
+       earn       0.92      0.87      0.89       276
+      grain       0.12      0.11      0.11        38
+   interest       0.46      0.38      0.42        34
+   money-fx       0.50      0.48      0.49        50
+       ship       0.32      0.29      0.30        21
+      trade       0.83      0.60      0.69        42
+      wheat       0.00      0.00      0.00        18
+
+avg / total       0.70      0.70      0.69       719
+
+accuracy: 0.695410
+training RandomForestClassifier(bootstrap=True, compute_importances=None,
+            criterion=entropy, max_depth=None, max_features=auto,
+            min_density=None, min_samples_leaf=5, min_samples_split=5,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0)
+testing
+f1 score: 0.745233
+recall macro: 0.479942
+recall micro: 0.755216
+precision macro: 0.528143
+precision micro: 0.755216
+report:
+             precision    recall  f1-score   support
+
+        acq       0.74      0.96      0.84       185
+       corn       0.00      0.00      0.00        13
+      crude       0.80      0.57      0.67        42
+       earn       0.96      0.89      0.93       276
+      grain       0.35      0.45      0.39        38
+   interest       0.61      0.32      0.42        34
+   money-fx       0.59      0.60      0.59        50
+       ship       0.50      0.29      0.36        21
+      trade       0.73      0.71      0.72        42
+      wheat       0.00      0.00      0.00        18
+
+avg / total       0.75      0.76      0.75       719
+
+accuracy: 0.755216
+training Perceptron(alpha=0.0001, class_weight=None, eta0=1.0, fit_intercept=True,
+      n_iter=5, n_jobs=1, penalty=None, random_state=0, shuffle=False,
+      verbose=0, warm_start=False)
+testing
+f1 score: 0.758432
+recall macro: 0.513377
+recall micro: 0.741307
+precision macro: 0.526098
+precision micro: 0.741307
+report:
+             precision    recall  f1-score   support
+
+        acq       0.96      0.85      0.91       185
+       corn       0.08      0.15      0.11        13
+      crude       0.72      0.69      0.71        42
+       earn       0.98      0.89      0.93       276
+      grain       0.17      0.13      0.15        38
+   interest       0.57      0.38      0.46        34
+   money-fx       0.35      0.80      0.49        50
+       ship       0.47      0.43      0.45        21
+      trade       0.85      0.69      0.76        42
+      wheat       0.09      0.11      0.10        18
+
+avg / total       0.79      0.74      0.76       719
+
+accuracy: 0.741307
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.768382
+recall macro: 0.505510
+recall micro: 0.769124
+precision macro: 0.543708
+precision micro: 0.769124
+report:
+             precision    recall  f1-score   support
+
+        acq       0.81      0.95      0.88       185
+       corn       0.00      0.00      0.00        13
+      crude       0.79      0.74      0.77        42
+       earn       0.97      0.92      0.94       276
+      grain       0.17      0.18      0.18        38
+   interest       0.61      0.41      0.49        34
+   money-fx       0.62      0.66      0.64        50
+       ship       0.60      0.43      0.50        21
+      trade       0.81      0.71      0.76        42
+      wheat       0.05      0.06      0.05        18
+
+avg / total       0.77      0.77      0.77       719
+
+accuracy: 0.769124
+training KNeighborsClassifier(algorithm=auto, leaf_size=30, metric=minkowski,
+           n_neighbors=10, p=2, weights=uniform)
+testing
+f1 score: 0.457609
+recall macro: 0.221928
+recall micro: 0.499305
+precision macro: 0.275595
+precision micro: 0.499305
+report:
+             precision    recall  f1-score   support
+
+        acq       0.39      0.70      0.50       185
+       corn       0.00      0.00      0.00        13
+      crude       0.48      0.24      0.32        42
+       earn       0.68      0.70      0.69       276
+      grain       0.11      0.03      0.04        38
+   interest       0.31      0.15      0.20        34
+   money-fx       0.45      0.36      0.40        50
+       ship       0.00      0.00      0.00        21
+      trade       0.33      0.05      0.08        42
+      wheat       0.00      0.00      0.00        18
+
+avg / total       0.46      0.50      0.46       719
+
+accuracy: 0.499305
+training NearestCentroid(metric=euclidean, shrink_threshold=None)
+testing
+f1 score: 0.724303
+recall macro: 0.635038
+recall micro: 0.726008
+precision macro: 0.623091
+precision micro: 0.726008
+report:
+             precision    recall  f1-score   support
+
+        acq       0.65      0.99      0.78       185
+       corn       0.40      0.62      0.48        13
+      crude       0.79      0.74      0.77        42
+       earn       1.00      0.68      0.81       276
+      grain       0.38      0.24      0.29        38
+   interest       0.60      0.62      0.61        34
+   money-fx       0.65      0.48      0.55        50
+       ship       0.71      0.71      0.71        21
+      trade       0.73      0.83      0.78        42
+      wheat       0.32      0.44      0.37        18
+
+avg / total       0.77      0.73      0.72       719
+
+accuracy: 0.726008
+classifier: RandomForestClassifier
+accuracy mean: 0.742564 standard deviation: 0.018824
+confidence: [0.705670, 0.779458]
+classifier: Perceptron
+accuracy mean: 0.715320 standard deviation: 0.014534
+confidence: [0.686833, 0.743808]
+classifier: LinearSVC
+accuracy mean: 0.765356 standard deviation: 0.011738
+confidence: [0.742350, 0.788362]
+classifier: GaussianNB
+accuracy mean: 0.550731 standard deviation: 0.016708
+confidence: [0.517983, 0.583478]
+classifier: NearestCentroid
+accuracy mean: 0.715178 standard deviation: 0.010247
+confidence: [0.695094, 0.735261]
+classifier: KNeighborsClassifier
+accuracy mean: 0.491522 standard deviation: 0.011612
+confidence: [0.468762, 0.514282]
+classifier: MultinomialNB
+accuracy mean: 0.743255 standard deviation: 0.020728
+confidence: [0.702627, 0.783882]
+classifier: BernoulliNB
+accuracy mean: 0.399359 standard deviation: 0.010567
+confidence: [0.378647, 0.420071]
+classifier: DecisionTreeClassifier
+accuracy mean: 0.689608 standard deviation: 0.015888
+confidence: [0.658467, 0.720749]
+training LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+testing
+f1 score: 0.834713
+recall macro: 0.640737
+recall micro: 0.841935
+precision macro: 0.694950
+precision micro: 0.841935
+report:
+             precision    recall  f1-score   support
+
+        acq       0.82      0.98      0.90       718
+       corn       0.39      0.25      0.30        56
+      crude       0.77      0.75      0.76       189
+       earn       0.98      0.96      0.97      1088
+      grain       0.54      0.54      0.54       149
+   interest       0.75      0.53      0.62       133
+   money-fx       0.72      0.72      0.72       179
+       ship       0.71      0.49      0.58        89
+      trade       0.81      0.87      0.84       118
+      wheat       0.45      0.31      0.37        71
+
+avg / total       0.84      0.84      0.83      2790
+
+accuracy: 0.841935
+****************** Clustering ******************
+KMeans(copy_x=True, init=k-means++, max_iter=300, n_clusters=120, n_init=10,
+    n_jobs=1, precompute_distances=True, random_state=None, tol=0.0001,
+    verbose=0)
+Homogeneity: 0.392
+Completeness: 0.390
+V-measure: 0.391
+Adjusted Rand index: 0.175
+ ***************** 
+DBSCAN(algorithm=auto, eps=0.5, leaf_size=30, metric=euclidean, min_samples=5,
+    p=None, random_state=None)
+Homogeneity: 0.005
+Completeness: 0.062
+V-measure: 0.008
+Adjusted Rand index: 0.001
+ ***************** 
+Ward(compute_full_tree=auto, connectivity=None, copy=True,
+   memory=Memory(cachedir=None), n_clusters=120, n_components=None)
+Homogeneity: 0.267
+Completeness: 0.183
+V-measure: 0.217
+Adjusted Rand index: 0.023
+ ***************** 
+GMM
+training accuracy = 0.348
+test accuracy = 0.287
