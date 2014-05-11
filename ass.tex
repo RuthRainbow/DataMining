@@ -178,6 +178,8 @@ As the tfidf vectoriser was the most successful we will look at the results for 
 
 Overall for tfidf the precision and recall average values do not differ very much - this suggests the classifier is equally likely to classify false positives and false negatives. This seems to suggest there are an equal number of incorrect examples on either side of the decision boundary in the SVM, further suggesting that the classifier has not overfit the data. This makes sense as linear models tend to underfit due to their low variance and high bias.
 
+When using bigram features with tfidf the most successful accuracy was improved by 0.002\%. This shows that the addition of bigrams did not greatly affect the performance of the SVM method, which remained the most successful classifier. Most other classifiers performed either the same or worse, with the exception of \verb|GaussianNB|, the mean accuracy of which improved from 55\% to 69\%. This suggests that some classifiers may perform better with bigrams but most are not affected. Using bigrams greatly increases the number of features and so greatly increases the training time for the classifiers. This increased time was only worthwhile for the \verb|GaussianNB| classifier, and did not affect the best classifier overall significantly. Because of this it seems better to use unigrams for this classification task.
+
 \subsubsection{Comparison of classifier performance}
 As the tfidf vectoriser produced the most successful classifier we will use the results from this to compare classifiers over all 10 folds. The results for this can be found in table TODO. It can be seen that a wide range of accuracies were obtained, with \verb|BernoulliNB| performing the worst at an average of 39.9\% accuracy, and |LinearSVC| performing the best at an average accuracy of 76.5\%. This range was greater than that obtained by the other vectorisers, which had a much higher worst average and a lower best average. This suggests that the tfidf method was not suitable for some classifiers.
 
@@ -229,14 +231,17 @@ Firstly the unsupervised clustering algorithms will be evaluated. It can be seen
 
 For GMM higher accuracies were obtained than for the unsupervised methods, although the accuracies were lower than those obtained by the classification algorithms. The best results were obtained with the count vectoriser, suggesting the number of features is important to this algorithm.
 
+For clustering using bigram features all supervised methods had very poor ARI values, and all other metrics were not improved over unigrams. TODO accuracy?!
+
 \section{Conclusion}
 The results discussed above show that text classification is a difficult task, particularly when there are a lot of topics to classify or cluster over. Sufficient numbers of examples must be given in order for the classifiers to gain an acceptable level of accuracy. The problem becomes more pronounced when many topics overlap, causing classifiers difficulty in finding distinguishing features for topics. Better results can be obtained when features are normalised, however different classification methods perform better with different methods of vectorisation and feature selection. A greater number of features can give better results, however including too many features risks including irrelevant information in the final feature set.
 
 \appendix
 
+\clearpage
 \section{Count Vectorisation Results}
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{l|llll}
 \textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
 \textbf{acq}         & 0.95               & 0.86            & 0.9               & 718              \\
@@ -254,7 +259,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {Count best classifier: MultinomialNB; per topic metrics}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{l|l}
 \textbf{Accuracy}        & 0.816846 \\
 \textbf{Recall macro}    & 0.614784 \\
@@ -265,7 +270,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {Count best classifier: MultinomialNB; average metrics}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{l|lll}
 \textbf{Classifier}             & \textbf{Mean} & \textbf{Std. Dev.} & \textbf{Confidence Interval} \\ \hline
 \textbf{GaussianNB}             & 0.549348      & 0.012712                    & {[}0.524431, 0.574264{]}     \\
@@ -281,9 +286,10 @@ The results discussed above show that text classification is a difficult task, p
 \caption {Count: Confidence intervals for accuracy of all classifiers}
 \end{table}
 
+\clearpage
 \section{Binary Vectorisation Results}
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{l|llll}
 \textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
 \textbf{acq}         & 0.95               & 0.86            & 0.9               & 718              \\
@@ -301,7 +307,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {Binary best classifier: MultinomialNB; per topic metrics}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{l|l}
 \textbf{Accuracy}        & 0.810753 \\
 \textbf{Recall macro}    & 0.579237 \\
@@ -312,7 +318,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {Binary best classifier: MultinomialNB; average metrics}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{tabular}{llll}
 \textbf{Classifier}             & \textbf{Mean} & \textbf{Standard Deviation} & \textbf{Confidence Interval} \\
 \textbf{GaussianNB}             & 0.549486      & 0.017148                    & {[}0.515876, 0.583096{]}     \\
@@ -328,9 +334,10 @@ The results discussed above show that text classification is a difficult task, p
 \caption {Binary: Confidence intervals for accuracy of all classifiers}
 \end{table}
 
+\clearpage
 \section{TFIDF Vectorisation Results}
 
-\begin{table}[h!]
+\begin{table}[H]
 \label{tab:title}
 \begin{tabular}{l|llll}
 \textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
@@ -349,7 +356,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {TFIDF best classifier: LinearSVC; per topic metrics}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 \begin{tabular}{l|l}
 \textbf{Accuracy}        & 0.841935 \\
 \textbf{Recall macro}    & 0.640737 \\
@@ -360,7 +367,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {TFIDF best classifier: LinearSVC; average metrics}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 \begin{tabular}{l|lll}
 \textbf{Classifier}             & \textbf{Mean} & \textbf{Std. Dev.} & \textbf{Confidence Interval} \\ \hline
 \textbf{GaussianNB}             & 0.550731      & 0.016708                    & {[}0.517983, 0.583478{]}     \\
@@ -376,7 +383,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {TFIDF: Confidence intervals for accuracy of all classifiers}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 \begin{tabular}{llll}
 \textbf{Fold}      & \textbf{RandomForest} & \textbf{LinearSVC} & \textbf{MultinomialNB} \\ \hline
 \textbf{1}         & 0.746                 & 0.779              & 0.760                  \\
@@ -395,7 +402,7 @@ The results discussed above show that text classification is a difficult task, p
 \caption {TFIDF: Per fold accuracies for three best classifiers}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 \begin{tabular}{llll}
 \textbf{Fold}      & \textbf{RF-SVM} & \textbf{RF-NB} & \textbf{SVM-NB} \\ \hline
 \textbf{1}         & -0.033          & -0.014         & 0.019           \\
@@ -416,6 +423,53 @@ The results discussed above show that text classification is a difficult task, p
 \caption{TFIDF: Paired t-test for per fold accuracies of three best classifiers}
 \end{table}
 
+\clearpage
+\section{TFIDF Bigram Results}
+\begin{table}[h]
+\begin{tabular}{l|llll}
+\textbf{Topic}       & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
+\textbf{acq}         & 0.83               & 0.98            & 0.9               & 718              \\
+\textbf{corn}        & 0.47               & 0.12            & 0.2               & 56               \\
+\textbf{crude}       & 0.8                & 0.74            & 0.77              & 189              \\
+\textbf{earn}        & 0.98               & 0.96            & 0.97              & 1088             \\
+\textbf{grain}       & 0.51               & 0.7             & 0.59              & 149              \\
+\textbf{interest}    & 0.77               & 0.5             & 0.61              & 133              \\
+\textbf{money-fx}    & 0.69               & 0.74            & 0.72              & 179              \\
+\textbf{ship}        & 0.69               & 0.57            & 0.63              & 89               \\
+\textbf{trade}       & 0.85               & 0.88            & 0.86              & 118              \\
+\textbf{wheat}       & 0.5                & 0.14            & 0.22              & 71               \\
+\textbf{avg / total} & 0.84               & 0.84            & 0.83              & 2790            
+\end{tabular}
+\caption {TFIDF bigrams best classifier: LinearSVC; per topic metrics}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{l|l}
+\textbf{Accuracy}        & 0.844444 \\
+\textbf{Recall macro}    & 0.633236 \\
+\textbf{Recall micro}    & 0.844444 \\
+\textbf{Precision macro} & 0.708746 \\
+\textbf{Precision micro} & 0.844444
+\end{tabular}
+\caption {TFIDF bigrams best classifier: LinearSVC; average metrics}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{l|lll}
+\textbf{Classifier}             & \textbf{Mean} & \textbf{Std. Dev.} & \textbf{Confidence Interval} \\ \hline
+\textbf{GaussianNB}             & 0.690992      & 0.018064           & {[}0.655587, 0.726397{]}     \\
+\textbf{MultinomialNB}          & 0.669586      & 0.016986           & {[}0.636294, 0.702879{]}     \\
+\textbf{DecisionTreeClassifier} & 0.685991      & 0.01124            & {[}0.663959, 0.708022{]}     \\
+\textbf{RandomForestClassifier} & 0.73311       & 0.019611           & {[}0.694674, 0.771547{]}     \\
+\textbf{Perceptron}             & 0.681266      & 0.019072           & {[}0.643885, 0.718647{]}     \\
+\textbf{LinearSVC}              & 0.764111      & 0.01521            & {[}0.734299, 0.793924{]}     \\
+\textbf{KNeighborsClassifier}   & 0.422849      & 0.019933           & {[}0.383781, 0.461918{]}     \\
+\textbf{NearestCentroid}        & 0.680293      & 0.013694           & {[}0.653453, 0.707134{]}    
+\end{tabular}
+\caption {TFIDF bigrams: Confidence intervals for accuracy of all classifiers}
+\end{table}
+
+\clearpage
 \section{Clustering Results}
 \begin{table}[h]
 \begin{tabular}{l|llll}
@@ -471,6 +525,25 @@ The results discussed above show that text classification is a difficult task, p
 \caption{TFIDF: GMM clustering results}
 \end{table}
 
+\begin{table}[h]
+\begin{tabular}{l|llll}
+\textbf{Algorithm} & \textbf{Homogeneity} & \textbf{Completeness} & \textbf{V-measure} & \textbf{ARI} \\ \hline
+\textbf{KMeans}    & 0.166                & 0.314                 & 0.217              & -0.064       \\
+\textbf{DBSCAN}    & 0.005                & 0.062                 & 0.008              & 0.001        \\
+\textbf{Ward}      & 0.242                & 0.167                 & 0.198              & 0.017       
+\end{tabular}
+\caption{TFIDF bigrams: Unsupervised clustering results}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{l|ll}
+             & \textbf{Training accuracy} & \textbf{Test accuracy} \\ \hline
+\textbf{GMM} & 3.753                      & 1.685                 
+\end{tabular}
+\caption{TFIDF bigrams: GMM clustering results}
+\end{table}
+
+\clearpage
 \section{Count Vectoriser 10-fold Results}
 \begin{table}[h]
 \begin{tabular}{llllllll}
@@ -1359,7 +1432,7 @@ The results discussed above show that text classification is a difficult task, p
 8             & NearestCentroid        & trade           & 0.76               & 0.68            & 0.72              & 41               \\
 8             & NearestCentroid        & wheat           & 0.45               & 0.56            & 0.5               & 18               \\\end{tabular}
 \end{table}
-\begin{table}[h]
+\begin{table}[H]
 \begin{tabular}{lllllll}
 \textbf{Fold} & \textbf{Classifier}    & \textbf{Topics} & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\ \hline
 9             & GaussianNB             & acq             & 0.73               & 0.66            & 0.69              & 179              \\
@@ -1407,7 +1480,7 @@ The results discussed above show that text classification is a difficult task, p
 9             & RandomForestClassifier & crude           & 0.77               & 0.59            & 0.67              & 29               \\
 9             & RandomForestClassifier & earn            & 0.84               & 0.96            & 0.9               & 270              \\\end{tabular}
 \end{table}
-\begin{table}[h]
+\begin{table}[H]
 \begin{tabular}{lllllll}
 \textbf{Fold} & \textbf{Classifier}    & \textbf{Topics} & \textbf{precision} & \textbf{recall} & \textbf{f1-score} & \textbf{support} \\ \hline
 9             & RandomForestClassifier & grain           & 0.38               & 0.55            & 0.45              & 51               \\
