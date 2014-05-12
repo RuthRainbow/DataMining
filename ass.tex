@@ -76,7 +76,9 @@ TODO SHOW RESULTS for each lemmatiser
 \subsection{Bag of words}
 Firstly, a `bag of words' approach was implemented, where each text is represented as a vector where every column represents a word in the vocabulary. Entries in the vector indicate the presence or absence of a word. This creates a sparse vector representation of every text.
 
-This approach was implemented in two ways. Firstly, using \verb|nltk| to create a dictionary of all vocabulary and using this to convert each text. This allowed any words which appeared in less than $n$ documents to be filtered out to attempt to reduce the dimensionality of the final vectors.
+This approach was implemented in two ways. Firstly, using \verb|nltk| to create a dictionary of all vocabulary and using this to convert each text. This allowed any words which appeared in less than $n$ documents to be filtered out to attempt to reduce the dimensionality of the final vectors. TODO this was removed? The below shows the results of converting a text to a bag of words:
+
+[(0, 2), (1, 1), (2, 1), (3, 1), (4, 1), (5, 2), (6, 1), (7, 1), (8, 1), (9, 2), (10, 2), (11, 1), (12, 1), (13, 2), (14, 1), (15, 1), (16, 1), (17, 1), (18, 1), (19, 1), (20, 1), (21, 1), (22, 5), (23, 1), (24, 1), (25, 5), (26, 2), (27, 1), (28, 2), (29, 1), (30, 1), (31, 1), (32, 2), (33, 5), (34, 4), (35, 1), (36, 2), (37, 1), (38, 3), (39, 2), (40, 6), (41, 2), (42, 1), (43, 3), (44, 1), (45, 4), (46, 2)]
 
 The second approach used scilearn's \verb|CountVectorizer|. This simply creates feature vectors for each text with a frequency count for each ``feature'' or word in the vocabulary. Optionally this can be used as a binary vectoriser, indicating only the presence or absence of a word.
 
@@ -84,8 +86,48 @@ The second approach used scilearn's \verb|CountVectorizer|. This simply creates 
 This approach attempts to normalise the data and take into account the relative frequencies of words in the text in comparison to the frequency over all texts. This approach provides more information than the previous approach as it also takes into account frequency, which may be important to classification.
 
 The first implementation of this was provided by manually summing the frequencies of all words and applying the formaluae for term frequency (TF) and inverse document frequency (IDF) as defined in the lectures:
-\\$tf(t, d) = \frac{Frequency of term t in document d}{max. frequency of t in any doc d}$
-\\$idf(t, D) = log\frac{|D|}{df(t,D)}$ where $D$ is the set of all documents. The words with the highest 50 TF-IDF scores were used as features.
+
+\begin{center}
+$tf(t, d) = \frac{Frequency\:of\:term\:t\:in\:document\:d}{max.\:frequency\:of\:t\:in\:any\:doc\:d}$
+\end{center}
+
+\begin{center}
+$idf(t, D) = log\frac{|D|}{df(t,D)}$
+\end{center}
+
+where $D$ is the set of all documents. The words with the highest 50 TF-IDF scores were used as features. The example below shows a text and it's associated TF-IDF features, to three decimal places:
+
+\begin{verbatim}
+The U.S. Agriculture Department reported the farmer-owned
+reserve national five-day average price through February 25
+as follows (Dlrs/Bu-Sorghum Cwt) -
+         Natl   Loan           Release   Call
+         Avge   Rate-X  Level    Price  Price
+ Wheat   2.55   2.40       IV     4.65     --
+                            V     4.65     --
+                           VI     4.45     --
+ Corn    1.35   1.92       IV     3.15   3.15
+                            V     3.25     --
+ X - 1986 Rates.
+
+          Natl   Loan          Release   Call
+          Avge   Rate-X  Level   Price  Price
+ Oats     1.24   0.99        V    1.65    -- 
+ Barley   n.a.   1.56       IV    2.55   2.55
+                             V    2.65    -- 
+ Sorghum  2.34   3.25-Y     IV    5.36   5.36
+                             V    5.54    -- 
+    Reserves I, II and III have matured. Level IV reflects
+grain entered after Oct 6, 1981 for feedgrain and after July
+23, 1981 for wheat. Level V wheat/barley after 5/14/82,
+corn/sorghum after 7/1/82. Level VI covers wheat entered after
+January 19, 1984.  X-1986 rates. Y-dlrs per CWT (100 lbs).
+n.a.-not available.
+\end{verbatim}
+
+[('iv', 0.346), ('x', 0.266), ('level', 0.163), ('age', 0.148), ('vi', 0.147), ('y', 0.144), ('price', 0.122), ('sorghum', 0.107), ('rate', 0.107), ('reserve', 0.101)]
+
+It can be seen that the roman numerial features had very high TFIDF values. This may be because this sort of report only appears for topics related to wheat, grain and corn, as this article was labelled. Sorghum is also an important feature, as this is another cereal crop.
 
 The second implementation used the \verb|TfidfVectorizer| from SciLearn. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, so only the simpler preprocessing is required for SciLearn. The same lemmatiser is applied as for the \verb|CountVectorizer|. This vectoriser also normalises the features.
 
@@ -102,9 +144,39 @@ To further reduce dimensionality the feature vectors a form of Principle Compone
 \subsection{Topic Models}
 Topic models were created using the \verb|gensim| module. A `bag of words' approach was used as described above. All texts are then converted to vectors, mapping word identifiers to the frequency of the words occurring in that text. These vectors can then be used to create topic models, which give probability distributions for each text appearing in a given number of topics. The models were created using 10 topics, as we know this is the number present from the preprocessing.
 
-Firstly a Latent Dirichlet Allocation (LDA) model was created, as described in the lectures. This was created by passing the dictionary and the vectors into an \verb|LdaModel| object, from the \verb|gensim| module. Here are the results obtained from the first three texts:
+Firstly a Latent Dirichlet Allocation (LDA) model was created, as described in the lectures. This was created by passing the dictionary and the vectors into an \verb|LdaModel| object, from the \verb|gensim| module.
 
-TODO
+The below shows the ten most important features for each of the ten topics:
+
+\begin{enumerate}
+\item 0.186*v + 0.134*man + 0.069*net + 0.055*day + 0.053*loss + 0.032*rev + 0.030*profit + 0.020*note + 0.016*ave + 0.015*sale
+\item 0.035*april + 0.032*record + 0.027*pay + 0.026*v + 0.024*prior + 0.018*only + 0.012*rate + 0.012*dollar + 0.007*payable + 0.007*june
+\item 0.031*share + 0.019*day + 0.018*offer + 0.013*stock + 0.012*company + 0.011*man + 0.011*put + 0.009*common + 0.008*tender + 0.008*shareholder
+\item 0.019*trade + 0.012*japan + 0.009*market + 0.007*country + 0.006*state + 0.006*price + 0.006*policy + 0.006*c + 0.006*japanese + 0.006*import
+\item 0.017*put + 0.015*day + 0.012*man + 0.010*company + 0.009*new + 0.008*corp + 0.007*year + 0.007*bank + 0.006*sale + 0.005*acquire
+\item 0.047*day + 0.024*man + 0.014*year + 0.013*share + 0.012*company + 0.012*quarter + 0.010*put + 0.010*first + 0.009*expect + 0.008*oil
+\item 0.030*rate + 0.026*bank + 0.024*put + 0.020*market + 0.010*man + 0.009*money + 0.008*central + 0.008*reserve + 0.008*day + 0.007*st
+\item 0.023*share + 0.015*company + 0.013*put + 0.010*stock + 0.009*security + 0.008*stake + 0.008*exchange + 0.007*corp + 0.007*common + 0.007*co
+\item 0.024*oil + 0.012*gulf + 0.006*put + 0.006*attack + 0.006*state + 0.006*italian + 0.005*ship + 0.005*banker + 0.004*platform + 0.004*gas
+\item 0.048*man + 0.033*tone + 0.019*year + 0.016*put + 0.016*export + 0.015*wheat + 0.012*last + 0.010*day + 0.009*grain + 0.007*import
+\end{enumerate}
+
+From these features we can see try to guess the corresponding topics. For example topic 10 seems to be related to either wheat or grain, as both of these key words have been picked out. This also suggests a large overlap in these two topics. For topic 1 `v' has been picked out. This is the lemmatised form of `vs', which is used in `earn' topics very frequently. Topic 9 seems to refer to `crude' as it contains a lot of words to do with oil. Fromt his data it also seems important not to filter out dates - topic 2 has `april' as its most important feature, as it may refer to a topic which often creates reports in this month.
+
+Here are the results obtained from the first six texts, to three decimal places:
+
+[(0, 0.140), (6, 0.851)]
+
+[(0, 0.193), (5, 0.023), (6, 0.423), (9, 0.355)]
+
+[(2, 0.969)]
+[(2, 0.864), (4, 0.109), (8, 0.021)]
+
+[(0, 0.927), (6, 0.044)]
+
+[(2, 0.305), (5, 0.683)]
+
+It can be seen that a variety of probability distributions are obtained, denoting which topic each text is most likely to be in.
 
 \section{Classifier Design \& Implementation}
 Classification was carried out using the features selected with a variety of different classifiers. For each a number of metrics were collected in order to effectively compare the methods. A variety of different classifiers were applied in order to compare their effectiveness at classifying the texts into topics. Training and test data sets were obtained using the lewissplit tag as described in the data input section.
@@ -180,6 +252,8 @@ Overall for tfidf the precision and recall average values do not differ very muc
 
 When using bigram features with tfidf the most successful accuracy was improved by 0.002\%. This shows that the addition of bigrams did not greatly affect the performance of the SVM method, which remained the most successful classifier. Most other classifiers performed either the same or worse, with the exception of \verb|GaussianNB|, the mean accuracy of which improved from 55\% to 69\%. This suggests that some classifiers may perform better with bigrams but most are not affected. Using bigrams greatly increases the number of features and so greatly increases the training time for the classifiers. This increased time was only worthwhile for the \verb|GaussianNB| classifier, and did not affect the best classifier overall significantly. Because of this it seems better to use unigrams for this classification task.
 
+All vectorisation methods gave poor results for corn, wheat and grain. These three topics have a large amount of overlap due to all being farm crops, therefore it's difficult for classifiers to learn distinguishing features for these. Often texts are labelled with all three of these topics. It is likely better results would be obtained if these topics were merged.
+
 \subsubsection{Comparison of classifier performance}
 As the tfidf vectoriser produced the most successful classifier we will use the results from this to compare classifiers over all 10 folds. The results for this can be found in table TODO. It can be seen that a wide range of accuracies were obtained, with \verb|BernoulliNB| performing the worst at an average of 39.9\% accuracy, and |LinearSVC| performing the best at an average accuracy of 76.5\%. This range was greater than that obtained by the other vectorisers, which had a much higher worst average and a lower best average. This suggests that the tfidf method was not suitable for some classifiers.
 
@@ -223,7 +297,7 @@ Where $a$ is the mean distance between an example and the other points in the sa
 The \verb|GMM| class is not in the same class hierarchy as the other clustering methods as it is supervised, so different metrics are available. This clustering algorithm will be evaluated using accuracy over both the training and test sets, and the results will not be very comparable with the other clustering methods.  
 
 \subsection{Evaluation}
-The results for the three clustering algorithms for each vectoriser can be found in tables TODO. The classification task for these algorithms was much more difficult than that for the classifiers as there were many more topics. Unfortunately the silhouette coefficient could not be reported as this required too much memory (TODO - run and fix this?)
+The results for the three clustering algorithms for each vectoriser can be found in tables TODO. The classification task for these algorithms was much more difficult than that for the classifiers as there were many more topics. In particular homogeneity is expected to be low as topics overlap in the training data (one text can be assigned multiple topics). Unfortunately the silhouette coefficient could not be reported as this required too much memory (TODO - run and fix this?)
 
 Firstly the unsupervised clustering algorithms will be evaluated. It can be seen that for all vectorisers the \verb|DBSCAN| method performed very poorly. This is most likely due to the large number of clusters. the \verb|DBSCAN| algorithm is not informed about the number of clusters and it's likely that far fewer are being created, due to the large number of overlap between topics. \verb|KMeans| and \verb|Ward| seem to perform fairly similarly in homogeneity, completeness and v-measure. This suggests that these algorithms were successful to an extent at creating clusters which encompassed or consisted of entire topics. However \verb|KMeans| consistently obtained a higher ARI value, regardless of the vectorisation method used. This suggests that the clusters it generated were more similar to the true topics of that data, indicating that it is the more successful clustering method.
 
@@ -231,7 +305,11 @@ Firstly the unsupervised clustering algorithms will be evaluated. It can be seen
 
 For GMM higher accuracies were obtained than for the unsupervised methods, although the accuracies were lower than those obtained by the classification algorithms. The best results were obtained with the count vectoriser, suggesting the number of features is important to this algorithm.
 
-For clustering using bigram features all supervised methods had very poor ARI values, and all other metrics were not improved over unigrams. TODO accuracy?!
+For clustering using bigram features all supervised methods had very poor ARI values, and all other metrics were not improved over unigrams. This is probably because the additional features provided even more overlap between the classes. 
+
+It's difficult to visualise how the clusters obtained map to the actual topics as there are over 100 topics and many dimensions of the feature space. Because of this the metrics above are used to discuss how these correspond to the initial topics. The overlap in  features, in particular between `corn', `grain' and `wheat', means homogeneity is expected to be low. Because of the fact that each text will only be in a single cluster this won't correspond well with the original topics. ARI is a useful metric here as it shows the similarity with the original topics. The highest value obtained here was with the TFIDF vectoriser and \verb|KMeans|, giving a value of 0.175. However this is still very low, and shows that the clusters were not very similar to the original data. If the silhouette measure was computable given the memory limitations this would give a good indication of the spuriousness of the clusters obtained TODO run just on the first soup to get a silhouette?
+
+The results of the clustering algorithms would likely be improved with a few changes to the task. Firstly some very similar topics could be merged, as discussed above. Secondly each text could only be assigned a single topic in order to give the clusters more distinct boundaries. Lastly the algorithms would be likely to perform better if there were far less, more distinct, clusters, with more training examples for each.
 
 \section{Conclusion}
 The results discussed above show that text classification is a difficult task, particularly when there are a lot of topics to classify or cluster over. Sufficient numbers of examples must be given in order for the classifiers to gain an acceptable level of accuracy. The problem becomes more pronounced when many topics overlap, causing classifiers difficulty in finding distinguishing features for topics. Better results can be obtained when features are normalised, however different classification methods perform better with different methods of vectorisation and feature selection. A greater number of features can give better results, however including too many features risks including irrelevant information in the final feature set.
