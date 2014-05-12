@@ -7,6 +7,7 @@
 \usepackage{etex}
 \reserveinserts{18}
 \usepackage{morefloats}
+\usepackage[margin=1in]{geometry}
 
 \title{CS909: Week 10}
 \author{1037559}
@@ -53,7 +54,8 @@ After the relevant texts had been extracted preprocessing takes place. This is d
 For the basic preprocessing firstly the text is changed to utf-8 encoding so all characters can be manipulated by the Python string methods. Secondly the title and date are removed, as these should not be part of the text. Next the word ``Reuter'' is removed from the end of the text - this is present as it is part of the tag for all texts. The text is then converted to lower case and punctuation and numbers removed, using the \verb|regex| module for Python. An example of the effects of this preprocessing can be seen below:
 
 Before preprocessing (raw data):
-\\``U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN
+
+``U.K. MONEY MARKET SHORTAGE FORECAST REVISED DOWN
     LONDON, March 3 - The Bank of England said it had revised
 its forecast of the shortage in the money market down to 450
 mln stg before taking account of its morning operations. At
@@ -62,7 +64,8 @@ noon the bank had estimated the shortfall at 500 mln stg.
 ''
 
 Post basic preprocessing:
-\\``the bank of england said it had revised its forecast of the shortage in the money market down to mln stg before taking account of its morning operations at noon the bank had estimated the shortfall at mln stg''
+
+``the bank of england said it had revised its forecast of the shortage in the money market down to mln stg before taking account of its morning operations at noon the bank had estimated the shortfall at mln stg''
 
 Further preprocessing is also carried out. Firstly Stopwords are removed, using an English corpora as all stopwords should be English. This corpora of stopwords was obtained through the \verb|nltk| module. Next a spell corrector from the \verb|WordNet| module is used and a part of speech tagger applied. After this words are lemmatised in order to obtain the ``stem'' of a word, for example ``runner'' should be reduced to ``run''. This requires the tags to be in a slightly simpler form, so a helper method was included to convert to this form. An English language lemmatiser is then used from the \verb|nltk| module. Optionally a named entity tagger may also be applied to replace things such as company names in the texts. This is optional as it is very computationally expensive and may take a long time. The results of this can be seen in the example below, where it's clear that words have been lemmatised fairly successfully:
 
@@ -70,8 +73,6 @@ Further preprocessing is also carried out. Firstly Stopwords are removed, using 
 
 \section{Feature Selection}
 A number of different feature selection mechanisms were implemented and evaluated to determine the method must suitable for the task. Features are selected as words present or absent in each text.
-
-TODO SHOW RESULTS for each lemmatiser
 
 \subsection{Bag of words}
 Firstly, a `bag of words' approach was implemented, where each text is represented as a vector where every column represents a word in the vocabulary. Entries in the vector indicate the presence or absence of a word. This creates a sparse vector representation of every text.
@@ -234,9 +235,70 @@ The micro and macro averages for both precision and recall will also be reported
 Each of the classifiers described above was trained over the training set, manipulated as described in the feature selection section, and then tested for the metrics described above. The results of this will be described in this section of the report.
 
 \subsection{TextBlob classification}
-Firstly the performance of the TextBlob classifiers will be described. For these there were not a lot of metrics easily available so only accuracy is displayed. These classifiers are interesting as they allow you to view the most informative features, as displayed below:
+Firstly the performance of the TextBlob classifiers will be described. For these there were not a lot of metrics easily available so only accuracy is displayed. These classifiers are interesting as they allow you to view the most informative features. These classifiers are also significantly slower than the SciLearn equivalents.
 
-TODO
+The Na{\"i}ve Bayes classifier obtained an accuracy over the test set of 72.8\%. Below are the most informative features the classifier found when comparing classes:
+
+\begin{table}
+\begin{tabular}{l|l|l}
+\textbf{Rule} & \textbf{Topics} & \textbf{Likelihood}\\ \hline
+	contains(wheat) = True &            wheat : acq &   987.0 : 1.0\\
+   contains(agriculture) = True &            wheat : earn   & 964.9 : 1.0\\
+        contains(farmer) = True   &           corn : earn   &    399.9 : 1.0\\
+         contains(grain) = True     &         corn : earn   &    358.3 : 1.0\\
+      contains(minister) = True       &      trade : earn   & 324.3 : 1.0\\
+      contains(monetary) = True         &   money-fx : earn   &    317.9 : 1.0\\
+   contains(enhancement) = True           &  wheat : earn   &    300.7 : 1.0\\
+ contains(protectionist) = True             & trade : earn   & 292.2 : 1.0\\
+      contains(shortage) = True &           money-fx : earn   &    285.9 : 1.0\\
+         contains(maize) = True   &           corn : acq    & 283.3 : 1.0\\
+          contains(port) = True     &         ship : earn   &    277.9 : 1.0\\
+          contains(feed) = True       &     interest : earn   &    266.7 : 1.0\\
+          contains(tone) = True         &    wheat : acq    &    259.5 : 1.0\\
+           contains(rev) = True           &   earn : acq    &    228.4 : 1.0\\
+     contains(economist) = True &           interest : earn   &    222.7 : 1.0\\
+    contains(assistance) = True   &         money-fx : earn   & 211.3 : 1.0\\
+         contains(cargo) = True     &         ship : earn   &    204.6 : 1.0\\
+             contains(v) = True       &       earn : acq    & 200.2 : 1.0\\
+       contains(loading) = True         &     ship : earn   &    196.9 : 1.0\\
+      contains(treasury) = True           & money-fx : earn   & 194.1 : 1.0\\
+        contains(cereal) = True             & wheat : earn   &    193.0 : 1.0\\
+          contains(corn) = True &             corn : earn   &    191.1 : 1.0\\
+     contains(committee) = True   &          trade : earn   &    184.7 : 1.0\\
+       contains(subsidy) = True     &        wheat : earn   & 184.0 : 1.0 \\
+       contains(council) = True       &      trade : earn   & 178.4 : 1.0 \\
+       contains(tonne) = True          &  wheat : acq    &    177.8 : 1.0\\
+        contains(moscow) = True       &     wheat : earn   & 175.0 : 1.0\\
+     contains(statistic) = True      &      trade : earn   & 173.3 : 1.0\\
+        contains(taiwan) = True     &       trade : earn   &    173.3 : 1.0\\
+  contains(intervention) = True    &       money-fx : acq    &    172.3 : 1.0\\
+        contains(attack) = True   &          ship : earn   &    168.1 : 1.0\\
+          contains(hour) = True  &           ship : earn & 168.1 : 1.0\\
+          contains(crop) = True &           grain : acq  &    164.5 : 1.0\\
+       contains(ecuador) = True &            crude : earn &    163.6 : 1.0\\
+       contains(acreage) = True            & corn : earn &    161.0 : 1.0\\
+        contains(escort) = True           &  ship : earn & 158.5 : 1.0\\
+         contains(coast) = True          &   ship : earn &    152.7 : 1.0\\
+         contains(visit) = True         &   trade : earn &    152.6 : 1.0\\
+      contains(governor) = True        &   money-fx : earn & 151.0 : 1.0\\
+      contains(congress) = True       &     trade : earn &    144.3 : 1.0\\
+       contains(deficit) = True      &      trade : earn &    143.8 : 1.0\\
+        contains(soviet) = True     &       wheat : acq  &    143.8 : 1.0\\
+       contains(textile) = True    &        trade : earn &    142.2 : 1.0\\
+         contains(usual) = True   &          corn : earn  & 140.2 : 1.0\\
+        contains(impose) = True  &          trade : earn & 138.1 : 1.0\\
+    contains(washington) = True   &         trade : earn &    137.1 : 1.0\\
+   contains(cooperation) = True   &         trade : earn & 137.1 : 1.0\\
+      contains(sanction) = True  &          trade : earn  &    137.1 : 1.0\\
+            contains(tr) = True &            earn : acq  &    133.4 : 1.0\\
+        contains(winter) = True  &          wheat : earn  & 132.7 : 1.0\\
+\end{tabular}
+\caption{Features discovered by the TextBlob Na{\"i}ve Bayes classifier}
+\end{table}
+
+For example, the first rule states that if a text contains the word `wheat', it's 987 times more likely to be in the `wheat' topic rather than the `acq' topic. There are many features with a large likelihood, suggesting some features are very informative. However this shows that no rules were found separating the most alike topics: `wheat', `corn' and `grain'. There is only one rule listed here for `grain', suggesting that the training texts do not have any particularly distinguishing features here. This is probably due to the lower number of training examples and similarity to the `grain' topic. In contrast there are a lot of rules for `earn', signifying this is a much more distinctive topic.
+
+TODO decision trees
 
 \subsection{SciLearn classification}
 For SciLearn many more metrics were easily available, such as the f1 score and macro and micro recall. As 10-fold cross validation was also used we can create confidence intervals for the classifier accuracy. These are shown in the tables TODO in the appendices.
@@ -625,7 +687,7 @@ The results discussed above show that text classification is a difficult task, p
 \section{Count Vectoriser 10-fold Results}
 \begin{table}[h]
 \begin{tabular}{llllllll}
-\textbf{Fold} & \textbf{Classifier}    & \textbf{Accuracy} & \textbf{f1-score} & \textbf{Recall macro} & \textbf{Recall micro} & \textbf{Precision macro} & \textbf{Precision micro} \\ \hline
+\textbf{Fold} & \textbf{Classifier}    & \textbf{Accuracy} & \textbf{f1-score} & \textbf{R. macro} & \textbf{R. micro} & \textbf{P. macro} & \textbf{P. micro} \\ \hline
 1             & GaussianNB             & 0.551389          & 0.582172          & 0.432803              & 0.551389              & 0.416821                 & 0.551389                 \\
 1             & MultinomialNB          & 0.783333          & 0.777596          & 0.574115              & 0.783333              & 0.559872                 & 0.783333                 \\
 1             & BernoulliNB            & 0.625             & 0.574132          & 0.318633              & 0.625                 & 0.499196                 & 0.625                    \\
@@ -675,7 +737,7 @@ The results discussed above show that text classification is a difficult task, p
 \end{table}
 \begin{table}[h]
 \begin{tabular}{llllllll}
-\textbf{Fold} & \textbf{Classifier}    & \textbf{Accuracy} & \textbf{f1-score} & \textbf{Recall macro} & \textbf{Recall micro} & \textbf{Precision macro} & \textbf{Precision micro} \\ \hline
+\textbf{Fold} & \textbf{Classifier}    & \textbf{Accuracy} & \textbf{f1-score} & \textbf{R. macro} & \textbf{R. micro} & \textbf{P. macro} & \textbf{P. micro} \\ \hline
 6             & GaussianNB             & 0.549374          & 0.572728          & 0.386945              & 0.549374              & 0.38995                  & 0.549374                 \\
 6             & MultinomialNB          & 0.77886           & 0.76934           & 0.581997              & 0.77886               & 0.572883                 & 0.77886                  \\
 6             & BernoulliNB            & 0.620306          & 0.563028          & 0.312879              & 0.620306              & 0.402431                 & 0.620306                 \\
