@@ -93,15 +93,11 @@ def main(argv):
   vect = HashingVectorizer(stop_words='english')
   featured_texts = vect.fit_transform(texts)
 
-  if tfidf and not count:
+  if tfidf
     vect = TfidfVectorizer(strip_accents='unicode',
                            sublinear_tf=True,
                            ngram_range=(1, 1))
     pipeline = Pipeline([('tfidf', vect)])
-  elif count and tfidf:
-    vect = CountVectorizer(binary=binary)
-    vect2 = TfidfVectorizer(sublinear_tf=True)
-    pipeline = Pipeline([('count', vect), ('tfidf', vect2)])
   else:
     vect = CountVectorizer(strip_accents='unicode',
                            binary=binary)
@@ -128,7 +124,7 @@ def main(argv):
 
   classifiers = [GaussianNB(),
                  MultinomialNB(fit_prior=True),
-                 #BernoulliNB(binarize=1.0, fit_prior=True),
+                 BernoulliNB(binarize=1.0, fit_prior=True),
                  DecisionTreeClassifier(criterion='entropy',
                                         min_samples_split=5,
                                         min_samples_leaf=5),

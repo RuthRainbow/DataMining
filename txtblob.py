@@ -53,16 +53,16 @@ def main(argv):
   print_topic_info(topics)
 
   # Feature selection methods:
-  #bag_of_words(texts)
-  #tfidf_scores = calc_tf_idf(texts, 10)
-  #print tfidf_scores[' '.join(texts[0])]
-  #print tfidf_scores[' '.join(texts[1])]
-  #print tfidf_scores[' '.join(texts[2])]
+  bag_of_words(texts)
+  tfidf_scores = calc_tf_idf(texts, 10)
+  print tfidf_scores[' '.join(texts[0])]
+  print tfidf_scores[' '.join(texts[1])]
+  print tfidf_scores[' '.join(texts[2])]
 
   # Classification using TextBlob:
   print 'Naive Bayes:'
-  #NB = NaiveBayesClassifier(training_set)
-  #print_classifier_stats(NB, test_set)
+  NB = NaiveBayesClassifier(training_set)
+  print_classifier_stats(NB, test_set)
 
   print 'Decision Tree:'
   DT = DecisionTreeClassifier(training_set)
