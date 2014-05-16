@@ -1,0 +1,93 @@
+loading soups...
+loaded 22 soups
+loaded 21556 items
+earn: 3961
+wheat: 283
+money-fx: 717
+corn: 239
+trade: 487
+acq: 2367
+grain: 583
+interest: 480
+crude: 580
+ship: 287
+total number of docs: 9984
+***********************
+Creating bag of words...
+Bag of words vector: 
+[(0, 2), (1, 1), (2, 1), (3, 1), (4, 1), (5, 2), (6, 1), (7, 1), (8, 1), (9, 2), (10, 2), (11, 1), (12, 1), (13, 2), (14, 1), (15, 1), (16, 1), (17, 1), (18, 1), (19, 1), (20, 1), (21, 1), (22, 5), (23, 1), (24, 1), (25, 5), (26, 2), (27, 1), (28, 2), (29, 1), (30, 1), (31, 1), (32, 2), (33, 5), (34, 4), (35, 1), (36, 2), (37, 1), (38, 3), (39, 2), (40, 6), (41, 2), (42, 1), (43, 3), (44, 1), (45, 4), (46, 2)]
+LDA model: 
+[(3, 0.1084458959923825), (4, 0.15576824715539403), (5, 0.11659108105427039), (6, 0.115589548081461), (7, 0.49079004716413027)]
+[(3, 0.10837713145855972), (4, 0.15584043051649121), (5, 0.11698932023681252), (6, 0.11580389726225986), (7, 0.49251408182442946)]
+[(3, 0.10841905057371982), (4, 0.15579780639769822), (5, 0.11675178572875637), (6, 0.11567654115593225), (7, 0.49148596702595482)]
+[(3, 0.11483968041101995), (4, 0.24167239737700616), (5, 0.21205323945860383), (6, 0.42518366426679288)]
+[(3, 0.11477617392861372), (4, 0.24167981961711793), (5, 0.21206461018073472), (6, 0.42522837775838451)]
+[(3, 0.11469926224842043), (4, 0.2416888077727937), (5, 0.21207838255508568), (6, 0.42528252887393658)]
+[(0, 0.47953757366869426), (3, 0.064757151975738281), (5, 0.034487775583725504), (8, 0.40052502251392519)]
+[(2, 0.15226496489703492), (3, 0.080347564706846633), (8, 0.65809428887636789), (9, 0.10373663881086627)]
+[(4, 0.96785031019275369)]
+[(8, 0.98635968305430033)]
+best 10 topics:
+["0.044*april + 0.035*record + 0.028*pay + 0.024*prior + 0.022*v + 0.022*dividend + 0.018*only', 'do + 0.014*stock + 0.012*payable + 0.012*june", '0.021*rate + 0.016*trade + 0.016*bank + 0.015*market + 0.012*dollar + 0.012*put + 0.007*currency + 0.007*japan + 0.006*exchange + 0.006*foreign', '0.013* + 0.013*put + 0.012*day + 0.007*year + 0.007*italian + 0.007*bank + 0.007*new + 0.006*last + 0.006*platform + 0.006*ship', '0.019*put + 0.016*share + 0.015*tone + 0.011*offer + 0.011*day + 0.011*stock + 0.010*tender + 0.010*export + 0.010*c + 0.008*total', '0.172*v + 0.133*man + 0.064*net + 0.059*day + 0.051*loss + 0.030*rev + 0.029*profit + 0.019*note + 0.016*year + 0.015*ave', '0.014*put + 0.012*day + 0.009*company + 0.008*co + 0.008*share + 0.007*merger + 0.007*board + 0.007*man + 0.007*federal + 0.006*corp', '0.037*tone + 0.037*man + 0.029*wheat + 0.016*grain + 0.013*export + 0.013*st + 0.012*put + 0.011*soviet + 0.010*last + 0.009*crop', '0.028*oil + 0.019*man + 0.018*price + 0.017*day + 0.012*year + 0.010*put + 0.009*barrel + 0.008*production + 0.007*last + 0.007*company', '0.034*day + 0.032*share + 0.030*man + 0.020*company + 0.011*put + 0.010*stock + 0.010*corp + 0.009*sale + 0.009*year + 0.008*first', '0.009*japan + 0.007*state + 0.007*year + 0.007*trade + 0.006*japanese + 0.006*put + 0.006*unite + 0.005*import + 0.005*government + 0.005*market']
+Calculating tfidf...
+[('iv', 0.3459675902667283), ('x', 0.26859311098251454), ('level', 0.16318731941174555), ('age', 0.14826804061751145), ('vi', 0.14693877517937312), ('y', 0.14448853062919112), ('price', 0.12150656055506578), ('sorghum', 0.10729347070871206), ('rate', 0.10716224747197073), ('reserve', 0.10112165624590787)]
+[('iv', 0.3459675902667283), ('x', 0.26859311098251454), ('level', 0.16318731941174555), ('age', 0.14826804061751145), ('vi', 0.14693877517937312), ('y', 0.14448853062919112), ('price', 0.12150656055506578), ('sorghum', 0.10729347070871206), ('rate', 0.10716224747197073), ('reserve', 0.10112165624590787)]
+[('iv', 0.3459675902667283), ('x', 0.26859311098251454), ('level', 0.16318731941174555), ('age', 0.14826804061751145), ('vi', 0.14693877517937312), ('y', 0.14448853062919112), ('price', 0.12150656055506578), ('sorghum', 0.10729347070871206), ('rate', 0.10716224747197073), ('reserve', 0.10112165624590787)]
+Naive Bayes:
+0.727598566308
+Most Informative Features
+         contains(wheat) = True            wheat : acq    =    987.0 : 1.0
+   contains(agriculture) = True            wheat : earn   =    964.9 : 1.0
+        contains(farmer) = True             corn : earn   =    399.9 : 1.0
+         contains(grain) = True             corn : earn   =    358.3 : 1.0
+      contains(minister) = True            trade : earn   =    324.3 : 1.0
+      contains(monetary) = True           money- : earn   =    317.9 : 1.0
+   contains(enhancement) = True            wheat : earn   =    300.7 : 1.0
+ contains(protectionist) = True            trade : earn   =    292.2 : 1.0
+      contains(shortage) = True           money- : earn   =    285.9 : 1.0
+         contains(maize) = True             corn : acq    =    283.3 : 1.0
+          contains(port) = True             ship : earn   =    277.9 : 1.0
+          contains(feed) = True           intere : earn   =    266.7 : 1.0
+          contains(tone) = True            wheat : acq    =    259.5 : 1.0
+           contains(rev) = True             earn : acq    =    228.4 : 1.0
+     contains(economist) = True           intere : earn   =    222.7 : 1.0
+    contains(assistance) = True           money- : earn   =    211.3 : 1.0
+         contains(cargo) = True             ship : earn   =    204.6 : 1.0
+             contains(v) = True             earn : acq    =    200.2 : 1.0
+       contains(loading) = True             ship : earn   =    196.9 : 1.0
+      contains(treasury) = True           money- : earn   =    194.1 : 1.0
+        contains(cereal) = True            wheat : earn   =    193.0 : 1.0
+          contains(corn) = True             corn : earn   =    191.1 : 1.0
+     contains(committee) = True            trade : earn   =    184.7 : 1.0
+       contains(subsidy) = True            wheat : earn   =    184.0 : 1.0
+       contains(council) = True            trade : earn   =    178.4 : 1.0
+         contains(tonne) = True            wheat : acq    =    177.8 : 1.0
+        contains(moscow) = True            wheat : earn   =    175.0 : 1.0
+     contains(statistic) = True            trade : earn   =    173.3 : 1.0
+        contains(taiwan) = True            trade : earn   =    173.3 : 1.0
+  contains(intervention) = True           money- : acq    =    172.3 : 1.0
+        contains(attack) = True             ship : earn   =    168.1 : 1.0
+          contains(hour) = True             ship : earn   =    168.1 : 1.0
+          contains(crop) = True            grain : acq    =    164.5 : 1.0
+       contains(ecuador) = True            crude : earn   =    163.6 : 1.0
+       contains(acreage) = True             corn : earn   =    161.0 : 1.0
+        contains(escort) = True             ship : earn   =    158.5 : 1.0
+         contains(coast) = True             ship : earn   =    152.7 : 1.0
+         contains(visit) = True            trade : earn   =    152.6 : 1.0
+      contains(governor) = True           money- : earn   =    151.0 : 1.0
+      contains(congress) = True            trade : earn   =    144.3 : 1.0
+       contains(deficit) = True            trade : earn   =    143.8 : 1.0
+        contains(soviet) = True            wheat : acq    =    143.8 : 1.0
+       contains(textile) = True            trade : earn   =    142.2 : 1.0
+         contains(usual) = True             corn : earn   =    140.2 : 1.0
+        contains(impose) = True            trade : earn   =    138.1 : 1.0
+    contains(washington) = True            trade : earn   =    137.1 : 1.0
+   contains(cooperation) = True            trade : earn   =    137.1 : 1.0
+      contains(sanction) = True            trade : earn   =    137.1 : 1.0
+            contains(tr) = True             earn : acq    =    133.4 : 1.0
+        contains(winter) = True            wheat : earn   =    132.7 : 1.0
+None
+["japan rift william later renter long long april mount trade friction japan raise fear many asia export nation row inflict far reach economic damage businessmen official', 'say', 'tell renter correspondent asia capital move japan boost protectionist sentiment lead curl american import product export', 'say conflict hurt long run short term tokyo loss gain', 'say impose man day tariff import japanese electronics good april retaliation japan allege failure stick part sell semiconductor world market cost unofficial japanese estimate put impact tariff day spokesman major electronics firm', 'say virtually halt export product hit new', 'tax wouldn able business', 'say spokesman lead japanese electronics firm matsushita electric industrial co ltd', 'meet tariff remain place length time month mean complete erosion export good subject tariff', 'say tom martha stock analyst tokyo office broker james chapel co taiwan businessmen official also', 'worry aware seriousness threat japan serve warning', 'say senior taiwanese trade official ask name taiwan trade trade surplus day last year put surplus help swell taiwan foreign exchange reserve day world large quickly open market remove trade barrier cut import tariff allow import product want refuse problem possible retaliation', 'say paul sheen chairman textile export taiwan safe group senior official south sore trade promotion association', 'say trade dispute japan also lead pressure south more chief export similar japan last year south more trade surplus day day malasha trade officer businessmen', 'say tough curl japan allow hard hit producer semiconductor third country expand sale long long newspaper allege japan sell cost semiconductor electronics manufacturer share view businessmen', 'say short term commercial advantage outweigh pressure block import short term view', 'say lawrence mill director general federation long long industry whole purpose prevent import day extend source much serious long long disadvantage action restrain trade', 'say last year long king', 'big export market accounting put domestically produce export australian government await outcome trade talk japan interest concern industry minister john button', 'say canberra last friday kind deterioration trade relation country major trading partner serious matter button', 'say', 'say australian concern centre coal beef australian large export japan also significant export country meanwhile japanese diplomatic manoeuvre solve trade stand continue japan ruling liberal democratic party yesterday outline package economic measure boost japanese economy measure propose include large supplementary budget record public work spending first half financial year also call', 'step spending emergency measure stimulate economy prime minister yasuhiro nakasones avowed fiscal reform program deputy trade representative michael smith dakota kuroda japan deputy minister international trade industry piti due meet washington week effort end dispute']\n", 'trade']
+trade
+Decision Tree:
+0.781720430108
