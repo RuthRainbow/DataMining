@@ -6,6 +6,9 @@ import sys
 
 from bs4 import BeautifulSoup
 
+import matplotlib.pyplot as plt
+from matplotlib import cm
+
 from sklearn.cluster import DBSCAN, KMeans, Ward
 from sklearn.cross_validation import KFold
 from sklearn.decomposition import TruncatedSVD
@@ -17,6 +20,7 @@ from sklearn.metrics import pairwise_distances
 from sklearn.mixture import GMM
 from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
+from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC, SVR
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
@@ -26,13 +30,18 @@ interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade
 
 
 def main(argv):
-  # Which type of vectorisation to use (one must be true)
-  tfidf = True
-  count = False
+  """ 
+  Which type of vectorisation to use. Possible combinations:
+  TFIDF: TFIDF only
+  count: Count only (no normalisation)
+  count + binary: Binary only (no normalisation)
+  """
+  tfidf = False
+  count = True
   binary = False
   
   # Whether to use lemmatised input
-  lemmatise = False
+  lemmatise = True
 
   # All text and topic pairs to be used for clustering
   texts = []
@@ -57,10 +66,8 @@ def main(argv):
     for reut in reuters:
       lewis.append(reut.get('lewissplit'))
       these_topics.append(reut.topics.findChildren())
-    print 'size of done is %d, size of this is %d' % (len(loaded), len(these_topics))
-    
+        
     for j in range(1, len(these_topics)):
-      #cleaned = loaded[done_index]
       body = these_bodies[j]
       if lemmatise:
         cleaned = loaded[done_index]
@@ -86,29 +93,34 @@ def main(argv):
   vect = HashingVectorizer(stop_words='english')
   featured_texts = vect.fit_transform(texts)
 
-  if tfidf:
+  if tfidf and not count:
     vect = TfidfVectorizer(strip_accents='unicode',
                            sublinear_tf=True,
-                           stop_words='english')
+                           ngram_range=(1, 1))
+    pipeline = Pipeline([('tfidf', vect)])
+  elif count and tfidf:
+    vect = CountVectorizer(binary=binary)
+    vect2 = TfidfVectorizer(sublinear_tf=True)
+    pipeline = Pipeline([('count', vect), ('tfidf', vect2)])
   else:
     vect = CountVectorizer(strip_accents='unicode',
-                           stop_words='english',
                            binary=binary)
+    pipeline = Pipeline([('count', vect)])
 
   training_data = [' '.join(text) for text in training_data]
   test_data = [' '.join(text) for text in test_data]
-  featured_train = vect.fit_transform(training_data)
+  featured_train = pipeline.fit_transform(training_data)
   print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
-  featured_test = vect.transform(test_data)
+  featured_test = pipeline.transform(test_data)
   print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
-  featured_texts = vect.fit_transform(texts)
+  featured_texts = pipeline.fit_transform(texts)
   print 'Fininshed vectoriser'
 
-  chi = SelectKBest(chi2, 4)
-  featured_train = chi.fit_transform(featured_train, training_topics)
-  featured_test = chi.transform(featured_test)
-  chi = SelectKBest(chi2, 2)
-  featured_texts = chi.fit_transform(featured_texts, topics)
+  #chi = SelectKBest(chi2, 25)
+  #featured_train = chi.fit_transform(featured_train, training_topics)
+  #featured_test = chi.transform(featured_test)
+  #chi = SelectKBest(chi2, 20)
+  #featured_texts = chi.fit_transform(featured_texts, topics)
   print 'Finished chi^2'
 
   feature_names = numpy.asarray(vect.get_feature_names())
@@ -116,7 +128,7 @@ def main(argv):
 
   classifiers = [GaussianNB(),
                  MultinomialNB(fit_prior=True),
-                 BernoulliNB(binarize=1.0, fit_prior=True),
+                 #BernoulliNB(binarize=1.0, fit_prior=True),
                  DecisionTreeClassifier(criterion='entropy',
                                         min_samples_split=5,
                                         min_samples_leaf=5),
@@ -131,10 +143,11 @@ def main(argv):
   # Perform 10-fold cross validation and save accuracy for each classifier
   kfolds = KFold(n=len(training_data), n_folds=10, shuffle=True)
   acc_values = {classifier: list() for classifier in classifiers}
+  featured_train_arr = featured_train.toarray()
   for train, test in kfolds:
     # TODO change away from list constructor so more features can be used (MemoryError)
-    train_text = [featured_train.toarray()[j] for j in train]
-    test_text = [featured_train.toarray()[j] for j in test]
+    train_text = [featured_train_arr[j] for j in train]
+    test_text = [featured_train_arr[j] for j in test]
     train_topic = [training_topics[j] for j in train]
     test_topic = [training_topics[j] for j in test]
     for classifier in classifiers:
@@ -167,10 +180,10 @@ def main(argv):
            featured_test.toarray(),
            test_topics,
            interested_topics)
-
+ 
   print '****************** Clustering ******************'
   # Use SVD to reduce to sparse vectors to dense vectors and reduce the number of features
-  svd = TruncatedSVD(n_components=1)
+  svd = TruncatedSVD(n_components=3)
   dense_texts = svd.fit_transform(featured_texts)
   norm = preprocessing.Normalizer(copy=False)
   dense_texts = norm.fit_transform(dense_texts)
@@ -180,9 +193,10 @@ def main(argv):
   # These methods don't support sparse matrices, so aren't suitable for text mining.
   cluster(DBSCAN(), dense_texts, topics)
   cluster(Ward(n_clusters=num_topics), dense_texts, topics)
-
+  
   # GMM
-  gmm(featured_train, featured_test, training_topics, test_topics)
+  list_topics = list(set(topics))
+  #gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics)
 
 
 # Preprocessing and cleaning of text bodies
@@ -258,22 +272,47 @@ def classify(classifier,
   if report:
     print 'report:'
     print metrics.classification_report(test_topics, pred)
-  return metrics.accuracy_score(test_topics, pred)
+  acc = metrics.accuracy_score(test_topics, pred)
+  print 'accuracy: %f' % acc
+  return acc
 
 
-def cluster(classifier, data, topics):
-    print str(classifier)
-    classifier.fit(data)
-    labels = classifier.labels_
-    print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
-    print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
-    print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
-    print 'Adjusted Rand index: %0.3f' % metrics.adjusted_rand_score(topics, labels)
-    #print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
-    print ' ***************** '
+def cluster(classifier, data, topics, make_silhouette=False):
+  print str(classifier)
+  clusters = classifier.fit_predict(data)
+  labels = classifier.labels_
+  #print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
+  #print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
+  #print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
+  #print 'Adjusted Rand index: %0.3f' % metrics.adjusted_rand_score(topics, labels)
+  print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
+  print ' ***************** '
+  
+  silhouettes = metrics.silhouette_samples(data, labels)
+  num_clusters = len(set(clusters))
+  print 'num clusters: %d' % num_clusters
+  print 'num fitted: %d' % len(clusters)
+
+  if make_silhouette:
+    order = numpy.lexsort((-silhouettes, clusters)) 
+    indices = [numpy.flatnonzero(clusters[order] == num_clusters) for k in range(num_clusters)]
+    ytick = [(numpy.max(ind)+numpy.min(ind))/2 for ind in indices]
+    ytickLabels = ["%d" % x for x in range(num_clusters)]
+    cmap = cm.jet( numpy.linspace(0,1,num_clusters) ).tolist()
+    clr = [cmap[i] for i in clusters[order]]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.barh(range(data.shape[0]), silhouettes[order], height=1.0,   
+            edgecolor='none', color=clr)
+    ax.set_ylim(ax.get_ylim()[::-1])
+    plt.yticks(ytick, ytickLabels)
+    plt.xlabel('Silhouette Value')
+    plt.ylabel('Cluster')
+    plt.savefig('cluster.png')
 
 
-def gmm(featured_train, featured_test, training_topics, test_topics):
+def gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics):
   print 'GMM'
   dense_train = svd.fit_transform(featured_train)
   dense_train = norm.fit_transform(dense_train)
@@ -282,8 +321,8 @@ def gmm(featured_train, featured_test, training_topics, test_topics):
   gmm = GMM(n_components=num_topics)
   train_topics_mapped = map_topics_to_nums(training_topics)
   test_topics_mapped = map_topics_to_nums(test_topics)
-  gmm.means_ = numpy.array([dense_train[train_topics_mapped == i].mean(axis=0)
-	                    for i in xrange(len(list_topics))])
+  #gmm.means_ = numpy.array([dense_train[train_topics_mapped == i].mean(axis=0)
+  #	                    for i in xrange(len(list_topics))])
   gmm.fit(dense_train)
   train_pred = gmm.predict(dense_train)
   test_pred = gmm.predict(dense_test)
