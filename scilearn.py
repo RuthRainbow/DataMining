@@ -13,7 +13,7 @@ from sklearn.cluster import DBSCAN, KMeans, Ward
 from sklearn.cross_validation import KFold
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.linear_model import LinearRegression, Perceptron
 from sklearn.metrics import pairwise_distances
@@ -29,6 +29,12 @@ from sklearn import preprocessing
 interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
 
+"""
+Class which applies the chosen vectorisation feature selection method and then
+carries out 10-fold cross validation on this data. The best classifier is then
+identified and tested over the whole test set. Various clustering algorithms are
+then applied and the results printed.
+"""
 def main(argv):
   """ 
   Which type of vectorisation to use. Possible combinations:
@@ -52,6 +58,7 @@ def main(argv):
   test_data = []
   test_topics = []
 
+  # Load in the raw data soups and preprocessed data
   soups = load_soups(argv[0])
   loaded = load_data()
   done_index = 0
@@ -69,12 +76,14 @@ def main(argv):
         
     for j in range(1, len(these_topics)):
       body = these_bodies[j]
+      # Either load in the preprocessed body or preprocess now
       if lemmatise:
         cleaned = loaded[done_index]
       else:
         cleaned = preprocess(body)
       done_index += 1
       if len(cleaned) > 0:
+        # Insert the data once for every topic
         for topic in these_topics[j]:
           topic = str(topic)[3:-4]
           if topic in interested_topics:
@@ -84,16 +93,13 @@ def main(argv):
             elif lewis[j] == 'TEST':
               test_data.append(cleaned)
               test_topics.append(topic)
+          # Regardless of topic or lewissplit store for clustering
           texts.append(cleaned)
           topics.append(topic)
 
   print_topic_info(test_topics + training_topics)
 
-  texts = [' '.join(text) for text in texts]
-  vect = HashingVectorizer(stop_words='english')
-  featured_texts = vect.fit_transform(texts)
-
-  if tfidf
+  if tfidf:
     vect = TfidfVectorizer(strip_accents='unicode',
                            sublinear_tf=True,
                            ngram_range=(1, 1))
@@ -103,15 +109,19 @@ def main(argv):
                            binary=binary)
     pipeline = Pipeline([('count', vect)])
 
+  # Apply chosen vectoriser
   training_data = [' '.join(text) for text in training_data]
   test_data = [' '.join(text) for text in test_data]
   featured_train = pipeline.fit_transform(training_data)
   print 'Training: n_samples: %d, n_features: %d' % featured_train.shape
+  # Only transform the test data (don't fit, otherwise this will influence features)
   featured_test = pipeline.transform(test_data)
   print 'Test: n_samples: %d, n_features: %d' % featured_test.shape
+  texts = [' '.join(text) for text in texts]
   featured_texts = pipeline.fit_transform(texts)
   print 'Fininshed vectoriser'
 
+  # Use chi^2 to reduce features
   #chi = SelectKBest(chi2, 25)
   #featured_train = chi.fit_transform(featured_train, training_topics)
   #featured_test = chi.transform(featured_test)
@@ -141,7 +151,6 @@ def main(argv):
   acc_values = {classifier: list() for classifier in classifiers}
   featured_train_arr = featured_train.toarray()
   for train, test in kfolds:
-    # TODO change away from list constructor so more features can be used (MemoryError)
     train_text = [featured_train_arr[j] for j in train]
     test_text = [featured_train_arr[j] for j in test]
     train_topic = [training_topics[j] for j in train]
@@ -154,6 +163,7 @@ def main(argv):
                           test_topic,
                           interested_topics)
       acc_values[classifier].append(this_acc)
+  # Calculate statistics for accuracy over 10 folds per classifier
   acc_averages = {(i, numpy.mean(acc_values[i])) for i in classifiers}
   acc_stds = {i: numpy.std(acc_values[i]) for i in classifiers}
 
@@ -185,8 +195,8 @@ def main(argv):
   dense_texts = norm.fit_transform(dense_texts)
   num_topics = len(set(topics))
 
+  # Perform unsupervised clustering
   cluster(KMeans(n_clusters=num_topics), featured_texts, topics)
-  # These methods don't support sparse matrices, so aren't suitable for text mining.
   cluster(DBSCAN(), dense_texts, topics)
   cluster(Ward(n_clusters=num_topics), dense_texts, topics)
   
@@ -213,6 +223,7 @@ def preprocess(body):
   return body
 
 
+# Load in the already preprocessed data
 def load_data():
   loaded = []
   with open('preprocessed.txt', 'r') as f:
@@ -224,6 +235,7 @@ def load_data():
   return loaded
 
 
+# Load in the raw data as soups
 def load_soups(base_addr):
   soups = []
   for i in range(0, 22):
@@ -248,6 +260,7 @@ def print_topic_info(topics):
   print '***********************'
 
 
+# Apply the given classifier and print metrics
 def classify(classifier,
              training_data,
              training_topics,
@@ -273,10 +286,11 @@ def classify(classifier,
   return acc
 
 
-def cluster(classifier, data, topics, make_silhouette=False):
-  print str(classifier)
-  clusters = classifier.fit_predict(data)
-  labels = classifier.labels_
+# Apply the given clustering algorithm and print metrics
+def cluster(algorithm, data, topics, make_silhouette=False):
+  print str(algorithm)
+  clusters = algorithm.fit_predict(data)
+  labels = algorithm.labels_
   print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
   print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
   print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
@@ -289,6 +303,7 @@ def cluster(classifier, data, topics, make_silhouette=False):
   print 'num clusters: %d' % num_clusters
   print 'num fitted: %d' % len(clusters)
 
+  # Make a silhouette plot if the flag is set
   if make_silhouette:
     order = numpy.lexsort((-silhouettes, clusters)) 
     indices = [numpy.flatnonzero(clusters[order] == num_clusters) for k in range(num_clusters)]
@@ -308,6 +323,7 @@ def cluster(classifier, data, topics, make_silhouette=False):
     plt.savefig('cluster.png')
 
 
+# Apply GMM supervised clustering and print metrics
 def gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics):
   print 'GMM'
   dense_train = svd.fit_transform(featured_train)
@@ -320,6 +336,7 @@ def gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, 
   gmm.fit(dense_train)
   train_pred = gmm.predict(dense_train)
   test_pred = gmm.predict(dense_test)
+  # Calculate the training and test accuracies
   train_acc = numpy.mean(
       train_pred.ravel() == numpy.array(train_topics_mapped).ravel()) * 100
   test_acc = numpy.mean(
@@ -328,6 +345,7 @@ def gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, 
   print 'test accuracy = %0.3f' % test_acc
 
 
+# Maps topic strings to integer identifiers
 def map_topics_to_nums(topics_to_map):
   mappings = {}
   list_topics = list(interested_topics)

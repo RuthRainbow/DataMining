@@ -13,6 +13,10 @@ from textblob.classifiers import DecisionTreeClassifier, NaiveBayesClassifier
 interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
 
+"""
+This class applies and prints results for a variety of feature selection methods.
+TextBlob classification algorithms are then tested and the results printed.
+"""
 def main(argv):
   # Saved training and test sets, in the form of (body, topic) tuples
   training_set = []
@@ -21,11 +25,12 @@ def main(argv):
   topics = []
   texts = []
 
+  # Load in the preprocessed data and the raw data as soups
   soups = load_soups(argv[0])
   loaded = load_data()
   done_index = 0
 
-  # Assign all read in data a topic and lewissplit
+  # Assign all data a topic and lewissplit
   for i in range(0, len(soups)):
     this_soup = soups[i]
     reuters = this_soup.find_all('reuters')
@@ -40,6 +45,7 @@ def main(argv):
       done_index += 1
       if len(cleaned) > 0:
         for topic in these_topics[j]:
+          # Add the data once per topic, using the lewissplit
           topic = str(topic)[3:-4]
           if topic in interested_topics:
             if lewis[j] == 'TRAIN':
@@ -69,6 +75,7 @@ def main(argv):
   print_classifier_stats(DT, test_set)
 
 
+# Load in preprocessed data from file
 def load_data():
   loaded = []
   with open('preprocessed.txt', 'r') as f:
@@ -81,6 +88,7 @@ def load_data():
   return loaded
 
 
+# Load in the raw data as soups
 def load_soups(base_addr):
   print 'loading soups...'
   soups = []
@@ -106,6 +114,7 @@ def print_topic_info(topics):
   print '***********************'
 
 
+# Calculate the TFIDF value for all given texts
 def calc_tf_idf(texts, x):
   print 'Calculating tfidf...'
   all_scores = {}
@@ -118,6 +127,7 @@ def calc_tf_idf(texts, x):
   return all_scores
 
 
+# Term frequency
 def tf(word, text):
   return float(text.count(word)) / float(len(text))
 
@@ -126,6 +136,7 @@ def num_texts(word, texts):
   return sum(1 for text in texts if word in text)
 
 
+# Inverse document frequency
 def idf(word, texts):
   return math.log(float(len(texts)) / float(1 + num_texts(word, texts)))
 
@@ -134,16 +145,15 @@ def tfidf(word, text, texts):
   return tf(word, text) * idf(word, texts)
 
 
+# Transform the given texts into a bag of words and apply a topic model
 def bag_of_words(texts):
   print 'Creating bag of words...'
   # Use dictionary to create 'Bag of words'
   dictionary = corpora.Dictionary(texts)
 
-  # Apply thresholding to reduce dimensionality - remove all
-  # words which appear only once over all documents
   once_ids = [i for i, j in dictionary.dfs.iteritems() if j == 1]
   dictionary.filter_tokens(once_ids)
-  # Remove words that appeared in less than 3 documents
+  # Optionally remove words that appeared in less than 3 documents
   #dictionary.filter_extremes(no_below=3)
   #dictionary.compactify()
 
@@ -157,7 +167,7 @@ def bag_of_words(texts):
   # Apply an LDA Model to the bag of words
   num_topics = len(interested_topics)
   model = ldamodel.LdaModel(vectors, id2word=dictionary, num_topics=num_topics)
-  # For example print the probability distribution for the first text
+  # For example print the probability distribution for the first 10 texts
   print 'LDA model: '
   for i in xrange(10):
     print model[vectors[i]]
@@ -165,6 +175,7 @@ def bag_of_words(texts):
   print model.show_topics(topics=10, topn=10, formatted=True)
 
 
+# Print metrics about how a given classifier performs
 def print_classifier_stats(classifier, test_set):
   print classifier.accuracy(test_set)
   print classifier.show_informative_features(50)

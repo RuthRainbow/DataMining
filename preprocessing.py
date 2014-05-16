@@ -16,7 +16,10 @@ from textblob.taggers import NLTKTagger
 
 interested_topics = {'corn', 'earn', 'acq', 'money-fx', 'grain', 'crude', 'trade', 'interest', 'ship', 'wheat'}
 
-
+"""
+This class performs data preprocessing, including general cleaning, lemmatisation
+and optional named entity recognition.
+"""
 def main(argv):
   soups = load_soups(argv[0])
 
@@ -31,6 +34,7 @@ def main(argv):
       print cleaned
 
 
+# Load in the raw data using beautiful soup
 def load_soups(base_addr):
   soups = []
   for i in range(0, 22):
