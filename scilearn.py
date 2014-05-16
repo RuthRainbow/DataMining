@@ -32,8 +32,6 @@ def main(argv):
   TFIDF: TFIDF only
   count: Count only (no normalisation)
   count + binary: Binary only (no normalisation)
-  TFIDF + count: count then normalised with TFIDF
-  TFIDF + count + binary: binary then normalised with TFIDF
   """
   tfidf = True
   count = False
@@ -65,8 +63,7 @@ def main(argv):
     for reut in reuters:
       lewis.append(reut.get('lewissplit'))
       these_topics.append(reut.topics.findChildren())
-    print 'size of done is %d, size of this is %d' % (len(loaded), len(these_topics))
-    
+        
     for j in range(1, len(these_topics)):
       #cleaned = loaded[done_index]
       body = these_bodies[j]
@@ -97,7 +94,7 @@ def main(argv):
   if tfidf and not count:
     vect = TfidfVectorizer(strip_accents='unicode',
                            sublinear_tf=True,
-                           ngram_range=(1, 2))
+                           ngram_range=(1, 1))
     pipeline = Pipeline([('tfidf', vect)])
   elif count and tfidf:
     vect = CountVectorizer(binary=binary)
@@ -140,7 +137,7 @@ def main(argv):
                  LinearSVC(fit_intercept=True),
                  KNeighborsClassifier(n_neighbors=10),
                  NearestCentroid()]
-
+  """
   # Perform 10-fold cross validation and save accuracy for each classifier
   kfolds = KFold(n=len(training_data), n_folds=10, shuffle=True)
   acc_values = {classifier: list() for classifier in classifiers}
@@ -181,10 +178,9 @@ def main(argv):
            featured_test.toarray(),
            test_topics,
            interested_topics)
-  
+  """
   print '****************** Clustering ******************'
   # Use SVD to reduce to sparse vectors to dense vectors and reduce the number of features
-  """
   svd = TruncatedSVD(n_components=3)
   dense_texts = svd.fit_transform(featured_texts)
   norm = preprocessing.Normalizer(copy=False)
@@ -199,7 +195,6 @@ def main(argv):
   # GMM
   list_topics = list(set(topics))
   gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics)
-  """
 
 
 # Preprocessing and cleaning of text bodies
@@ -288,7 +283,7 @@ def cluster(classifier, data, topics):
     print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
     print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
     print 'Adjusted Rand index: %0.3f' % metrics.adjusted_rand_score(topics, labels)
-    #print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
+    print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
     print ' ***************** '
 
 

@@ -53,16 +53,16 @@ def main(argv):
   print_topic_info(topics)
 
   # Feature selection methods:
-  bag_of_words(texts)
-  tfidf_scores = calc_tf_idf(texts, 10)
-  print tfidf_scores[' '.join(texts[0])]
-  print tfidf_scores[' '.join(texts[1])]
-  print tfidf_scores[' '.join(texts[2])]
+  #bag_of_words(texts)
+  #tfidf_scores = calc_tf_idf(texts, 10)
+  #print tfidf_scores[' '.join(texts[0])]
+  #print tfidf_scores[' '.join(texts[1])]
+  #print tfidf_scores[' '.join(texts[2])]
 
   # Classification using TextBlob:
   print 'Naive Bayes:'
-  NB = NaiveBayesClassifier(training_set)
-  print_classifier_stats(NB, test_set)
+  #NB = NaiveBayesClassifier(training_set)
+  #print_classifier_stats(NB, test_set)
 
   print 'Decision Tree:'
   DT = DecisionTreeClassifier(training_set)
@@ -82,6 +82,7 @@ def load_data():
 
 
 def load_soups(base_addr):
+  print 'loading soups...'
   soups = []
   for i in range(0, 22):
     num = str(i)
@@ -106,6 +107,7 @@ def print_topic_info(topics):
 
 
 def calc_tf_idf(texts, x):
+  print 'Calculating tfidf...'
   all_scores = {}
   for i, text in enumerate(texts):
     scores = {word: tfidf(word, text, texts) for word in text}
@@ -133,6 +135,7 @@ def tfidf(word, text, texts):
 
 
 def bag_of_words(texts):
+  print 'Creating bag of words...'
   # Use dictionary to create 'Bag of words'
   dictionary = corpora.Dictionary(texts)
 
@@ -148,13 +151,18 @@ def bag_of_words(texts):
   vectors = []
   for text in texts:
     vectors.append(dictionary.doc2bow(text))
+  print 'Bag of words vector: '
+  print vectors[0]
 
   # Apply an LDA Model to the bag of words
   num_topics = len(interested_topics)
   model = ldamodel.LdaModel(vectors, id2word=dictionary, num_topics=num_topics)
   # For example print the probability distribution for the first text
+  print 'LDA model: '
   for i in xrange(10):
     print model[vectors[i]]
+  print 'best 10 topics:'
+  print model.show_topics(topics=10, topn=10, formatted=True)
 
 
 def print_classifier_stats(classifier, test_set):
@@ -162,7 +170,6 @@ def print_classifier_stats(classifier, test_set):
   print classifier.show_informative_features(50)
   print test_set[0]
   print classifier.classify((test_set[0])[0])
-  print test_set[(test_set[0])[1]]
 
 
 if __name__ == '__main__':
