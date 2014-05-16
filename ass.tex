@@ -21,6 +21,7 @@
 This report details the implementation of the text classification system required for the week 10 assignment. It describes in detail each stage of the assignment, the reasons for any decisions made and the outcomes of these. The first section corresponds to reading in the data, and then feature selection and reduction is discussed. The classification task is then described and evaluated, followed by the clustering task. Finally conclusions are made. Any results can be found in the appendices following the report. The code for the implementation may be found on GitHub\footnote{https://github.com/RuthRainbow/DataMining}. The assignment was implemented using Python.
 
 \section{Data Input}
+<<<<<<< HEAD
 The first task was to read in the data, which is in SGM format. This was done using the \verb|BeautifulSoup| module for Python. This module is able to parse SGM files so data can be extracted by tag, which is useful for this assignment as it allows items such as the topic can easily be extracted. For each data file a \verb|BeautifulSoup| object was created, and these added to a list of `soups'.
 
 The next task was to extract the relevant tags from the soups. \verb|BeautifulSoup| objects provide methods for extracting tags easily, for example using the methods \verb|find_all| and \verb|findChildren|. \verb|find_all| was used to find all text tags and reuters tags. Within the reuters tags the lewissplit and topic attributes were extracted. Topics were extracted in this way in order to provide a list of topics where an article includes multiple topics.
@@ -96,7 +97,7 @@ $tf(t, d) = \frac{Frequency\:of\:term\:t\:in\:document\:d}{max.\:frequency\:of\:
 $idf(t, D) = log\frac{|D|}{df(t,D)}$
 \end{center}
 
-where $D$ is the set of all documents. The words with the highest n TF-IDF scores can then be used as features. The example below shows a text and it's associated TF-IDF features, to three decimal places:
+where $D$ is the set of all documents. The words with the highest 50 TF-IDF scores were used as features. The example below shows a text and it's associated TF-IDF features, to three decimal places:
 
 \begin{verbatim}
 The U.S. Agriculture Department reported the farmer-owned
@@ -128,7 +129,7 @@ n.a.-not available.
 
 [('iv', 0.346), ('x', 0.266), ('level', 0.163), ('age', 0.148), ('vi', 0.147), ('y', 0.144), ('price', 0.122), ('sorghum', 0.107), ('rate', 0.107), ('reserve', 0.101)]
 
-It can be seen that the Roman numeral features had very high TFIDF values. This may be because this sort of report only appears for topics related to wheat, grain and corn, as this article was labelled. Sorghum is also an important feature, as this is another cereal crop.
+It can be seen that the roman numerial features had very high TFIDF values. This may be because this sort of report only appears for topics related to wheat, grain and corn, as this article was labelled. Sorghum is also an important feature, as this is another cereal crop.
 
 The second implementation used the \verb|TfidfVectorizer| from the SciLearn module. This vectoriser can also be used for some preprocessing steps, such as removing accents and stop words, however when the data is already preprocessed this is not necessary. This vectoriser also normalises the features, as TFIDF does this automatically.
 
@@ -321,6 +322,7 @@ As the TFIDF vectoriser produced the most successful classifier we will use the 
 A paired t-test was carried out in order to compare the best three classifiers, which interestingly came from three different classifier categories. This shows that although some classifiers seemed very sensitive to the vectorisation method, TFIDF is still applicable to a wide range of classifier categories. The three classifiers chosen for the t-test were \verb|LinearSVC|, \verb|MultinomialNB| and \verb|RandomForestClassifier|. \verb|Perceptron|, also a linear classifier, and \verb|NearestCentroid|, coming from the fourth category, also obtained accuracies of over 70\%.
 
 The null hypothesis for the paired t-test is that there is no difference between the performance of the two classifiers being tested. Firstly the difference between the classifier's performance over each of the ten folds is calculated. The mean average ($\mu$) and standard deviation ($\sigma^2$) of this is then calculated. The test statistic for the t-test, where $n$ is the number of samples, is:
+
 \begin{center}
 $t = \frac{\mu}{\sigma^2 / \sqrt{n}}$
 \end{center}

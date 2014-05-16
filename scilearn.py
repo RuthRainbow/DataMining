@@ -36,8 +36,8 @@ def main(argv):
   count: Count only (no normalisation)
   count + binary: Binary only (no normalisation)
   """
-  tfidf = False
-  count = True
+  tfidf = True
+  count = False
   binary = False
   
   # Whether to use lemmatised input
@@ -196,7 +196,7 @@ def main(argv):
   
   # GMM
   list_topics = list(set(topics))
-  #gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics)
+  gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, num_topics, list_topics)
 
 
 # Preprocessing and cleaning of text bodies
@@ -281,10 +281,10 @@ def cluster(classifier, data, topics, make_silhouette=False):
   print str(classifier)
   clusters = classifier.fit_predict(data)
   labels = classifier.labels_
-  #print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
-  #print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
-  #print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
-  #print 'Adjusted Rand index: %0.3f' % metrics.adjusted_rand_score(topics, labels)
+  print 'Homogeneity: %0.3f' % metrics.homogeneity_score(topics, labels)
+  print 'Completeness: %0.3f' % metrics.completeness_score(topics, labels)
+  print 'V-measure: %0.3f' % metrics.v_measure_score(topics, labels)
+  print 'Adjusted Rand index: %0.3f' % metrics.adjusted_rand_score(topics, labels)
   print 'Silhouette test: %0.3f' % metrics.silhouette_score(data, labels)
   print ' ***************** '
   
@@ -321,8 +321,6 @@ def gmm(featured_train, featured_test, training_topics, test_topics, svd, norm, 
   gmm = GMM(n_components=num_topics)
   train_topics_mapped = map_topics_to_nums(training_topics)
   test_topics_mapped = map_topics_to_nums(test_topics)
-  #gmm.means_ = numpy.array([dense_train[train_topics_mapped == i].mean(axis=0)
-  #	                    for i in xrange(len(list_topics))])
   gmm.fit(dense_train)
   train_pred = gmm.predict(dense_train)
   test_pred = gmm.predict(dense_test)

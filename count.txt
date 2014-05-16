@@ -2392,6 +2392,9 @@ Ward(compute_full_tree=auto, connectivity=None, copy=True,
 Homogeneity: 0.247
 Completeness: 0.170
 V-measure: 0.201
-Adjusted Rand index: 0.384
+Adjusted Rand index: 0.029
+Silhouette Coefficient: 0.384
  ***************** 
 GMM
+training accuracy = 0.500
+test accuracy = 0.323
