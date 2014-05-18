@@ -216,7 +216,7 @@ Linear classification methods create decision boundaries to separate the data in
 
 \verb|Perceptron| implements a linear perceptron, and also centralises the data. This is not expected to perform well as the data is not expected to be linearly separable into classes. However; perceptrons are often used for text classification tasks and have been shown to perform well in the past.
 
-\verb|LinearSVC| was used as a scalable implementation of a Support Vector Machine (SVM) with a linear kernel. This kernel was used as the default, and because studies have shown that the performance depends more on the parameters than the type of kernel. Linear SVMs require an error term parameter, which was left as the default as this seemed to give the best results. The data is again centralised using a flag. SVMs have often been shown to work well for classification tasks so this classifier should do well.
+\verb|LinearSVC| was used as a scalable implementation of a Support Vector Machine (SVM) with a linear kernel. This kernel was used as the default, and because studies have shown that the performance depends more on the parameters than the type of kernel. Linear SVMs also require an error term parameter C. The algorithm was run over a range of values in order to find the best value for this, and it was found 0.7 gave the best results, although by a very small margin. The data is again centralised using a flag. SVMs have often been shown to work well for classification tasks so this classifier should do well.
 
 \subsubsection{Nearest neighbours}
 \verb|KNeighborsClassifier| attempts to predict a class using an example's nearest neighbours and euclidean distance. The number of neighbours to check was increased to 10 in order to avoid classification based on outliers. 
@@ -359,9 +359,9 @@ Where $a$ is the mean distance between an example and the other points in the sa
 The \verb|GMM| class is not in the same class hierarchy as the other clustering methods as it is supervised, so different metrics are available. This clustering algorithm will be evaluated using accuracy over both the training and test sets, and the results will not be very comparable with the other clustering methods.  
 
 \subsection{Evaluation}
-The results for the three clustering algorithms for each vectoriser can be found in tables 16-23. The classification task for these algorithms was much more difficult than that for the classifiers as there were many more topics. In particular homogeneity is expected to be low as topics overlap in the training data (one text can be assigned multiple topics).
+The results for the three clustering algorithms for each vectoriser can be found in tables 16-22. The classification task for these algorithms was much more difficult than that for the classifiers as there were many more topics. In particular homogeneity is expected to be low as topics overlap in the training data (one text can be assigned multiple topics).
 
-Firstly the unsupervised clustering algorithms will be evaluated. It can be seen that for all vectorisers the \verb|DBSCAN| method performed very poorly. This is most likely due to the large number of clusters. The \verb|DBSCAN| algorithm is not informed about the number of clusters, so it's likely that far fewer are being created due to the large number of overlap between topics. \verb|KMeans| and \verb|Ward| seem to perform fairly similarly in homogeneity, completeness and v-measure. This suggests that these algorithms were successful to an extent at creating clusters which encompassed or consisted of entire topics. However \verb|KMeans| consistently obtained a higher ARI value, regardless of the vectorisation method used. This may be because of the bias this metric has towards convex clusters, however this may also suggest that the clusters it generated were more similar to the true topics of the data, indicating that it is the more successful clustering method.
+Firstly the unsupervised clustering algorithms will be evaluated. It can be seen that for all vectorisers the \verb|DBSCAN| method performed very poorly. This is most likely due to the large number of clusters. The \verb|DBSCAN| algorithm is not informed about the number of clusters, so it's likely that far fewer are being created due to the large number of overlap between topics. Experiments were also conducted adapting the parameters for this algorithm and no improvement was found. \verb|KMeans| and \verb|Ward| seem to perform fairly similarly in homogeneity, completeness and v-measure. This suggests that these algorithms were successful to an extent at creating clusters which encompassed or consisted of entire topics. However \verb|KMeans| consistently obtained a higher ARI value, regardless of the vectorisation method used. This may be because of the bias this metric has towards convex clusters, however this may also suggest that the clusters it generated were more similar to the true topics of the data, indicating that it is the more successful clustering method.
 
 \verb|DBSCAN| performed equally poorly over all feature selection methods, suggesting that this task was not suitable for this method of clustering. \verb|KMeans| performed best with TFIDF vectorisation, indicating that it requires normalised data. \verb|Ward| performed best with binary vectorisation, suggesting that it prefers simpler features where a word is either present or absent. This variety shows that the vectorisation method should be chosen based on the clustering algorithm to be used.
 
@@ -680,14 +680,6 @@ The results discussed above show that text classification is a difficult task, p
 \textbf{Ward}      & 0.242                & 0.167                 & 0.198              & 0.017       
 \end{tabular}
 \caption{TFIDF bigrams: Unsupervised clustering results}
-\end{table}
-
-\begin{table}[h]
-\begin{tabular}{l|ll}
-             & \textbf{Training accuracy} & \textbf{Test accuracy} \\ \hline
-\textbf{GMM} & 3.753                      & 1.685                 
-\end{tabular}
-\caption{TFIDF bigrams: GMM clustering results}
 \end{table}
 
 \clearpage

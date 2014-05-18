@@ -142,7 +142,7 @@ def main(argv):
                                         min_samples_split=5,
                                         min_samples_leaf=5),
                  Perceptron(fit_intercept=True),
-                 LinearSVC(fit_intercept=True),
+                 LinearSVC(fit_intercept=True, C=0.7),
                  KNeighborsClassifier(n_neighbors=10),
                  NearestCentroid()]
 
